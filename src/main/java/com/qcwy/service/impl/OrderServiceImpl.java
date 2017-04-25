@@ -247,7 +247,7 @@ public class OrderServiceImpl implements OrderService {
         List<AppUser> appUsers = appUserDao.findAllOnline();
 
         //添加订单超时监听
-        OrderOverTimeUtils.addOrderListener(order.getOrder_no(), orderDao);
+        OrderOverTimeUtils.addOrderListener(order.getOrder_no(), orderDao, bgOrderDao);
         for (AppUser appUser : appUsers) {
             //所持订单数量大于等于5时，不推送
             int count = orderDao.getCountHoldOrders(appUser.getJob_no());
