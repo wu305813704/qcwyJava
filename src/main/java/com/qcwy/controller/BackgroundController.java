@@ -223,7 +223,7 @@ public class BackgroundController {
     }
 
     //根据平均分值排名
-    @GetMapping("/getOrderCountRank")
+    @GetMapping("/getOrderScoreRank")
     @ApiOperation("根据平均分值排名")
     public JsonResult<?> getOrderScoreRank(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                            @ApiParam(required = true, name = "date", value = "日期(yyyy/yyyyMM/yyyyMMdd)") @RequestParam(value = "date") String date) {

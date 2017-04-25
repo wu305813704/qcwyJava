@@ -182,7 +182,7 @@
     </update>
 
     <!--获取排行(订单完成量)-->
-    <select id="getOrderScoreRank" resultType="com.qcwy.entity.Rank">
+    <select id="getOrderCountRank" resultType="com.qcwy.entity.Rank">
         SELECT
         obj_new.job_no,
         obj_new.score,
@@ -228,6 +228,10 @@
         @rownum := 0 ,@rowtotal := NULL ,@incrnum := 0
         ) r
         ) AS obj_new
+    </select>
+
+    <select id="getOrderScoreRank" resultType="com.qcwy.entity.Rank">
+--         sql
     </select>
 
     <!--获取用户当前订单-->

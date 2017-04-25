@@ -71,8 +71,7 @@ public interface OrderDao {
     List<Rank> getOrderCountRank(@Param("date") String date);
 
     //根据平均分值排名
-    List<Rank> getOrderScoreRank(String date);
-    //TODO sql语句
+    List<Rank> getOrderScoreRank(@Param("date") String date);
 
     //查询用户是否有未完成的订单
     List<Order> getUndoneOrders(@Param("openId") String openId);
