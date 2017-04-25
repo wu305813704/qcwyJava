@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.OrderCancelDao">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="orderCancel.cancel_id">
+        INSERT INTO t_xt_order_cancel
+        (order_no,cause,update_time)
+        VALUES (#{orderCancel.order_no},#{orderCancel.cause},now())
+    </insert>
+
+    <!--<select id="getCancel" resultType="com.qcwy.entity."-->
+
+</mapper>

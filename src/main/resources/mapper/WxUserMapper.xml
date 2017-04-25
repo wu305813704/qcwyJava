@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.WxUserDao">
+    <insert id="register" useGeneratedKeys="true" keyProperty="wxUser.id">
+        insert into t_wx_user (openid, nickname, sex,province,city,country,headimgurl,unionid,regist_time)
+        values (#{wxUser.openid},#{wxUser.nickname},#{wxUser.sex},#{wxUser.province},#{wxUser.city},
+        #{wxUser.country},#{wxUser.headimgurl},#{wxUser.unionid},now())
+    </insert>
+
+    <select id="selectUserByOpenId" resultType="com.qcwy.entity.WxUser">
+        select * from t_wx_user
+        where openid = #{openId}
+    </select>
+
+    <update id="addTel">
+        update t_wx_user
+        set tel = #{tel}
+        where openid = #{openId}
+    </update>
+
+    <update id="updateWxUser">
+        UPDATE t_wx_user
+        SET nickname = #{wxUser.nickname},sex = #{wxUser.sex},province = #{wxUser.province},city = #{wxUser.city},
+        country = #{wxUser.country},headimgurl = #{wxUser.headimgurl},unionid = #{wxUser.unionid}
+        WHERE openid = #{wxUser.openid}
+    </update>
+
+    <update id="updateLastRepairsTime">
+        UPDATE t_wx_user
+        SET last_repairs_time = now()
+        WHERE openid = #{openid};
+    </update>
+
+    <select id="getWxUsers" resultType="com.qcwy.entity.WxUser">
+        SELECT * FROM t_wx_user
+        ORDER BY last_repairs_time DESC
+    </select>
+</mapper>

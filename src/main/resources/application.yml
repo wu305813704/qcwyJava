@@ -1,0 +1,66 @@
+server:
+  port: 8080
+  context-path: /qcwy
+  max-http-header-size: 8192
+spring:
+    datasource:
+##       本地数据库
+#        name: qcwy
+#        url: jdbc:mysql://localhost:3306/qcwy
+#        username: root
+#        password: 123456
+
+#        阿里云数据库
+        name: qcwy
+        url: jdbc:mysql://139.224.80.22:3306/qcwy
+        username: qcwy
+        password: Qcwy123456.
+
+        driver-class-name: com.mysql.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 1
+        maxWait: 60000
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+    http:
+        multipart:
+          enabled: true #默认支持文件上传
+          file-size-threshold: 0 #默认支持文件上传. 0 #支持文件写入磁盘
+#          location: d:/temp # 上传文件的临时目录
+          max-file-size: 5Mb # 最大支持文件大小
+          max-request-size: 10Mb # 最大支持请求大小
+    ########################################################
+    ###REDIS (RedisProperties) redis基本配置；
+    ########################################################
+    # database name
+    redis:
+        database: 0
+    # server host
+        host: 127.0.0.1
+    # server password
+    # password:
+    #connection port
+        port: 6379
+    # pool settings ...
+        pool:
+            max-idle: 8
+            min-idle: 0
+            max-active: 8
+            max-wait: -1
+    # name of Redis server
+    #spring.redis.sentinel.master=
+    # comma-separated list of host:portpairs
+    #spring.redis.sentinel.nodes=
+
+mybatis:
+    mapper-locations: classpath*:mapper/*Mapper.xml
+    state-aliases-package: com.qcwy.entity
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.OrderPartDao">
+    <resultMap id="orderPart" type="com.qcwy.entity.OrderPart">
+        <id column="id" property="id"/>
+        <result column="order_no" property="order_no"/>
+        <result column="part_detail_id" property="part_detail_id"/>
+        <result column="count" property="count"/>
+        <result column="type" property="type"/>
+        <association property="partDetail" javaType="com.qcwy.entity.PartDetail">
+            <id column="part_detail_id" property="part_detail_id"/>
+            <result column="part_no" property="part_no"/>
+            <result column="model" property="model"/>
+            <result column="unit" property="unit"/>
+            <result column="price" property="price"/>
+            <result column="price_old" property="price_old"/>
+            <result column="price_new" property="price_new"/>
+            <result column="is_guarantees" property="is_guarantees"/>
+            <result column="guarantees_limit" property="guarantees_limit"/>
+            <result column="remark" property="remark"/>
+            <result column="image" property="image"/>
+        </association>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_xt_order_fault_part (order_no,part_detail_id,count,type)
+        VALUES (#{orderNo},#{partDetailId},#{count},#{type})
+    </insert>
+
+    <select id="getOrderParts" resultMap="orderPart">
+        SELECT * FROM t_xt_order_fault_part f
+        LEFT JOIN t_xt_part_detail p
+        ON f.part_detail_id = p.part_detail_id
+        WHERE order_no = #{orderNo}
+    </select>
+
+    <select id="getOldOrderPart" resultMap="orderPart">
+        SELECT * FROM t_xt_order_fault_part f
+        LEFT JOIN t_xt_part_detail p
+        ON f.part_detail_id = p.part_detail_id
+        WHERE order_no = #{orderNo} AND type IN (1,2)
+    </select>
+
+</mapper>

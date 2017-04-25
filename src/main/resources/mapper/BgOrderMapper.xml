@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.bg.BgOrderDao">
+
+    <insert id="save">
+        INSERT INTO t_bg_order (order_no,type,state,cause,handle_time,user_no)
+        VALUES (#{bgOrder.order_no},#{bgOrder.type},#{bgOrder.state},#{bgOrder.cause},#{bgOrder.handle_time},#{bgOrder.user_no})
+    </insert>
+
+    <select id="getBgOrder" resultType="com.qcwy.entity.bg.BgOrder">
+        SELECT * FROM t_bg_order
+        WHERE order_no = #{orderNo}
+    </select>
+
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.bg.BgRoleDao">
+
+    <insert id="add">
+        INSERT INTO t_bg_role (role_name,type)
+        VALUES (#{role.role_name},0)
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM t_bg_role
+        WHERE id = #{id}
+    </delete>
+
+    <update id="update">
+        UPDATE t_bg_role
+        SET role_name = #{role.role_name}
+        WHERE id = #{role.id} AND type = #{role.type}
+    </update>
+
+    <select id="selectById" resultType="com.qcwy.entity.Role">
+        SELECT id,role_name FROM t_bg_role
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="com.qcwy.entity.Role">
+        SELECT id,role_name FROM t_bg_role
+    </select>
+
+</mapper>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.WxInfoDao">
+
+    <select id="getInfo" resultType="com.qcwy.entity.WxInfo">
+        SELECT * FROM t_wx_info
+    </select>
+
+</mapper>

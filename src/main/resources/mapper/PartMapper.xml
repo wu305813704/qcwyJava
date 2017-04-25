@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.PartDao">
+    <select id="getPartsByClassify" resultType="com.qcwy.entity.Part">
+        select * from t_xt_part
+        where classify = #{classify}
+    </select>
+
+    <select id="getPartName" resultType="string">
+        SELECT name FROM t_xt_part
+        WHERE part_id = #{partNo}
+    </select>
+
+</mapper>

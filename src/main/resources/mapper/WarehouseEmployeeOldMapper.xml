@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.WarehouseEmployeeOldDao">
+
+    <select id="getPartByJobNoAndPartId" resultType="INTEGER">
+        SELECT id from t_xt_warehouse_employee_old
+        WHERE job_no = #{wE.job_no} AND part_detail_id = #{wE.part_detail_id}
+    </select>
+
+    <insert id="save">
+        INSERT INTO t_xt_warehouse_employee_old (job_no,part_detail_id,count)
+        VALUES (#{wE.job_no},#{wE.part_detail_id},#{wE.count})
+    </insert>
+
+    <update id="updateCount">
+        UPDATE t_xt_warehouse_employee_old
+        SET count = count + #{wE.count}
+        WHERE job_no = #{wE.job_no} AND part_detail_id = #{wE.part_detail_id}
+    </update>
+</mapper>

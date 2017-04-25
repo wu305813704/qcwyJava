@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.OrderDetailDao">
+    <insert id="saveOrderDetail" useGeneratedKeys="true" keyProperty="orderDetail.id">
+        insert into t_xt_order_detail (order_no, fault_id,
+        <if test="orderDetail.fault_description != null">
+            fault_description,
+        </if>
+        lon, lati, loc, send_time)
+        values (#{order_no},#{orderDetail.fault_id},
+        <if test="orderDetail.fault_description != null">
+            #{orderDetail.fault_description},
+        </if>
+        #{orderDetail.lon},#{orderDetail.lati},#{orderDetail.loc},#{orderDetail.send_time})
+    </insert>
+
+    <select id="getOrderDetail" resultType="com.qcwy.entity.OrderDetail">
+        select * from t_xt_order_detail
+        where order_no = #{orderNo}
+    </select>
+
+    <update id="addPrice">
+        update t_xt_order_detail
+        set add_price = #{addPrice}
+        where order_no = #{orderNo}
+    </update>
+
+
+    <update id="updateOrderInfo">
+        UPDATE t_xt_order_detail
+        SET lon = #{lon},lati = #{lati},loc = #{loc}
+        WHERE order_no = #{orderNo}
+    </update>
+
+    <update id="updateTotalPrice">
+        UPDATE t_xt_order_detail
+        SET total_price = #{totalPrice}
+    </update>
+</mapper>

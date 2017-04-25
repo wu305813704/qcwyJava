@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.OrderReassignmentDao">
+    <insert id="save">
+        insert into t_xt_order_reassignment (order_no,send_time,old_no,new_no,cause)
+        values (#{reassignment.order_no},#{reassignment.send_time},#{reassignment.old_no},#{reassignment.new_no},#{reassignment.cause})
+    </insert>
+
+    <select id="getReassignment" resultType="com.qcwy.entity.OrderReassignment">
+        select * from t_xt_order_reassignment
+        where order_no = #{orderNo}
+    </select>
+
+    <select id="getNewJobNo" resultType="string">
+        select new_no from t_xt_order_reassignment
+        where order_no = #{orderNo}
+    </select>
+
+    <select id="getOldJobNo" resultType="string">
+        select old_no from t_xt_order_reassignment
+        where order_no = #{orderNo}
+    </select>
+    
+    <update id="accept">
+        update t_xt_order_reassignment
+        set state = 1 , handle_time = #{handleTime}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="refuse">
+        update t_xt_order_reassignment
+        set state = 2 ,handle_time = #{handleTime}
+        where order_no = #{orderNo}
+    </update>
+</mapper>

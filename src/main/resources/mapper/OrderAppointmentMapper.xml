@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.OrderAppointmentDao">
+
+    <insert id="save">
+        INSERT INTO t_xt_order_appointment (order_no,job_no,cause,time,lon,lati,loc)
+        VALUES (#{orderAppointment.order_no},#{orderAppointment.job_no},#{orderAppointment.cause},#{orderAppointment.time},
+                #{orderAppointment.lon},#{orderAppointment.lati},#{orderAppointment.loc})
+    </insert>
+
+    <select id="getAppointmentOrder" resultType="com.qcwy.entity.OrderAppointment">
+        SELECT * FROM t_xt_order_appointment
+        WHERE order_no = #{orderNo}
+    </select>
+
+</mapper>

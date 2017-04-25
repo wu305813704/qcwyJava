@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.OrderDao">
+    <resultMap id="order" type="com.qcwy.entity.Order">
+        <id column="order_no" property="order_no"/>
+        <result column="old_order_no" property="old_order_no"/>
+        <result column="open_id" property="open_id"/>
+        <result column="job_no" property="job_no"/>
+        <result column="state" property="state"/>
+        <result column="type" property="type"/>
+        <result column="send_time" property="send_time"/>
+        <result column="appointment_time" property="appointment_time"/>
+        <result column="complete_time" property="complete_time"/>
+        <result column="car_type" property="car_type"/>
+        <association property="appUser" javaType="com.qcwy.entity.AppUser">
+            <id column="app_id" property="id"/>
+            <result column="job_no" property="job_no"/>
+            <!--<result column="pwd" property="pwd"/>-->
+            <result column="name" property="name"/>
+            <result column="tel" property="tel"/>
+            <result column="sex" property="sex"/>
+            <result column="id_card" property="id_card"/>
+            <result column="birthday" property="birthday"/>
+            <result column="online" property="online"/>
+            <result column="lon" property="lon"/>
+            <result column="lati" property="lati"/>
+            <result column="update_time" property="update_time"/>
+        </association>
+        <association property="wxUser" javaType="com.qcwy.entity.WxUser">
+            <id column="wx_id" property="id"/>
+            <result column="openid" property="openid"/>
+            <result column="nickname" property="nickname"/>
+            <result column="sex" property="sex"/>
+            <result column="province" property="province"/>
+            <result column="city" property="city"/>
+            <result column="country" property="country"/>
+            <result column="headimgurl" property="headimgurl"/>
+            <result column="unionid" property="unionid"/>
+            <result column="tel" property="tel"/>
+            <result column="regist_time" property="regist_time"/>
+        </association>
+        <association property="orderDetail" javaType="com.qcwy.entity.OrderDetail">
+            <result column="detail_id" property="id"/>
+            <result column="order_no" property="order_no"/>
+            <result column="fault_id" property="fault_id"/>
+            <result column="fault_description" property="fault_description"/>
+            <result column="lon" property="lon"/>
+            <result column="lati" property="lati"/>
+            <result column="loc" property="loc"/>
+            <result column="send_time" property="send_time"/>
+            <result column="appointment_time" property="appointment_time"/>
+            <result column="add_price" property="add_price"/>
+            <result column="work_time_price" property="work_time_price"/>
+            <result column="total_price" property="total_price"/>
+        </association>
+        <association property="orderRecord" javaType="com.qcwy.entity.OrderRecord">
+            <result column="record_id" property="id"/>
+            <result column="order_no" property="order_no"/>
+            <result column="rush_time" property="rush_time"/>
+            <result column="start_time" property="start_time"/>
+            <result column="pause_time" property="pause_time"/>
+            <result column="reassignment_time" property="reassignment_time"/>
+            <result column="appointment_time" property="appointment_time"/>
+            <result column="update_time" property="update_time"/>
+            <result column="confirm_trouble_time" property="confirm_trouble_time"/>
+        </association>
+    </resultMap>
+
+    <select id="getOpenIdByOrderNo" resultType="string">
+        SELECT open_id FROM t_xt_order
+        WHERE order_no = #{orderNo}
+    </select>
+
+    <select id="getOrderByOrderNo" resultType="com.qcwy.entity.Order">
+      select * from t_xt_order
+      where order_no = #{orderNo}
+    </select>
+
+    <select id="findFreeOrders" resultMap="order">
+        SELECT *
+        FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        LEFT JOIN t_wx_user w
+        ON o.open_id = w.openid
+        WHERE state = 0
+        ORDER BY o.send_time DESC
+    </select>
+
+    <insert id="saveOrder" useGeneratedKeys="true" keyProperty="order.order_no">
+        insert into t_xt_order (open_id,state,type,send_time,car_type)
+        values (#{order.open_id},0,#{order.type},#{order.send_time},#{order.car_type})
+    </insert>
+
+    <insert id="appointmentOrder" useGeneratedKeys="true" keyProperty="order.order_no">
+        insert into t_xt_order (open_id,state,type,send_time,appointment_time,car_type)
+        values (#{order.open_id},4,1,#{order.state},#{order.appointment_time},#{order.car_type})
+    </insert>
+
+    <update id="updateAppointmentTime">
+        UPDATE t_xt_order
+        SET appointment_time = #{appointmentTime}
+        WHERE order_no = #{orderNo}
+    </update>
+
+    <select id="getStateByNo" resultType="integer">
+        select state from t_xt_order
+        where order_no = #{orderNo}
+    </select>
+
+    <update id="updateState">
+        update t_xt_order
+        set state = #{state}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateJobNo">
+        update t_xt_order
+        set job_no = #{jobNo}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="rushOrder">
+        update t_xt_order
+        set state = 1, job_no = #{jobNo}
+        where order_no = #{orderNo}
+    </update>
+
+    <select id="getHoldOrders" resultMap="order">
+        SELECT * FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        LEFT JOIN t_wx_user w
+        ON o.open_id = w.openid
+        WHERE o.job_no = #{jobNo} AND o.state IN (1,2,3,4,6,7,8,9,10)
+        ORDER BY o.send_time DESC
+    </select>
+
+    <select id="getCountHoldOrders" resultType="integer">
+        select count(*) from t_xt_order
+        where job_no = #{jobNo}
+        and (state in(1,2,3,6,7,8,9)
+        OR (state = 4 AND date_format(appointment_time,'%Y%m%d') = date_format(now(),'%Y%m%d')))
+    </select>
+
+    <update id="startOrder">
+        update t_xt_order
+        set state = 2
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="pauseOrder">
+        update t_xt_order
+        set state = 3
+        where order_no = #{orderNo}
+    </update>
+
+    <select id="getJobNoByOrderNo" resultType="string">
+        select job_no from t_xt_order
+        where order_no = #{orderNo}
+    </select>
+
+    <update id="reassignmentOrder">
+        update t_xt_order
+        set state = 6
+        where order_no = #{orderNo}
+    </update>
+
+    <select id="getHistoryOrdersByJobNo" resultType="com.qcwy.entity.Order">
+        SELECT * FROM t_xt_order
+        WHERE job_no = #{jobNo} AND state IN (5,11)
+        AND send_time >= #{startTime}
+        AND send_time &lt;= #{endTime}
+        ORDER BY send_time DESC
+    </select>
+
+    <update id="updateCompleteTime">
+        UPDATE t_xt_order
+        SET complete_time = now()
+        WHERE order_no = #{orderNo}
+    </update>
+
+    <!--获取排行(订单完成量)-->
+    <select id="getRank" resultType="com.qcwy.entity.Rank">
+        SELECT
+        obj_new.job_no,
+        obj_new.score,
+        obj_new.rownum AS rank
+        FROM
+        (
+        SELECT
+        obj.job_no,
+        obj.score,
+        @rownum := @rownum + 1 AS num_tmp,
+        @incrnum := CASE
+        WHEN @rowtotal = obj.score THEN
+        @incrnum
+        WHEN @rowtotal := obj.score THEN
+        @rownum
+        END AS rownum
+        FROM
+        (
+        SELECT
+        job_no,
+        count(*) as score
+        FROM
+        t_xt_order
+        WHERE date_format(complete_time,
+        <if test="date.length() == 4">
+            '%Y'
+        </if>
+
+        <if test="date.length() == 6">
+            '%Y%m'
+        </if>
+
+        <if test="date.length() == 8">
+            '%Y%m%d'
+        </if>
+        ) = #{date}
+        GROUP BY job_no
+        ORDER BY score
+        DESC
+        ) AS obj,
+        (
+        SELECT
+        @rownum := 0 ,@rowtotal := NULL ,@incrnum := 0
+        ) r
+        ) AS obj_new
+    </select>
+
+    <!--获取用户当前订单-->
+    <select id="getUndoneOrders" resultMap="order">
+        SELECT *
+--           o.order_no,
+--           o.job_no,
+--           o.state,
+--           o.type,
+--           o.send_time,
+--           o.appointment_time,
+--           o.complete_time,
+--           o.car_type,
+--           d.fault_id,
+--           d.fault_description
+        FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        WHERE open_id = #{openId} AND state NOT IN (5,11)
+    </select>
+
+    <!--获取用户历史订单-->
+    <select id="getHistoryOrdersByOpenid" resultMap="order">
+        SELECT *
+--           o.order_no,
+--           o.job_no,
+--           o.state,
+--           o.type,
+--           o.send_time,
+--           o.appointment_time,
+--           o.complete_time,
+--           o.car_type,
+--           d.fault_id,
+--           d.fault_description
+        FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        WHERE open_id = #{openId} AND state IN (5,11)
+        ORDER BY complete_time DESC
+    </select>
+
+    <select id="getOrder" resultMap="order">
+        SELECT
+          *
+        FROM
+        t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+--         LEFT JOIN t_wx_user w
+--         ON o.open_id = w.openid
+        LEFT JOIN t_app_user a
+        ON o.job_no = a.job_no
+        WHERE o.order_no = #{orderNo}
+    </select>
+
+    <update id="pay">
+        UPDATE t_xt_order
+        SET state = 11,pay_type = #{payType}
+        WHERE order_no = #{orderNo}
+    </update>
+
+    <select id="getServiceOrders" resultMap="order">
+        SELECT * FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        WHERE o.state NOT IN (5,11)
+        ORDER BY send_time DESC
+    </select>
+
+    <select id="getAppointmentOrders" resultMap="order">
+        SELECT * FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        WHERE o.state = 0
+        AND o.type = 1
+        ORDER BY appointment_time DESC
+    </select>
+
+    <select id="getHistoryOrders" resultMap="order">
+        SELECT * FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        WHERE o.state IN (5,11)
+        ORDER BY complete_time DESC
+    </select>
+
+    <select id="getAfterSaleOrders" resultMap="order">
+        SELECT * FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        WHERE o.state = 0
+        AND o.type = 2
+        ORDER BY send_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.AppOrderMessageDao">
+    <insert id="save" useGeneratedKeys="true" keyProperty="msg.msg_id">
+        insert into t_app_order_msg (job_no, order_no, state,send_time)
+        values (#{msg.job_no},#{msg.order_no},#{msg.state},now())
+    </insert>
+
+    <select id="getMsgByJobNo" resultType="com.qcwy.entity.AppOrderMessage">
+        select * from t_app_order_msg
+        where job_no = #{jobNo}
+        order by send_time desc
+    </select>
+
+</mapper>

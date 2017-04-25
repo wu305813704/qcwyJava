@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.bg.PartPriceRecordDao">
+    <insert id="addRecord">
+        INSERT INTO t_xt_part_price_record (part_detail_id,price,price_new,price_old,update_time,username)
+        VALUES (#{partDetail.part_detail_id},#{partDetail.price},#{partDetail.price_new},#{partDetail.price_old},now(),#{username})
+    </insert>
+
+</mapper>

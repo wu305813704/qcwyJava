@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.bg.MenuDao">
+    <select id="getMenusByParentId" resultType="com.qcwy.entity.bg.Menu">
+        SELECT * FROM t_bg_menu
+        WHERE parent_id = #{id}
+        ORDER BY order_id
+    </select>
+
+    <select id="getMenusByRoleid" resultType="com.qcwy.entity.bg.Menu">
+        SELECT * FROM t_bg_menu
+        WHERE id IN (
+          SELECT menu_id FROM t_bg_role_menu
+          WHERE role_id = #{roleId}
+        )
+    </select>
+
+</mapper>

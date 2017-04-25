@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.AppUserDao">
+    <!-- type为实体类，包名已经配置，可以直接写类名 -->
+    <resultMap id="user" type="com.qcwy.entity.AppUser">
+        <id property="id" column="id"/>
+        <result property="job_no" column="job_no"/>
+        <result property="pwd" column="pwd"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="id_card" column="id_card"/>
+        <result property="birthday" column="birthday"/>
+        <result property="online" column="online"/>
+        <result property="lon" column="lon"/>
+        <result property="lati" column="lati"/>
+    </resultMap>
+
+    <select id="getUserByJobNo" resultType="com.qcwy.entity.AppUser">
+        SELECT job_no,name,lon,lati FROM t_app_user
+        WHERE job_no = #{jobNo}
+    </select>
+
+    <!-- useGeneratedKeys="true" keyProperty="id" 自动赋值自增长的值给实体类 -->
+    <insert id="save" parameterType="com.qcwy.entity.AppUser" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        t_app_user (job_no, name, id_card, birthday)
+        values (#{job_no},#{name},#{id_card},#{birthday})
+    </insert>
+
+    <select id="login" resultMap="user">
+        select * from t_app_user
+        where job_no = #{jobNo} and pwd = #{pwd}
+    </select>
+
+    <select id="findAllOnline" resultMap="user">
+        select job_no,name,sex,online,lon,lati from t_app_user
+        where online = 1
+    </select>
+
+    <update id="updateLoc">
+        update t_app_user
+        set lati = #{lati}, lon = #{lon},update_time = #{updateTime}
+        where job_no = #{jobNo}
+    </update>
+
+    <update id="updatePwd">
+        update t_app_user
+        set pwd = #{pwd}
+        where job_no = #{jobNo}
+    </update>
+
+    <update id="updateName">
+        update t_app_user
+        set name = #{name}
+        where job_no = #{jobNo}
+    </update>
+
+    <select id="getUserName" resultType="string">
+        select name from t_app_user
+        where job_no = #{jobNo}
+    </select>
+
+</mapper>

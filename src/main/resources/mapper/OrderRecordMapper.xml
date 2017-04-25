@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.OrderRecordDao">
+    <insert id="save">
+        insert into t_xt_order_record (order_no)
+        values (#{orderNo})
+    </insert>
+
+    <update id="updateRushTime">
+        update t_xt_order_record
+        set rush_time = #{rushTime}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateStartTime">
+        update t_xt_order_record
+        set start_time = #{startTime}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updatePauseTime">
+        update t_xt_order_record
+        set pause_time = #{pauseTime}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateReassignmentTime">
+        update t_xt_order_record
+        set reassignment_time = #{reassignmentTime}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateAppointmentTime">
+        update t_xt_order_record
+        set appointment_time = #{appointmentTime}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateUpdateTime">
+        update t_xt_order_record
+        set update_time = #{updateTime}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateConfirmTroubleTime">
+        update t_xt_order_record
+        set confirm_trouble_time = #{confirmTime}
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateConfirmRealTroubleTime">
+        update t_xt_order_record
+        set confirm_real_trouble_time = now()
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateCompleteTime">
+        update t_xt_order_record
+        set complete_time = now()
+        where order_no = #{orderNo}
+    </update>
+
+    <update id="updateCheckAndAcceptTime">
+        update t_xt_order_record
+        set check_and_accept_time = now()
+        where order_no = #{orderNo}
+    </update>
+
+</mapper>

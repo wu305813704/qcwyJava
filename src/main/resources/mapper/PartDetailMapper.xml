@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.PartDetailDao">
+    <select id="getAllPartDetail" resultType="com.qcwy.entity.PartDetail">
+        SELECT * FROM t_xt_part_detail
+    </select>
+
+    <select id="getPartDetailByPartNo" resultType="com.qcwy.entity.PartDetail">
+        select * from t_xt_part_detail
+        where part_no = #{partNo}
+    </select>
+
+    <select id="getPartDetailByPartId" resultType="com.qcwy.entity.PartDetail">
+        select * from t_xt_part_detail
+        where part_detail_id = #{partId}
+    </select>
+
+    <select id="getPartPrice" resultType="Double">
+        SELECT price FROM t_xt_part_detail
+        WHERE part_detail_id = #{partId}
+    </select>
+
+    <update id="updatePrice">
+        UPDATE t_xt_part_detail
+        SET price = #{partDetail.price},price_new = #{partDetail.price_new},price_old = #{partDetail.price_old}
+        WHERE part_detail_id = #{partDetail.part_detail_id}
+    </update>
+
+</mapper>
