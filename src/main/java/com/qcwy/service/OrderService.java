@@ -111,6 +111,9 @@ public interface OrderService {
     //查询某一天的排行(完成订单数量)
     List<Rank> getOrderCountRankByDate(@Param("date") String date) throws Exception;
 
+    //根据平均分值排名
+    List<Rank> getOrderScoreRankByDate(String date) throws Exception;
+
     //微信端获取订单详情(用户信息、工程师信息。。。)
     Order getOrder(int orderNo);
 
@@ -134,4 +137,5 @@ public interface OrderService {
 
     //待确认的售后订单列表
     List<Order> getAfterSaleOrders();
+
 }

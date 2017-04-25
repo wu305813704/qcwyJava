@@ -1,6 +1,5 @@
 package com.qcwy.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.qcwy.dao.*;
 import com.qcwy.dao.bg.BgOrderDao;
 import com.qcwy.entity.*;
@@ -534,8 +533,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Rank> getOrderCountRankByDate(@Param("date") String date) throws Exception {
-        List<Rank> ranks = orderDao.getRank(date);
+    public List<Rank> getOrderCountRankByDate(String date) throws Exception {
+        List<Rank> ranks = orderDao.getOrderCountRank(date);
+        if (ranks.isEmpty()) {
+            throw new Exception("当前没有已完成的订单");
+        }
+        return ranks;
+    }
+
+    @Override
+    public List<Rank> getOrderScoreRankByDate(String date) throws Exception {
+        List<Rank> ranks = orderDao.getOrderScoreRank(date);
         if (ranks.isEmpty()) {
             throw new Exception("当前没有已完成的订单");
         }

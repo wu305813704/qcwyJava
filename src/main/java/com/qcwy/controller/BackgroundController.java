@@ -222,6 +222,24 @@ public class BackgroundController {
         return new JsonResult<>(ranks);
     }
 
+    //根据平均分值排名
+    @GetMapping("/getOrderCountRank")
+    @ApiOperation("根据平均分值排名")
+    public JsonResult<?> getOrderScoreRank(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                           @ApiParam(required = true, name = "date", value = "日期(yyyy/yyyyMM/yyyyMMdd)") @RequestParam(value = "date") String date) {
+        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+            return new JsonResult<>("非法操作");
+        }
+        List<Rank> ranks;
+        try {
+            ranks = orderService.getOrderScoreRankByDate(date);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, 7200);
+        return new JsonResult<>(ranks);
+    }
+
     //查询所有角色
     @GetMapping("/getAllRole")
     @ApiOperation("查询所有角色")

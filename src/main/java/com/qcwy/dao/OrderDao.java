@@ -68,7 +68,11 @@ public interface OrderDao {
     void updateCompleteTime(@Param("orderNo") int orderNo);
 
     //查询某一天的排行(完成订单数量)
-    List<Rank> getRank(@Param("date") String date);
+    List<Rank> getOrderCountRank(@Param("date") String date);
+
+    //根据平均分值排名
+    List<Rank> getOrderScoreRank(String date);
+    //TODO sql语句
 
     //查询用户是否有未完成的订单
     List<Order> getUndoneOrders(@Param("openId") String openId);
@@ -93,4 +97,5 @@ public interface OrderDao {
 
     //待确认的售后订单
     List<Order> getAfterSaleOrders();
+
 }
