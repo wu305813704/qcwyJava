@@ -147,4 +147,9 @@ public class AppUserServiceImpl implements AppUserService {
         String oldJobNo = orderReassignmentDao.getOldJobNo(orderNo);
         model.pushMsgToEnginner(oldJobNo, name, 2);
     }
+
+    @Override
+    public int getOrderCount(String jobNo) {
+        return orderDao.getOrderCount(jobNo);
+    }
 }

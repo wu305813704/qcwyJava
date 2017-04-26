@@ -536,7 +536,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Rank> getOrderCountRankByDate(String date) throws Exception {
         List<Rank> ranks = orderDao.getOrderCountRank(date);
         if (ranks.isEmpty()) {
-            throw new Exception("当前没有已完成的订单");
+            throw new Exception("暂无记录");
         }
         return ranks;
     }
@@ -545,7 +545,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Rank> getOrderScoreRankByDate(String date) throws Exception {
         List<Rank> ranks = orderDao.getOrderScoreRank(date);
         if (ranks.isEmpty()) {
-            throw new Exception("当前没有已完成的订单");
+            throw new Exception("暂无记录");
         }
         return ranks;
     }

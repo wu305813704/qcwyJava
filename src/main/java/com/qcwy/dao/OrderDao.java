@@ -97,4 +97,6 @@ public interface OrderDao {
     //待确认的售后订单
     List<Order> getAfterSaleOrders();
 
+    //获取订单数量
+    int getOrderCount(@Param("jobNo") String jobNo);
 }
