@@ -52,7 +52,8 @@ public class BackgroundController {
                                  @ApiParam(required = true, name = "name", value = "姓名") @RequestParam(value = "name") String name,
                                  @ApiParam(required = true, name = "sex", value = "性别") @RequestParam(value = "sex") int sex,
                                  @ApiParam(required = true, name = "tel", value = "电话") @RequestParam(value = "tel") String tel) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         BgUser bgUser = new BgUser();
@@ -101,7 +102,8 @@ public class BackgroundController {
     @ApiOperation("登陆后选择角色")
     public JsonResult<?> selectRole(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                     @ApiParam(required = true, name = "roleId", value = "角色id") @RequestParam(value = "roleId") int roleId) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         List<Menu> menus;
@@ -121,7 +123,8 @@ public class BackgroundController {
                                     @ApiParam(required = true, name = "name", value = "姓名") @RequestParam(value = "name") String name,
                                     @ApiParam(required = true, name = "idCard", value = "身份证") @RequestParam(value = "idCard") String idCard,
                                     @ApiParam(required = true, name = "birthday", value = "生日") @RequestParam(value = "birthday") String birthday) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         AppUser appUser = new AppUser();
@@ -145,7 +148,8 @@ public class BackgroundController {
                                     @ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo,
                                     @ApiParam(required = true, name = "partDetailId", value = "零件编号") @RequestParam(value = "partDetailId") int partDetailId,
                                     @ApiParam(required = true, name = "count", value = "添加的数量") @RequestParam(value = "count") int count) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         WarehouseEmployee warehouseEmployee = new WarehouseEmployee();
@@ -166,7 +170,8 @@ public class BackgroundController {
     @ApiOperation("根据单号获取订单")
     public JsonResult<?> getOrderByOrderNo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                            @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         Order order;
@@ -188,20 +193,19 @@ public class BackgroundController {
     public JsonResult<?> getAllPart(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                     @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                     @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         PageHelper.startPage(pageNum, pageSize);//分页查询
         List<PartDetail> parts;
-        PageInfo pageInfo;
         try {
             parts = partService.getAllPartDetail();
-            pageInfo = new PageInfo(parts);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
         jedis.expire(token, 7200);
-        return new JsonResult<>(pageInfo);
+        return new JsonResult<>(new PageInfo<>(parts));
     }
 
     //根据完成的订单量排名
@@ -209,7 +213,8 @@ public class BackgroundController {
     @ApiOperation("根据完成的订单量排名")
     public JsonResult<?> getOrderCountRank(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                            @ApiParam(required = true, name = "date", value = "日期(yyyy/yyyyMM/yyyyMMdd)") @RequestParam(value = "date") String date) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         List<Rank> ranks;
@@ -227,7 +232,8 @@ public class BackgroundController {
     @ApiOperation("根据平均分值排名")
     public JsonResult<?> getOrderScoreRank(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                            @ApiParam(required = true, name = "date", value = "日期(yyyy/yyyyMM/yyyyMMdd)") @RequestParam(value = "date") String date) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         List<Rank> ranks;
@@ -244,7 +250,8 @@ public class BackgroundController {
     @GetMapping("/getAllRole")
     @ApiOperation("查询所有角色")
     public JsonResult<?> getAllRole(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         List<Role> roles;
@@ -261,7 +268,8 @@ public class BackgroundController {
     @GetMapping("/getAllMenu")
     @ApiOperation("查询所有菜单")
     public JsonResult<?> getAllMenu(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         List<Menu> menus;
@@ -283,7 +291,8 @@ public class BackgroundController {
                                          @ApiParam(required = true, name = "priceNew", value = "以旧换新价格") @RequestParam(value = "priceNew") double priceNew,
                                          @ApiParam(required = true, name = "priceOld", value = "以旧换旧价格") @RequestParam(value = "priceOld") double priceOld,
                                          @ApiParam(required = true, name = "username", value = "修改者") @RequestParam(value = "username") String username) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         PartDetail partDetail = new PartDetail();
@@ -306,7 +315,8 @@ public class BackgroundController {
     public JsonResult<?> getBgUserList(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                        @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                        @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -327,7 +337,8 @@ public class BackgroundController {
                                      @ApiParam(required = true, name = "classify", value = "类型") @RequestParam(value = "classify") int classify,
                                      @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                      @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -347,7 +358,8 @@ public class BackgroundController {
     public JsonResult<?> getServiceOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                           @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                           @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -367,7 +379,8 @@ public class BackgroundController {
     public JsonResult<?> getAppointmentOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                               @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                               @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -387,7 +400,8 @@ public class BackgroundController {
     public JsonResult<?> getHistoryOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                           @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                           @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -407,7 +421,8 @@ public class BackgroundController {
     public JsonResult<?> getAfterSaleOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                             @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                             @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -427,7 +442,8 @@ public class BackgroundController {
     public JsonResult<?> getWxUsers(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                     @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                     @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        if (StringUtils.isEmpty(token) || !jedis.exists(token)) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || tokenValue == null || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("非法操作");
         }
         PageHelper.startPage(pageNum, pageSize);

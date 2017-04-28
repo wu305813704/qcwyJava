@@ -118,4 +118,9 @@ public class BgUserServiceImpl implements BgUserService {
         return bgUserDao.getBgUserList();
     }
 
+    @Override
+    public boolean hasUsername(String username) {
+        return bgUserDao.hasUsername(username);
+    }
+
 }

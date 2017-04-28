@@ -5,6 +5,7 @@ import com.qcwy.entity.*;
 import com.qcwy.entity.bg.BgOrder;
 import com.qcwy.service.*;
 import com.qcwy.utils.DateUtils;
+import com.qcwy.utils.JedisUtil;
 import com.qcwy.utils.JsonResult;
 import com.qcwy.utils.StringUtils;
 import io.swagger.annotations.Api;

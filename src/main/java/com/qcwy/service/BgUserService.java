@@ -45,4 +45,7 @@ public interface BgUserService {
 
     //查询所有员工
     List<BgUser> getBgUserList();
+
+    //判断是否存在用户名
+    boolean hasUsername(String username);
 }

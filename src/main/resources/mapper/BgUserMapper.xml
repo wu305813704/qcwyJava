@@ -35,4 +35,10 @@
         WHERE u.id = 1
     </select>
 
+    <select id="hasUsername" resultType="Boolean">
+        SELECT COUNT(id)
+        FROM t_bg_user
+        WHERE user_no = #{username}
+    </select>
+    
 </mapper>
