@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
+ * 超时订单、改派订单的储存
  * Created by KouKi on 2017/3/16.
  */
 public class BgOrder implements Serializable {

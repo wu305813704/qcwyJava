@@ -11,7 +11,9 @@ public class Rank  implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String job_no;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int score;
+    private String name;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private double score;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private int rank;
 
@@ -23,11 +25,19 @@ public class Rank  implements Serializable {
         this.job_no = job_no;
     }
 
-    public int getScore() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 

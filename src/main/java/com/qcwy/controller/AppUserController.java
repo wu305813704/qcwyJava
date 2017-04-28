@@ -5,6 +5,7 @@ import com.qcwy.entity.*;
 import com.qcwy.entity.bg.BgOrder;
 import com.qcwy.service.*;
 import com.qcwy.utils.DateUtils;
+import com.qcwy.utils.JedisUtil;
 import com.qcwy.utils.JsonResult;
 import com.qcwy.utils.StringUtils;
 import io.swagger.annotations.Api;
@@ -215,7 +216,7 @@ public class AppUserController {
 
     //获取改派工程师姓名
     @GetMapping("/getReassignmentName")
-    @ApiOperation("获取改约工程师姓名")
+    @ApiOperation("获取改派工程师姓名")
     public JsonResult<?> getReassignmentName(@ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
         String name;
         try {
@@ -581,6 +582,35 @@ public class AppUserController {
             return new JsonResult<>(e);
         }
         return new JsonResult<>(true);
+    }
+
+    //获取订单数量排名
+    @GetMapping("/getOrderCountRank")
+    @ApiOperation("获取订单数量排名")
+    public JsonResult<?> getOrderCountRank(@ApiParam(required = true, name = "date", value = "日期(yyyy/yyyyMM/yyyyMMdd)") @RequestParam(value = "date") String date,
+                                           @ApiParam(required = true, name = "pageNum", value = "pageNum") @RequestParam(value = "pageNum") int pageNum,
+                                           @ApiParam(required = true, name = "pageSize", value = "pageSize") @RequestParam(value = "pageSize") int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Rank> ranks;
+        try {
+            ranks = orderService.getOrderCountRankByDate(date);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        return new JsonResult<>(ranks);
+    }
+
+    //获取当月订单数量
+    @GetMapping("/getOrderCount")
+    @ApiOperation("获取当月订单数量")
+    public JsonResult<?> getOrderCount(@ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo) {
+        int count;
+        try {
+            count = appUserService.getOrderCount(jobNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        return new JsonResult<>(count);
     }
 
     //微信认证

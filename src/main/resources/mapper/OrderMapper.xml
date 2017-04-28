@@ -182,9 +182,10 @@
     </update>
 
     <!--获取排行(订单完成量)-->
-    <select id="getRank" resultType="com.qcwy.entity.Rank">
+    <select id="getOrderCountRank" resultType="com.qcwy.entity.Rank">
         SELECT
         obj_new.job_no,
+        a.name,
         obj_new.score,
         obj_new.rownum AS rank
         FROM
@@ -219,6 +220,7 @@
             '%Y%m%d'
         </if>
         ) = #{date}
+        AND state IN (10,11)
         GROUP BY job_no
         ORDER BY score
         DESC
@@ -228,6 +230,58 @@
         @rownum := 0 ,@rowtotal := NULL ,@incrnum := 0
         ) r
         ) AS obj_new
+        LEFT JOIN t_app_user a
+        ON obj_new.job_no = a.job_no
+    </select>
+
+    <select id="getOrderScoreRank" resultType="com.qcwy.entity.Rank">
+        SELECT
+        obj_new.job_no,
+        a.name,
+        obj_new.score,
+        obj_new.rownum AS rank
+        FROM
+        (
+        SELECT
+        obj.job_no,
+        obj.score,
+        @rownum := @rownum + 1 AS num_tmp,
+        @incrnum := CASE
+        WHEN @rowtotal = obj.score THEN
+        @incrnum
+        WHEN @rowtotal := obj.score THEN
+        @rownum
+        END AS rownum
+        FROM
+        (
+        SELECT o.job_no,avg(e.service_attitude + e.visit_speed + e.technical_ability) AS score
+        FROM t_xt_order_evaluate AS e
+        LEFT JOIN t_xt_order AS o
+        ON e.order_no = o.order_no
+        WHERE date_format(o.complete_time,
+        <if test="date.length() == 4">
+            '%Y'
+        </if>
+
+        <if test="date.length() == 6">
+            '%Y%m'
+        </if>
+
+        <if test="date.length() == 8">
+            '%Y%m%d'
+        </if>
+        ) = #{date}
+        AND state IN (10,11)
+        GROUP BY o.job_no
+        ORDER BY score DESC
+        ) AS obj,
+        (
+        SELECT
+        @rownum := 0 ,@rowtotal := NULL ,@incrnum := 0
+        ) r
+        ) AS obj_new
+        LEFT JOIN t_app_user a
+        ON obj_new.job_no = a.job_no
     </select>
 
     <!--获取用户当前订单-->
@@ -321,6 +375,13 @@
         WHERE o.state = 0
         AND o.type = 2
         ORDER BY send_time DESC
+    </select>
+
+    <select id="getOrderCount" resultType="Integer">
+        SELECT count(*) FROM t_xt_order
+        WHERE job_no = #{jobNo}
+        AND state IN (10,11)
+        AND date_format(complete_time,'%Y-%m') = date_format(now(),'%Y-%m')
     </select>
 
 </mapper>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: "微软雅黑";
+        }
+
+        #allmap {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/api?v=2.0&ak=c8pxdqacdLlTFPQwOX6npKvKYsAt1euG"></script>
+    <title>从多个点删除指定点</title>
+</head>
+<body>
+<div id="allmap"></div>
+<input type="button" onclick="deletePoint()" value="删除id=1"/>
+</body>
+</html>
+<script type="text/javascript">
+    // 百度地图API功能
+    var map = new BMap.Map("allmap");
+    var point = new BMap.Point(116.404, 39.915);
+    map.centerAndZoom(point, 15);
+    map.disableDoubleClickZoom(true);
+
+    // 编写自定义函数,创建标注
+    function addMarker(point, label) {
+        var marker = new BMap.Marker(point);
+        map.addOverlay(marker);
+        marker.setLabel(label);
+    }
+    function addAttribute(point, value) {
+        var marker = new BMap.Marker(point);
+        marker.setTitle(value)
+    }
+    // 随机向地图添加25个标注
+    var bounds = map.getBounds();
+    var sw = bounds.getSouthWest();
+    var ne = bounds.getNorthEast();
+    var lngSpan = Math.abs(sw.lng - ne.lng);
+    var latSpan = Math.abs(ne.lat - sw.lat);
+    for (var i = 0; i < 25; i++) {
+        var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
+        var label = new BMap.Label("我是id=" + i, {offset: new BMap.Size(20, -10)});
+        label.job_no = i;
+        addMarker(point, label);
+        addAttribute(point, i);
+    }
+
+    var p = new BMap.Point(sw.lng + lngSpan * (1 * 0.7), ne.lat - latSpan * (1 * 0.7));
+    var label = new BMap.Label("test111111111", {offset: new BMap.Size(20, -10)});
+    var marker = new BMap.Marker(p);
+    map.addOverlay(marker);
+    marker.setLabel(label);
+
+    function deletePoint() {
+        var allOverlay = map.getOverlays();//Marker对象集合
+        for (var i = 0; i < allOverlay.length - 1; i++) {
+            if (allOverlay[i].getLabel().job_no == 1) {
+                alert(allOverlay[i].getTitle())
+                map.removeOverlay(allOverlay[i]);
+                return false;
+            }
+        }
+    }
+
+    function update() {
+        p.lng = sw.lng + lngSpan * (Math.random() * 0.7);
+        p.lat = ne.lat - latSpan * (Math.random() * 0.7);
+
+//        map.removeOverlay(map.getOverlays()[25]);
+//        var label = new BMap.Label("test22222222222", {offset: new BMap.Size(20, -10)});
+//        addMarker(p,label);
+        marker.setPosition(p);
+        alert(1)
+    }
+
+    setTimeout(function () {
+        update()
+    }, 5000);
+
+</script>

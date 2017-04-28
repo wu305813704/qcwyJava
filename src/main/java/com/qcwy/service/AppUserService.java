@@ -52,4 +52,7 @@ public interface AppUserService {
 
     //拒绝改派
     void refuseReassignment(Timestamp handleTime, int orderNo, String jobNo);
+
+    //获取订单数量
+    int getOrderCount(String jobNo);
 }

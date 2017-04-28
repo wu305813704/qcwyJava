@@ -18,4 +18,7 @@ public interface BgUserDao {
 
     //添加用户
     void addUser(@Param("user") BgUser bgUser);
+
+    //判断是否存在用户名
+    boolean hasUsername(@Param("username") String username);
 }
