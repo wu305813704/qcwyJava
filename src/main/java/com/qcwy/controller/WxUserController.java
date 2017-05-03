@@ -261,6 +261,57 @@ public class WxUserController {
         return new JsonResult<>(order.getOrder_no());
     }
 
+    //申请售后订单
+    @PostMapping("/AfterSaleOrder")
+    @ApiOperation("申请售后")
+    public JsonResult<?> afterSaleOrder(@ApiParam(required = true, name = "oldOrderNo", value = "原订单编号") @RequestParam(value = "oldOrderNo") int oldOrderNo,
+                                        @ApiParam(required = true, name = "openId", value = "openId") @RequestParam(value = "openId") String openId,
+                                        @ApiParam(required = true, name = "faultId", value = "故障ID(1-2-3)") @RequestParam(value = "faultId") String faultId,
+                                        @ApiParam(name = "faultDescription", value = "故障详情") @RequestParam(value = "faultDescription") String faultDescription,
+                                        @ApiParam(required = true, name = "lon", value = "经度") @RequestParam(value = "lon") double lon,
+                                        @ApiParam(required = true, name = "lati", value = "维度") @RequestParam(value = "lati") double lati,
+                                        @ApiParam(required = true, name = "loc", value = "位置描述") @RequestParam(value = "loc") String loc,
+                                        @ApiParam(required = true, name = "appointmentTime", value = "预约时间") @RequestParam(value = "appointmentTime") long appointmentTime,
+                                        @ApiParam(required = true, name = "carType", value = "车辆类型(0-两轮车1-三轮车)") @RequestParam(value = "carType") int carType) {
+        //正则表达式匹配故障ID
+        String regEx = "(^[1-9]\\d?)(-[1-9]\\d?)*$";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(faultId);
+        boolean rs = matcher.matches();
+        if (!rs) {
+            return new JsonResult<>("故障ID不匹配");
+        }
+        if (orderService.getOrder(oldOrderNo).getState() != 10 && orderService.getOrder(oldOrderNo).getState() != 11) {
+            return new JsonResult<>("此订单不能发起售后");
+        }
+        Order order = new Order();
+        try {
+            order.setOpen_id(openId);
+            order.setOld_order_no(oldOrderNo);
+            order.setType(2);//售后单
+            order.setSend_time(new Timestamp(System.currentTimeMillis()));
+            order.setAppointment_time(new Timestamp(appointmentTime));
+            order.setCar_type(carType);
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setFault_id(faultId);
+            orderDetail.setFault_description(faultDescription);
+            orderDetail.setLon(String.valueOf(lon));
+            orderDetail.setLati(String.valueOf(lati));
+            orderDetail.setLoc(loc);
+            orderDetail.setSend_time(DateUtils.format(new Date(), "yyyyMMddHHmmss"));
+            orderDetail.setAppointment_time(DateUtils.format(new Date(appointmentTime), "yyyyMMddHHmmss"));
+            order.setOrderDetail(orderDetail);
+            WxUser wxUser = wxUserService.selectUserByOpenId(order.getOpen_id());
+            order.setWxUser(wxUser);
+            orderService.afterSaleOrder(order);
+            //更新最后报修时间
+            wxUserService.updateLastRepairsTime(openId);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        return new JsonResult<>(order.getOrder_no());
+    }
+
     //加价
     @GetMapping("/addPrice")
     @ApiOperation("加价")

@@ -1,5 +1,6 @@
 package com.qcwy.service;
 
+import com.qcwy.entity.AppUser;
 import com.qcwy.entity.PartDetail;
 import com.qcwy.entity.Role;
 import com.qcwy.entity.bg.BgUser;
@@ -43,9 +44,15 @@ public interface BgUserService {
     //修改价格
     void updatePartPrice(PartDetail partDetail, String username);
 
-    //查询所有员工
+    //查询所有后台员工
     List<BgUser> getBgUserList();
+
+    //获取所有工程师
+    List<AppUser> getEngineerList();
 
     //判断是否存在用户名
     boolean hasUsername(String username);
+
+    //添加角色权限
+    void addUserRole(int id, int roleId);
 }

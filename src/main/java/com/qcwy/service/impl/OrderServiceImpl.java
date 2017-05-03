@@ -9,7 +9,7 @@ import com.qcwy.service.OrderService;
 import com.qcwy.utils.*;
 import com.qcwy.websocket.BgWebSocket;
 import com.qcwy.websocket.WxWebSocket;
-import org.apache.ibatis.annotations.Param;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,6 +67,8 @@ public class OrderServiceImpl implements OrderService {
     private WarehouseEmployeeDao warehouseEmployeeDao;
     @Autowired
     private WarehouseEmployeeOldDao warehouseEmployeeOldDao;
+    @Autowired
+    private OrderAfterSaleDao orderAfterSaleDao;
 
     @Override
     public String getOpenIdByOrderNo(int orderNo) {
@@ -268,6 +270,23 @@ public class OrderServiceImpl implements OrderService {
         //推送给后台派发
         BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
                 new WebSocketMessage<>(MessageTypeUtils.APPOINTMENT_ORDER, order)));
+    }
+
+    @Override
+    public void afterSaleOrder(Order order) throws IOException {
+        orderDao.afterSaleOrder(order);
+        orderDetailDao.saveOrderDetail(order.getOrder_no(), order.getOrderDetail());
+        order.setOrderDetail(orderDetailDao.getOrderDetail(order.getOrder_no()));
+        orderRecordDao.save(order.getOrder_no());
+        //推送给后台派发
+        BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
+                new WebSocketMessage<>(MessageTypeUtils.AFTER_SALE_ORDER, order)));
+    }
+
+    //驳回售后订单
+    @Override
+    public void rejectOrder(int orderNo, String cause) {
+        orderAfterSaleDao.save(orderNo, cause);
     }
 
     //加价
@@ -602,6 +621,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getAfterSaleOrders() {
         return orderDao.getAfterSaleOrders();
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderDao.getAllOrders();
     }
 
 }

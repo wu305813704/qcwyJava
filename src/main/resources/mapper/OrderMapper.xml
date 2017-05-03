@@ -98,6 +98,11 @@
         values (#{order.open_id},4,1,#{order.state},#{order.appointment_time},#{order.car_type})
     </insert>
 
+    <insert id="afterSaleOrder" useGeneratedKeys="true" keyProperty="order.order_no">
+        insert into t_xt_order (old_order_no,open_id,state,type,send_time,appointment_time,car_type)
+        values (#{order.old_order_no},#{order.open_id},0,2,#{order.state},#{order.appointment_time},#{order.car_type})
+    </insert>
+
     <update id="updateAppointmentTime">
         UPDATE t_xt_order
         SET appointment_time = #{appointmentTime}
@@ -343,21 +348,28 @@
         WHERE order_no = #{orderNo}
     </update>
 
+    <select id="getAllOrders" resultMap="order">
+        SELECT * FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        ORDER BY o.send_time DESC
+    </select>
+
     <select id="getServiceOrders" resultMap="order">
         SELECT * FROM t_xt_order o
         LEFT JOIN t_xt_order_detail d
         ON o.order_no = d.order_no
         WHERE o.state NOT IN (5,11)
-        ORDER BY send_time DESC
+        ORDER BY o.send_time DESC
     </select>
 
     <select id="getAppointmentOrders" resultMap="order">
         SELECT * FROM t_xt_order o
         LEFT JOIN t_xt_order_detail d
         ON o.order_no = d.order_no
-        WHERE o.state = 0
+        WHERE o.state = 4
         AND o.type = 1
-        ORDER BY appointment_time DESC
+        ORDER BY o.appointment_time DESC
     </select>
 
     <select id="getHistoryOrders" resultMap="order">
@@ -365,7 +377,7 @@
         LEFT JOIN t_xt_order_detail d
         ON o.order_no = d.order_no
         WHERE o.state IN (5,11)
-        ORDER BY complete_time DESC
+        ORDER BY o.complete_time DESC
     </select>
 
     <select id="getAfterSaleOrders" resultMap="order">
@@ -374,7 +386,7 @@
         ON o.order_no = d.order_no
         WHERE o.state = 0
         AND o.type = 2
-        ORDER BY send_time DESC
+        ORDER BY o.send_time DESC
     </select>
 
     <select id="getOrderCount" resultType="Integer">

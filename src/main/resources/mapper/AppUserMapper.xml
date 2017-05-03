@@ -61,4 +61,9 @@
         where job_no = #{jobNo}
     </select>
 
+    <select id="getAllUser" resultType="com.qcwy.entity.AppUser">
+        SELECT id,job_no,name,sex,id_card,birthday,online,lon,lati FROM t_app_user
+        ORDER BY name
+    </select>
+
 </mapper>

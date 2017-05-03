@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qcwy.dao.PartDetailDao">
+    <insert id="addPart">
+        INSERT INTO t_xt_part_detail
+        (part_no,model,unit,price,price_new,price_old,is_guarantees,guarantees_limit,remark,image)
+        VALUES (#{partDetail.part_no},#{partDetail.model},#{partDetail.unit},#{partDetail.price},#{partDetail.price_new},#{partDetail.price_old},
+            #{partDetail.is_guarantees},#{partDetail.guarantees_limit},#{partDetail.remark},#{partDetail.image})
+    </insert>
+
     <select id="getAllPartDetail" resultType="com.qcwy.entity.PartDetail">
         SELECT * FROM t_xt_part_detail
     </select>

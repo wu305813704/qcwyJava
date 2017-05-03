@@ -20,7 +20,7 @@
         WHERE user_no = #{username} AND pwd = #{pwd}
     </select>
 
-    <insert id="addUser">
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="user.id">
         INSERT INTO t_bg_user (user_no,pwd,name,sex,tel,state)
         VALUES (#{user.user_no},#{user.pwd},#{user.name},#{user.sex},#{user.tel},0)
     </insert>

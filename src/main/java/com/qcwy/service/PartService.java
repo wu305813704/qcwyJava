@@ -4,7 +4,10 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.qcwy.entity.Part;
 import com.qcwy.entity.PartDetail;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -25,4 +28,7 @@ public interface PartService {
 
     //通过零件id查询零件价格
     Double getPartPrice(int partId);
+
+    //添加商品
+    void addPart(PartDetail partDetail, MultipartFile file) throws NoSuchAlgorithmException, IOException;
 }

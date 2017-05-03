@@ -42,4 +42,7 @@ public class MessageTypeUtils {
 
     //下预约单
     public static final int APPOINTMENT_ORDER = 102;
+
+    //申请售后
+    public static final int AFTER_SALE_ORDER = 103;
 }

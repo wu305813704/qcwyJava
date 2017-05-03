@@ -24,4 +24,7 @@ public interface PartDetailDao {
 
     //修改零件价格
     void updatePrice(@Param("partDetail") PartDetail partDetail);
+
+    //添加零件
+    void addPart(@Param("partDetail") PartDetail partDetail);
 }

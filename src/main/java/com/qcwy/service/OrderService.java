@@ -138,4 +138,12 @@ public interface OrderService {
     //待确认的售后订单列表
     List<Order> getAfterSaleOrders();
 
+    //获取所有订单列表
+    List<Order> getAllOrders();
+
+    //发起售后订单
+    void afterSaleOrder(Order order) throws IOException;
+
+    //驳回售后订单
+    void rejectOrder(int orderNo, String cause);
 }
