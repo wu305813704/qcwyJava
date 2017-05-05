@@ -105,4 +105,7 @@ public interface OrderDao {
 
     //发起售后订单
     void afterSaleOrder(@Param("order") Order order);
+
+    //获取回访列表
+    List<Order> getReturnVisitList();
 }

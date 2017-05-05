@@ -3,8 +3,7 @@ package com.qcwy.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.qcwy.entity.*;
-import com.qcwy.entity.bg.BgUser;
-import com.qcwy.entity.bg.Menu;
+import com.qcwy.entity.bg.*;
 import com.qcwy.service.*;
 import com.qcwy.utils.DateUtils;
 import com.qcwy.utils.JedisUtil;
@@ -44,6 +43,8 @@ public class BackgroundController {
     private WxUserService wxUserService;
     @Autowired
     private WarehouseService warehouseService;
+    @Autowired
+    private LogService logService;
 
     private Jedis jedis = JedisUtil.getInstance();
     //token有效期
@@ -602,6 +603,269 @@ public class BackgroundController {
         }
         jedis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(partDetails));
+    }
+
+    //拉黑
+    @GetMapping("/block")
+    @ApiOperation("拉黑")
+    public JsonResult<?> block(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                               @ApiParam(required = true, name = "openid", value = "openid") @RequestParam(value = "openid") String openid) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            wxUserService.block(openid);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //取消拉黑
+    @GetMapping("/rejectBlock")
+    @ApiOperation("取消黑名单")
+    public JsonResult<?> rejectBlock(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                     @ApiParam(required = true, name = "openid", value = "openid") @RequestParam(value = "openid") String openid) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            wxUserService.rejectBlock(openid);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //更新系统设置
+    @GetMapping("/updateSysInfo")
+    @ApiOperation("更新系统设置")
+    public JsonResult<?> updateSysInfo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                       @ApiParam(required = true, name = "name", value = "公司名称") @RequestParam(value = "name") String companyName,
+                                       @ApiParam(required = true, name = "address", value = "公司地址") @RequestParam(value = "address") String address,
+                                       @ApiParam(required = true, name = "email", value = "邮箱") @RequestParam(value = "email") String email,
+                                       @ApiParam(required = true, name = "serviceTel", value = "客服电话") @RequestParam(value = "serviceTel") String serviceTel,
+                                       @ApiParam(required = true, name = "complaintTel", value = "投诉电话") @RequestParam(value = "complaintTel") String complaintTel,
+                                       @ApiParam(required = true, name = "recordsInfo", value = "备案信息") @RequestParam(value = "recordsInfo") String recordsInfo,
+                                       @ApiParam(required = true, name = "versionInfo", value = "版本信息") @RequestParam(value = "versionInfo") String versionInfo) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        SystemInfo systemInfo = new SystemInfo();
+        systemInfo.setCompany_name(companyName);
+        systemInfo.setAddress(address);
+        systemInfo.setEmail(email);
+        systemInfo.setService_tel(serviceTel);
+        systemInfo.setComplaint_tel(complaintTel);
+        systemInfo.setRecords_info(recordsInfo);
+        systemInfo.setVersion_info(versionInfo);
+        try {
+            bgUserService.updateSystemInfo(systemInfo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //用户操作日志
+    @GetMapping("/userLog")
+    @ApiOperation("用户操作日志")
+    public JsonResult<?> logForWx(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                  @ApiParam(required = true, name = "type", value = "日志类型(0-微信1-工程师2-后台)") @RequestParam(value = "type") int type,
+                                  @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                  @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        switch (type) {
+            //微信用户
+            case 0:
+                List<LogForWx> logWx;
+                try {
+                    logWx = logService.logForWxList();
+                } catch (Exception e) {
+                    jedis.expire(token, validity);
+                    return new JsonResult<>(e);
+                }
+                return new JsonResult<>(new PageInfo<>(logWx));
+            //工程师
+            case 1:
+                List<LogForApp> logApp;
+                try {
+                    logApp = logService.logForAppList();
+                } catch (Exception e) {
+                    jedis.expire(token, validity);
+                    return new JsonResult<>(e);
+                }
+                return new JsonResult<>(new PageInfo<>(logApp));
+            //后台用户
+            case 2:
+                List<LogForBg> logBg;
+                try {
+                    logBg = logService.logForBgList();
+                } catch (Exception e) {
+                    jedis.expire(token, validity);
+                    return new JsonResult<>(e);
+                }
+                return new JsonResult<>(new PageInfo<>(logBg));
+        }
+        return new JsonResult<>("不可用的日志类型");
+    }
+
+    //获取工程师改派给后台的订单
+    @GetMapping("/getReassignmentOrders")
+    @ApiOperation("获取工程师改派的订单")
+    public JsonResult<?> getReassignmentOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                               @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                               @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<BgOrder> bgOrders;
+        try {
+            bgOrders = orderService.getBgRessignmentOrders();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(bgOrders));
+    }
+
+    //获取所有超时的订单
+    @GetMapping("/getOverTimeOrders")
+    @ApiOperation("获取超时订单")
+    public JsonResult<?> getOverTimeOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                           @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                           @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<BgOrder> bgOrders;
+        try {
+            bgOrders = orderService.getOverTimeOrders();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(bgOrders));
+    }
+
+    //获取待派发订单
+    @GetMapping("/getDistributeOrders")
+    @ApiOperation("获取待派发订单")
+    public JsonResult<?> getDistributeOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                             @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                             @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<BgOrder> bgOrders;
+        try {
+            bgOrders = orderService.getDistributeOrders();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(bgOrders));
+    }
+
+    //获取待回访列表
+    @GetMapping("/returnVisitList")
+    @ApiOperation("待回访列表")
+    public JsonResult<?> returnVisitList(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                         @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                         @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orders;
+        try {
+            orders = orderService.getReturnVisitList();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(orders));
+    }
+
+    //已回访列表
+    @GetMapping("/hadReturnVisitList")
+    @ApiOperation("已回访列表")
+    public JsonResult<?> hadReturnVisitList(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                            @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                            @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<OrderVisit> orders;
+        try {
+            orders = orderService.hadReturnVisitList();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(orders));
+    }
+
+    //回访
+    @GetMapping("/returnVisit")
+    @ApiOperation("回访")
+    public JsonResult<?> returnVisit(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                     @ApiParam(required = true, name = "userNo", value = "用户帐号") @RequestParam(value = "userNo") String userNo,
+                                     @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo,
+                                     @ApiParam(required = true, name = "content", value = "回访内容") @RequestParam(value = "content") String content) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            orderService.returnVisit(userNo, orderNo, content);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //修改密码
+    @PostMapping("/updatePwd")
+    @ApiOperation("修改密码")
+    public JsonResult<?> updatePwd(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                   @ApiParam(required = true, name = "userNo", value = "用户帐号") @RequestParam(value = "userNo") String userNo,
+                                   @ApiParam(required = true, name = "oldPwd", value = "原密码") @RequestParam(value = "oldPwd") String oldPwd,
+                                   @ApiParam(required = true, name = "newPwd", value = "新密码") @RequestParam(value = "newPwd") String newPwd) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            if (bgUserService.getUser(userNo, oldPwd) == null) {
+                return new JsonResult<>("密码错误");
+            }
+            bgUserService.updatePwd(userNo, newPwd);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(true);
     }
 
 }

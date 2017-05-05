@@ -112,4 +112,14 @@ public class WxUserServiceImpl implements WxUserService {
         return wxUserDao.getWxUsers();
     }
 
+    @Override
+    public void block(String openid) {
+        wxUserDao.block(openid);
+    }
+
+    @Override
+    public void rejectBlock(String openid) {
+        wxUserDao.rejectBlock(openid);
+    }
+
 }

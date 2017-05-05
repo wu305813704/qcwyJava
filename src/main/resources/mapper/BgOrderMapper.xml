@@ -2,10 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qcwy.dao.bg.BgOrderDao">
+    <resultMap id="bgOrder" type="com.qcwy.entity.bg.BgOrder">
+        <id column="id" property="id"/>
+        <result column="order_no" property="order_no"/>
+        <result column="type" property="type"/>
+        <result column="state" property="state"/>
+        <result column="cause" property="cause"/>
+        <result column="handle_time" property="handle_time"/>
+        <result column="user_no" property="user_no"/>
+        <result column="fault_id" property="fault_id"/>
+        <result column="fault_description" property="fault_description"/>
+        <result column="loc" property="loc"/>
+        <result column="send_time" property="send_time"/>
+        <result column="appointment_time" property="appointment_time"/>
+        <result column="app_name" property="app_name"/>
+    </resultMap>
 
     <insert id="save">
-        INSERT INTO t_bg_order (order_no,type,state,cause,handle_time,user_no)
-        VALUES (#{bgOrder.order_no},#{bgOrder.type},#{bgOrder.state},#{bgOrder.cause},#{bgOrder.handle_time},#{bgOrder.user_no})
+        INSERT INTO t_bg_order (order_no,type,state,cause)
+        VALUES (#{bgOrder.order_no},#{bgOrder.type},#{bgOrder.state},#{bgOrder.cause})
     </insert>
 
     <select id="getBgOrder" resultType="com.qcwy.entity.bg.BgOrder">
@@ -13,4 +28,38 @@
         WHERE order_no = #{orderNo}
     </select>
 
+    <select id="getAllRessignmentOrders" resultMap="bgOrder">
+        SELECT *,u.name AS app_name FROM t_bg_order b
+        LEFT JOIN t_xt_order o
+        ON b.order_no = o.order_no
+        LEFT JOIN t_xt_order_detail d
+        ON b.order_no = d.order_no
+        LEFT JOIN t_app_user u
+        ON o.job_no = u.job_no
+        WHERE b.type = 1
+        ORDER BY b.state
+    </select>
+
+    <select id="getAllOverTimeOrders" resultMap="bgOrder">
+        SELECT *,u.name AS app_name FROM t_bg_order b
+        LEFT JOIN t_xt_order o
+        ON b.order_no = o.order_no
+        LEFT JOIN t_xt_order_detail d
+        ON b.order_no = d.order_no
+        LEFT JOIN t_app_user u
+        ON o.job_no = u.job_no
+        WHERE b.type = 0
+        ORDER BY b.state
+    </select>
+
+    <select id="getDistributeOrders" resultMap="bgOrder">
+        SELECT *,u.name AS app_name FROM t_bg_order b
+        LEFT JOIN t_xt_order o
+        ON b.order_no = o.order_no
+        LEFT JOIN t_xt_order_detail d
+        ON b.order_no = d.order_no
+        LEFT JOIN t_app_user u
+        ON o.job_no = u.job_no
+        WHERE b.state = 0
+    </select>
 </mapper>

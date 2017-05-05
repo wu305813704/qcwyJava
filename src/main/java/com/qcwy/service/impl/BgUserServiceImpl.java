@@ -8,6 +8,7 @@ import com.qcwy.entity.PartDetail;
 import com.qcwy.entity.Role;
 import com.qcwy.entity.bg.BgUser;
 import com.qcwy.entity.bg.Menu;
+import com.qcwy.entity.bg.SystemInfo;
 import com.qcwy.service.BgUserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class BgUserServiceImpl implements BgUserService {
     private PartDetailDao partDetailDao;
     @Autowired
     private PartPriceRecordDao partPriceRecordDao;
+    @Autowired
+    private SystemInfoDao systemInfoDao;
 
     @Override
     public void addUser(BgUser bgUser) {
@@ -138,6 +141,21 @@ public class BgUserServiceImpl implements BgUserService {
     @Override
     public void addUserRole(int userId, int roleId) {
         userRoleDao.save(userId, roleId);
+    }
+
+    @Override
+    public void updateSystemInfo(SystemInfo systemInfo) {
+        systemInfoDao.update(systemInfo);
+    }
+
+    @Override
+    public BgUser getUser(String userNo, String oldPwd) {
+        return bgUserDao.getUser(userNo,oldPwd);
+    }
+
+    @Override
+    public void updatePwd(String userNo, String newPwd) {
+        bgUserDao.updatePwd(userNo,newPwd);
     }
 
 }

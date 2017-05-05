@@ -40,5 +40,15 @@
         FROM t_bg_user
         WHERE user_no = #{username}
     </select>
-    
+
+    <select id="getUser" resultType="com.qcwy.entity.bg.BgUser">
+        SELECT * FROM t_bg_user
+        WHERE user_no = #{userNo} AND pwd = #{pwd}
+    </select>
+
+    <update id="updatePwd">
+        UPDATE t_bg_user
+        SET pwd = #{pwd}
+        WHERE user_no = #{userNo}
+    </update>
 </mapper>

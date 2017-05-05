@@ -1,29 +1,22 @@
 package com.qcwy.entity.bg;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.qcwy.entity.Order;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 /**
- * 超时订单、改派订单的储存
- * Created by KouKi on 2017/3/16.
+ * Created by KouKi on 2017/5/4.
  */
-public class BgOrder implements Serializable {
+public class OrderVisit implements Serializable{
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private int id;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private int order_no;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int type;
+    private String content;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int state;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String cause;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Timestamp handle_time;
+    private Timestamp time;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String user_no;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -33,11 +26,13 @@ public class BgOrder implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String loc;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Timestamp send_time;
+    private String nickname;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Timestamp appointment_time;
+    private String name;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String app_name;
+    private Timestamp compelete_time;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String username;
 
     public int getId() {
         return id;
@@ -55,36 +50,20 @@ public class BgOrder implements Serializable {
         this.order_no = order_no;
     }
 
-    public int getType() {
-        return type;
+    public String getContent() {
+        return content;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public int getState() {
-        return state;
+    public Timestamp getTime() {
+        return time;
     }
 
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public String getCause() {
-        return cause;
-    }
-
-    public void setCause(String cause) {
-        this.cause = cause;
-    }
-
-    public Timestamp getHandle_time() {
-        return handle_time;
-    }
-
-    public void setHandle_time(Timestamp handle_time) {
-        this.handle_time = handle_time;
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 
     public String getUser_no() {
@@ -119,27 +98,35 @@ public class BgOrder implements Serializable {
         this.loc = loc;
     }
 
-    public Timestamp getSend_time() {
-        return send_time;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setSend_time(Timestamp send_time) {
-        this.send_time = send_time;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
-    public Timestamp getAppointment_time() {
-        return appointment_time;
+    public String getName() {
+        return name;
     }
 
-    public void setAppointment_time(Timestamp appointment_time) {
-        this.appointment_time = appointment_time;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getApp_name() {
-        return app_name;
+    public Timestamp getCompelete_time() {
+        return compelete_time;
     }
 
-    public void setApp_name(String app_name) {
-        this.app_name = app_name;
+    public void setCompelete_time(Timestamp compelete_time) {
+        this.compelete_time = compelete_time;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

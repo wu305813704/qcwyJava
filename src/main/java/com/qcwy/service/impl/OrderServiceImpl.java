@@ -2,8 +2,10 @@ package com.qcwy.service.impl;
 
 import com.qcwy.dao.*;
 import com.qcwy.dao.bg.BgOrderDao;
+import com.qcwy.dao.bg.OrderVisitDao;
 import com.qcwy.entity.*;
 import com.qcwy.entity.bg.BgOrder;
+import com.qcwy.entity.bg.OrderVisit;
 import com.qcwy.model.Model;
 import com.qcwy.service.OrderService;
 import com.qcwy.utils.*;
@@ -69,6 +71,8 @@ public class OrderServiceImpl implements OrderService {
     private WarehouseEmployeeOldDao warehouseEmployeeOldDao;
     @Autowired
     private OrderAfterSaleDao orderAfterSaleDao;
+    @Autowired
+    private OrderVisitDao orderVisitDao;
 
     @Override
     public String getOpenIdByOrderNo(int orderNo) {
@@ -85,6 +89,8 @@ public class OrderServiceImpl implements OrderService {
         String time = orderDetail.getSend_time();
         orderDetail.setSend_time(time.substring(0, time.lastIndexOf(".")));
         order.setOrderDetail(orderDetail);
+        OrderFault orderFault = orderFaultDao.getOrderFault(orderNo);
+        order.setOrderFault(orderFault);
         return order;
     }
 
@@ -287,6 +293,37 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void rejectOrder(int orderNo, String cause) {
         orderAfterSaleDao.save(orderNo, cause);
+    }
+
+    @Override
+    public List<BgOrder> getBgRessignmentOrders() {
+        return bgOrderDao.getAllRessignmentOrders();
+    }
+
+    @Override
+    public List<BgOrder> getOverTimeOrders() {
+        return bgOrderDao.getAllOverTimeOrders();
+    }
+
+    @Override
+    public List<BgOrder> getDistributeOrders() {
+        return bgOrderDao.getDistributeOrders();
+    }
+
+    @Override
+    public List<Order> getReturnVisitList() {
+        return orderDao.getReturnVisitList();
+    }
+
+    @Override
+    public List<OrderVisit> hadReturnVisitList() {
+        return orderVisitDao.getAllList();
+    }
+
+    @Override
+    public void returnVisit(String userNo, int orderNo, String content) {
+        orderVisitDao.save(userNo, orderNo, content);
+        orderVisitDao.updateReturnState(orderNo);
     }
 
     //加价

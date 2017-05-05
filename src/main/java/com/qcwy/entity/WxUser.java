@@ -36,6 +36,8 @@ public class WxUser implements Serializable {
     private Timestamp last_repairs_time;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private int type;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private int state;
 
     public int getId() {
         return id;
@@ -139,5 +141,13 @@ public class WxUser implements Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

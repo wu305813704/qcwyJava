@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.bg.LogForWxDao">
+    <resultMap id="log" type="com.qcwy.entity.bg.LogForWx">
+        <id column="id" property="id"/>
+        <result column="openid" property="openid"/>
+        <result column="type" property="type"/>
+        <result column="time" property="time"/>
+        <result column="nickname" property="username"/>
+        <result column="content" property="content"/>
+        <result column="order_no" property="order_no"/>
+    </resultMap>
+
+    <select id="getAll" resultMap="log">
+        SELECT l.*,u.nickname,c.content FROM t_xt_log_wx l
+        LEFT JOIN t_wx_user u
+        ON l.openid = u.openid
+        LEFT JOIN t_xt_log_wx_code c
+        ON l.type = c.type_id
+        ORDER BY l.time DESC
+    </select>
+
+    <insert id="save">
+        INSERT INTO t_xt_log_wx
+        (openid,type,time,order_no)
+        VALUES (#{log.openid},#{log.type},now(),#{log.order_no})
+    </insert>
+
+</mapper>

@@ -1,8 +1,11 @@
 package com.qcwy.controller;
 
 import com.github.pagehelper.PageHelper;
+import com.qcwy.dao.bg.LogForWxDao;
 import com.qcwy.entity.*;
+import com.qcwy.entity.bg.LogForWx;
 import com.qcwy.service.AppUserService;
+import com.qcwy.service.LogService;
 import com.qcwy.service.OrderService;
 import com.qcwy.service.WxUserService;
 import com.qcwy.utils.DateUtils;
@@ -41,6 +44,8 @@ public class WxUserController {
     private WxUserService wxUserService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private LogService logService;
 
     //通过code授权登录
     @GetMapping("/accredit")
@@ -169,6 +174,9 @@ public class WxUserController {
                                     @ApiParam(required = true, name = "lati", value = "维度") @RequestParam(value = "lati") double lati,
                                     @ApiParam(required = true, name = "loc", value = "位置描述") @RequestParam(value = "loc") String loc,
                                     @ApiParam(required = true, name = "carType", value = "车辆类型(0-两轮车1-三轮车)") @RequestParam(value = "carType") int carType) {
+        if (wxUserService.selectUserByOpenId(openId).getState() == 1) {
+            return new JsonResult<>("您已被限制下单");
+        }
         if (!wxUserService.getTel(openId)) {
             return new JsonResult<>("请在个人中心填写电话");
         }
@@ -205,6 +213,11 @@ public class WxUserController {
             orderService.placeOrder(order);
             //更新最后报修时间
             wxUserService.updateLastRepairsTime(openId);
+            LogForWx logForWx = new LogForWx();
+            logForWx.setType(0);
+            logForWx.setOrder_no(order.getOrder_no());
+            logForWx.setOpenid(openId);
+            logService.saveLogWx(logForWx);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -222,6 +235,9 @@ public class WxUserController {
                                           @ApiParam(required = true, name = "loc", value = "位置描述") @RequestParam(value = "loc") String loc,
                                           @ApiParam(required = true, name = "appointmentTime", value = "预约时间") @RequestParam(value = "appointmentTime") long appointmentTime,
                                           @ApiParam(required = true, name = "carType", value = "车辆类型(0-两轮车1-三轮车)") @RequestParam(value = "carType") int carType) {
+        if (wxUserService.selectUserByOpenId(openId).getState() == 1) {
+            return new JsonResult<>("您已被限制下单");
+        }
         //正则表达式匹配故障ID
         String regEx = "(^[1-9]\\d?)(-[1-9]\\d?)*$";
         Pattern pattern = Pattern.compile(regEx);
@@ -255,6 +271,11 @@ public class WxUserController {
             orderService.appointmentOrder(order);
             //更新最后报修时间
             wxUserService.updateLastRepairsTime(openId);
+            LogForWx logForWx = new LogForWx();
+            logForWx.setType(1);
+            logForWx.setOrder_no(order.getOrder_no());
+            logForWx.setOpenid(openId);
+            logService.saveLogWx(logForWx);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -306,6 +327,11 @@ public class WxUserController {
             orderService.afterSaleOrder(order);
             //更新最后报修时间
             wxUserService.updateLastRepairsTime(openId);
+            LogForWx logForWx = new LogForWx();
+            logForWx.setType(2);
+            logForWx.setOrder_no(order.getOrder_no());
+            logForWx.setOpenid(openId);
+            logService.saveLogWx(logForWx);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -319,6 +345,11 @@ public class WxUserController {
                                   @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
         try {
             orderService.addPrice(addPrice, orderNo);
+            LogForWx logForWx = new LogForWx();
+            logForWx.setType(4);
+            logForWx.setOrder_no(orderNo);
+            logForWx.setOpenid(orderService.getOpenIdByOrderNo(orderNo));
+            logService.saveLogWx(logForWx);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -335,6 +366,11 @@ public class WxUserController {
         }
         try {
             orderService.confirmTroubleWx(openId, orderNo);
+            LogForWx logForWx = new LogForWx();
+            logForWx.setType(5);
+            logForWx.setOrder_no(orderNo);
+            logForWx.setOpenid(openId);
+            logService.saveLogWx(logForWx);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -348,6 +384,11 @@ public class WxUserController {
                                        @ApiParam(required = true, name = "orderNo", value = "orderNo") @RequestParam(value = "orderNo") int orderNo) {
         try {
             orderService.rejectTrouble(openId, orderNo);
+            LogForWx logForWx = new LogForWx();
+            logForWx.setType(6);
+            logForWx.setOrder_no(orderNo);
+            logForWx.setOpenid(openId);
+            logService.saveLogWx(logForWx);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -380,6 +421,11 @@ public class WxUserController {
         }
         try {
             orderService.checkAndAccept(orderNo);
+            LogForWx logForWx = new LogForWx();
+            logForWx.setType(7);
+            logForWx.setOrder_no(orderNo);
+            logForWx.setOpenid(openId);
+            logService.saveLogWx(logForWx);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -406,6 +452,11 @@ public class WxUserController {
         orderEvaluate.setTime(new Timestamp(System.currentTimeMillis()));
         try {
             orderService.orderEvaluate(orderEvaluate);
+            LogForWx logForWx = new LogForWx();
+            logForWx.setType(8);
+            logForWx.setOrder_no(orderNo);
+            logForWx.setOpenid(orderService.getOpenIdByOrderNo(orderNo));
+            logService.saveLogWx(logForWx);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -438,6 +489,11 @@ public class WxUserController {
         try {
             orderService.updateOrderState(orderNo, 5);
             wxUserService.cancelOrder(orderCancel);
+            LogForWx logForWx = new LogForWx();
+            logForWx.setType(3);
+            logForWx.setOrder_no(orderNo);
+            logForWx.setOpenid(openId);
+            logService.saveLogWx(logForWx);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -561,6 +617,11 @@ public class WxUserController {
         if (!openid.equals(orderService.getOpenIdByOrderNo(orderNo))) {
             return new JsonResult<>("订单数据异常");
         }
+        LogForWx logForWx = new LogForWx();
+        logForWx.setType(9);
+        logForWx.setOrder_no(orderNo);
+        logForWx.setOpenid(orderService.getOpenIdByOrderNo(orderNo));
+        logService.saveLogWx(logForWx);
         //TODO 推送给工程师，该用户申请线下支付
 
         return new JsonResult<>(true);

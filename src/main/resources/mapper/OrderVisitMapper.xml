@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.bg.OrderVisitDao">
+    <resultMap id="order" type="com.qcwy.entity.bg.OrderVisit">
+        <id column="id" property="id"/>
+        <result column="order_no" property="order_no"/>
+        <result column="content" property="content"/>
+        <result column="time" property="time"/>
+        <result column="user_no" property="user_no"/>
+        <result column="fault_id" property="fault_id"/>
+        <result column="fault_description" property="fault_description"/>
+        <result column="loc" property="loc"/>
+        <result column="nickname" property="nickname"/>
+        <result column="name" property="name"/>
+        <result column="compelete_time" property="compelete_time"/>
+        <result column="username" property="username"/>
+    </resultMap>
+
+    <insert id="save">
+        INSERT INTO t_xt_order_visit
+        (order_no,content,time,user_no)
+        VALUES (#{order_no},#{content},now(),#{user_no})
+    </insert>
+
+    <select id="getAllList" resultMap="order">
+        SELECT * FROM t_xt_order_visit v
+        LEFT JOIN t_xt_order o
+        ON v.order_no = o.order_no
+        LEFT JOIN t_xt_order_detail d
+        ON v.order_no = d.order_no
+        LEFT JOIN t_bg_user b
+        ON v.user_no = b.user_no
+        ORDER BY v.time DESC
+    </select>
+
+</mapper>
