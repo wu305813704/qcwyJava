@@ -36,4 +36,17 @@
         SELECT * FROM t_wx_user
         ORDER BY last_repairs_time DESC
     </select>
+
+    <update id="block">
+        UPDATE t_wx_user
+        SET state = 1
+        WHERE openid = #{openid}
+    </update>
+
+    <update id="rejectBlock">
+        UPDATE t_wx_user
+        SET state = 0
+        WHERE openid = #{openid}
+    </update>
+
 </mapper>

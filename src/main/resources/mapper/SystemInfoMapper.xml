@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.bg.SystemInfoDao">
+    <update id="update">
+        UPDATE t_xt_system_info
+        SET company_name = #{sys.company_name},address = #{sys.address},email = #{sys.email},service_tel = #{sys.service_tel},complaint_tel = #{sys.complaint_tel},
+        recods_info = #{sys.recods_info},version_info = #{sys.version_info}
+    </update>
+
+</mapper>

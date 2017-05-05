@@ -28,4 +28,10 @@ public interface WxUserDao {
 
     //微信用户列表
     List<WxUser> getWxUsers();
+
+    //拉黑
+    void block(@Param("openid") String openid);
+
+    //取消拉黑
+    void rejectBlock(@Param("openid") String openid);
 }

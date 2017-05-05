@@ -49,4 +49,10 @@ public interface WxUserService {
 
     //用户列表
     List<WxUser> getWxUsers();
+
+    //拉黑
+    void block(String openid);
+
+    //取消拉黑
+    void rejectBlock(String openid);
 }

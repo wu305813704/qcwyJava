@@ -11,7 +11,7 @@ public interface WarehouseEmployeeOldDao {
     //通过工号和零件编号查询
     Integer getPartByJobNoAndPartId(@Param("wE") WarehouseEmployee warehouseEmployee);
 
-    //修改零件数量
+    //添加零件数量
     void updateCount(@Param("wE") WarehouseEmployee warehouseEmployee);
 
     void save(@Param("wE") WarehouseEmployee we);

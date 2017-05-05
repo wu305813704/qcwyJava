@@ -20,7 +20,7 @@
         WHERE user_no = #{username} AND pwd = #{pwd}
     </select>
 
-    <insert id="addUser">
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="user.id">
         INSERT INTO t_bg_user (user_no,pwd,name,sex,tel,state)
         VALUES (#{user.user_no},#{user.pwd},#{user.name},#{user.sex},#{user.tel},0)
     </insert>
@@ -40,5 +40,15 @@
         FROM t_bg_user
         WHERE user_no = #{username}
     </select>
-    
+
+    <select id="getUser" resultType="com.qcwy.entity.bg.BgUser">
+        SELECT * FROM t_bg_user
+        WHERE user_no = #{userNo} AND pwd = #{pwd}
+    </select>
+
+    <update id="updatePwd">
+        UPDATE t_bg_user
+        SET pwd = #{pwd}
+        WHERE user_no = #{userNo}
+    </update>
 </mapper>

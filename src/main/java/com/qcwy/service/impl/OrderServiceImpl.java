@@ -2,14 +2,16 @@ package com.qcwy.service.impl;
 
 import com.qcwy.dao.*;
 import com.qcwy.dao.bg.BgOrderDao;
+import com.qcwy.dao.bg.OrderVisitDao;
 import com.qcwy.entity.*;
 import com.qcwy.entity.bg.BgOrder;
+import com.qcwy.entity.bg.OrderVisit;
 import com.qcwy.model.Model;
 import com.qcwy.service.OrderService;
 import com.qcwy.utils.*;
 import com.qcwy.websocket.BgWebSocket;
 import com.qcwy.websocket.WxWebSocket;
-import org.apache.ibatis.annotations.Param;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,6 +69,10 @@ public class OrderServiceImpl implements OrderService {
     private WarehouseEmployeeDao warehouseEmployeeDao;
     @Autowired
     private WarehouseEmployeeOldDao warehouseEmployeeOldDao;
+    @Autowired
+    private OrderAfterSaleDao orderAfterSaleDao;
+    @Autowired
+    private OrderVisitDao orderVisitDao;
 
     @Override
     public String getOpenIdByOrderNo(int orderNo) {
@@ -83,6 +89,8 @@ public class OrderServiceImpl implements OrderService {
         String time = orderDetail.getSend_time();
         orderDetail.setSend_time(time.substring(0, time.lastIndexOf(".")));
         order.setOrderDetail(orderDetail);
+        OrderFault orderFault = orderFaultDao.getOrderFault(orderNo);
+        order.setOrderFault(orderFault);
         return order;
     }
 
@@ -268,6 +276,54 @@ public class OrderServiceImpl implements OrderService {
         //推送给后台派发
         BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
                 new WebSocketMessage<>(MessageTypeUtils.APPOINTMENT_ORDER, order)));
+    }
+
+    @Override
+    public void afterSaleOrder(Order order) throws IOException {
+        orderDao.afterSaleOrder(order);
+        orderDetailDao.saveOrderDetail(order.getOrder_no(), order.getOrderDetail());
+        order.setOrderDetail(orderDetailDao.getOrderDetail(order.getOrder_no()));
+        orderRecordDao.save(order.getOrder_no());
+        //推送给后台派发
+        BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
+                new WebSocketMessage<>(MessageTypeUtils.AFTER_SALE_ORDER, order)));
+    }
+
+    //驳回售后订单
+    @Override
+    public void rejectOrder(int orderNo, String cause) {
+        orderAfterSaleDao.save(orderNo, cause);
+    }
+
+    @Override
+    public List<BgOrder> getBgRessignmentOrders() {
+        return bgOrderDao.getAllRessignmentOrders();
+    }
+
+    @Override
+    public List<BgOrder> getOverTimeOrders() {
+        return bgOrderDao.getAllOverTimeOrders();
+    }
+
+    @Override
+    public List<BgOrder> getDistributeOrders() {
+        return bgOrderDao.getDistributeOrders();
+    }
+
+    @Override
+    public List<Order> getReturnVisitList() {
+        return orderDao.getReturnVisitList();
+    }
+
+    @Override
+    public List<OrderVisit> hadReturnVisitList() {
+        return orderVisitDao.getAllList();
+    }
+
+    @Override
+    public void returnVisit(String userNo, int orderNo, String content) {
+        orderVisitDao.save(userNo, orderNo, content);
+        orderVisitDao.updateReturnState(orderNo);
     }
 
     //加价
@@ -602,6 +658,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getAfterSaleOrders() {
         return orderDao.getAfterSaleOrders();
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderDao.getAllOrders();
     }
 
 }

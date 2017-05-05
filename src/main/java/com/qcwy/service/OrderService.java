@@ -3,6 +3,7 @@ package com.qcwy.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.qcwy.entity.*;
 import com.qcwy.entity.bg.BgOrder;
+import com.qcwy.entity.bg.OrderVisit;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -121,7 +122,7 @@ public interface OrderService {
     List<OrderPart> getOldOrderPart(int orderNo);
 
     //用户成功付款调用
-    boolean pay(int orderNo,int payType);
+    boolean pay(int orderNo, int payType);
 
     //线下付款
     void offlinePay(int orderNo) throws IOException;
@@ -138,4 +139,30 @@ public interface OrderService {
     //待确认的售后订单列表
     List<Order> getAfterSaleOrders();
 
+    //获取所有订单列表
+    List<Order> getAllOrders();
+
+    //发起售后订单
+    void afterSaleOrder(Order order) throws IOException;
+
+    //驳回售后订单
+    void rejectOrder(int orderNo, String cause);
+
+    //获取工程师改派给后台的订单
+    List<BgOrder> getBgRessignmentOrders();
+
+    //获取超时订单
+    List<BgOrder> getOverTimeOrders();
+
+    //获取待派发订单
+    List<BgOrder> getDistributeOrders();
+
+    //待回访列表
+    List<Order> getReturnVisitList();
+
+    //已回访列表
+    List<OrderVisit> hadReturnVisitList();
+
+    //回访
+    void returnVisit(String userNo, int orderNo, String content);
 }

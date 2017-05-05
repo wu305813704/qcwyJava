@@ -21,4 +21,10 @@ public interface BgUserDao {
 
     //判断是否存在用户名
     boolean hasUsername(@Param("username") String username);
+
+    //验证用户名密码是否匹配
+    BgUser getUser(@Param("userNo") String userNo, @Param("pwd") String pwd);
+
+    //修改密码
+    void updatePwd(@Param("userNo") String userNo,@Param("pwd") String newPwd);
 }

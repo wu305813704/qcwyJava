@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.bg.WarehouseRevolveDao">
+    <resultMap id="warehouse" type="com.qcwy.entity.bg.Warehouse">
+        <result column="count" property="count"/>
+        <association property="part" javaType="com.qcwy.entity.Part">
+            <id column="part_id" property="part_id"/>
+            <result column="classify" property="classify"/>
+            <result column="name" property="name"/>
+            <result column="imageP" property="image"/>
+            <association property="partDetail" javaType="com.qcwy.entity.PartDetail">
+                <id column="part_detail_id_D" property="part_detail_id"/>
+                <result column="part_no" property="part_no"/>
+                <result column="model" property="model"/>
+                <result column="unit" property="unit"/>
+                <result column="price" property="price"/>
+                <result column="price_new" property="price_new"/>
+                <result column="price_old" property="price_old"/>
+                <result column="is_guarantees" property="is_guarantees"/>
+                <result column="guarantees_limit" property="guarantees_limit"/>
+                <result column="remark" property="remark"/>
+                <result column="image" property="image"/>
+            </association>
+        </association>
+    </resultMap>
+
+    <insert id="addPart">
+        INSERT INTO t_xt_warehouse_revolve
+        (part_detail_id,count)
+        VALUES
+        (#{partDetailId},#{count})
+    </insert>
+
+    <update id="updateCount">
+        UPDATE t_xt_warehouse_revolve
+        SET count = count + #{count}
+        WHERE part_detail_id = #{partDetailId}
+    </update>
+
+
+    <select id="getIdByPartDetailId" resultType="Integer">
+        SELECT id FROM t_xt_warehouse_revolve
+        WHERE part_detail_id = #{partDetailId}
+    </select>
+
+    <select id="getPartList" resultMap="warehouse">
+        SELECT w.id,w.part_detail_id,w.count,
+        d.part_detail_id AS part_detail_id_D,d.part_no,d.model,d.unit,d.price,d.price_new,d.price_old,d.is_guarantees,d.guarantees_limit,d.remark,d.image,
+        p.part_id,p.classify,p.name,p.image AS imageP
+        FROM t_xt_warehouse_revolve w
+        LEFT JOIN t_xt_part_detail d
+        ON w.part_detail_id = d.part_detail_id
+        LEFT JOIN t_xt_part p
+        ON d.part_no = p.part_id
+    </select>
+</mapper>

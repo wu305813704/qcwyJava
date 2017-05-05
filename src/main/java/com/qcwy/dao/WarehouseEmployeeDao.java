@@ -18,7 +18,7 @@ public interface WarehouseEmployeeDao {
     //添加零件
     void addPart(@Param("wE") WarehouseEmployee warehouseEmployee);
 
-    //修改零件数量
+    //添加零件数量
     void updateCount(@Param("wE") WarehouseEmployee warehouseEmployee);
 
     //获取员工仓所有零件

@@ -1,9 +1,11 @@
 package com.qcwy.service;
 
+import com.qcwy.entity.AppUser;
 import com.qcwy.entity.PartDetail;
 import com.qcwy.entity.Role;
 import com.qcwy.entity.bg.BgUser;
 import com.qcwy.entity.bg.Menu;
+import com.qcwy.entity.bg.SystemInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
@@ -43,9 +45,24 @@ public interface BgUserService {
     //修改价格
     void updatePartPrice(PartDetail partDetail, String username);
 
-    //查询所有员工
+    //查询所有后台员工
     List<BgUser> getBgUserList();
+
+    //获取所有工程师
+    List<AppUser> getEngineerList();
 
     //判断是否存在用户名
     boolean hasUsername(String username);
+
+    //添加角色权限
+    void addUserRole(int id, int roleId);
+
+    //更新系统信息
+    void updateSystemInfo(SystemInfo systemInfo);
+
+    //验证帐号密码匹配度
+    BgUser getUser(String userNo, String oldPwd);
+
+    //修改密码
+    void updatePwd(String userNo, String newPwd);
 }

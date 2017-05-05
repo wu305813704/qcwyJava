@@ -16,6 +16,8 @@ public class Part implements Serializable {
     private String name;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String image;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private PartDetail partDetail;
 
     public int getPart_id() {
         return part_id;
@@ -47,5 +49,13 @@ public class Part implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public PartDetail getPartDetail() {
+        return partDetail;
+    }
+
+    public void setPartDetail(PartDetail partDetail) {
+        this.partDetail = partDetail;
     }
 }

@@ -32,6 +32,8 @@ public class Order implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private int pay_type;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private int is_return_visit;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private AppUser appUser;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private WxUser wxUser;
@@ -39,6 +41,8 @@ public class Order implements Serializable {
     private OrderDetail orderDetail;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private OrderRecord orderRecord;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private OrderFault orderFault;
 
     public int getOrder_no() {
         return order_no;
@@ -128,6 +132,14 @@ public class Order implements Serializable {
         this.pay_type = pay_type;
     }
 
+    public int getIs_return_visit() {
+        return is_return_visit;
+    }
+
+    public void setIs_return_visit(int is_return_visit) {
+        this.is_return_visit = is_return_visit;
+    }
+
     public AppUser getAppUser() {
         return appUser;
     }
@@ -158,5 +170,13 @@ public class Order implements Serializable {
 
     public void setOrderRecord(OrderRecord orderRecord) {
         this.orderRecord = orderRecord;
+    }
+
+    public OrderFault getOrderFault() {
+        return orderFault;
+    }
+
+    public void setOrderFault(OrderFault orderFault) {
+        this.orderFault = orderFault;
     }
 }

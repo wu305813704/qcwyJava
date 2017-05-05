@@ -3,6 +3,7 @@ package com.qcwy.controller;
 import com.github.pagehelper.PageHelper;
 import com.qcwy.entity.*;
 import com.qcwy.entity.bg.BgOrder;
+import com.qcwy.entity.bg.LogForApp;
 import com.qcwy.service.*;
 import com.qcwy.utils.DateUtils;
 import com.qcwy.utils.JedisUtil;
@@ -38,6 +39,8 @@ public class AppUserController {
     private PartService partService;
     @Autowired
     private WxUserService wxUserService;
+    @Autowired
+    private LogService logService;
 
     @PostMapping("/login")
     @ApiOperation("登录")
@@ -111,6 +114,11 @@ public class AppUserController {
                                    @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
         try {
             orderService.rushOrder(jobNo, orderNo);
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(0);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -155,6 +163,11 @@ public class AppUserController {
                                     @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
         try {
             orderService.startOrder(jobNo, orderNo);
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(1);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -168,6 +181,11 @@ public class AppUserController {
                                    @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
         try {
             orderService.stopOrder(jobNo, orderNo);
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(2);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -208,6 +226,11 @@ public class AppUserController {
         reassignment.setCause(cause);
         try {
             orderService.reassignmentOrder(reassignment);
+            LogForApp log = new LogForApp();
+            log.setJob_no(oldNo);
+            log.setOrder_no(orderNo);
+            log.setType(3);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -248,6 +271,11 @@ public class AppUserController {
         try {
             orderService.saveBgOrder(bgOrder);
             orderService.updateOrderState(orderNo, 6);//6-改派中
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(4);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -334,6 +362,11 @@ public class AppUserController {
             orderAppointment.setLati(Double.valueOf(orderDetail.getLati()));
             orderAppointment.setLoc(orderDetail.getLoc());
             orderService.saveOrderAppointment(orderAppointment);
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(5);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -348,6 +381,11 @@ public class AppUserController {
         Timestamp handleTime = new Timestamp(System.currentTimeMillis());
         try {
             appUserService.acceptReassignment(handleTime, orderNo, jobNo);
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(6);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -362,6 +400,11 @@ public class AppUserController {
         Timestamp handleTime = new Timestamp(System.currentTimeMillis());
         try {
             appUserService.refuseReassignment(handleTime, orderNo, jobNo);
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(7);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -414,6 +457,11 @@ public class AppUserController {
             if (wxUser.getType() == 1) {//来自客服录入的用户
                 orderService.updateOrderState(orderNo, 8);//修改订单状态为8--自动替用户确认故障
             }
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(8);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -438,6 +486,11 @@ public class AppUserController {
             if (wxUser.getType() == 1) {//来自客服录入的用户
                 orderService.updateOrderState(orderNo, 10);//修改订单状态为10--自动替用户验收
             }
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(9);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -578,6 +631,11 @@ public class AppUserController {
                 return new JsonResult<>("");
             }
             orderService.offlinePay(orderNo);
+            LogForApp log = new LogForApp();
+            log.setJob_no(jobNo);
+            log.setOrder_no(orderNo);
+            log.setType(10);
+            logService.saveLogApp(log);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -636,4 +694,5 @@ public class AppUserController {
 //            e.printStackTrace();
 //        }
 //    }
+
 }

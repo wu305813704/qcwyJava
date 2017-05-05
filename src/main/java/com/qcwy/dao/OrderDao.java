@@ -99,4 +99,13 @@ public interface OrderDao {
 
     //获取订单数量
     int getOrderCount(@Param("jobNo") String jobNo);
+
+    //获取所有订单列表
+    List<Order> getAllOrders();
+
+    //发起售后订单
+    void afterSaleOrder(@Param("order") Order order);
+
+    //获取回访列表
+    List<Order> getReturnVisitList();
 }

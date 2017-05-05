@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qcwy.dao.bg.LogForAppDao">
+    <resultMap id="log" type="com.qcwy.entity.bg.LogForApp">
+        <id column="id" property="id"/>
+        <result column="job_no" property="job_no"/>
+        <result column="type" property="type"/>
+        <result column="time" property="time"/>
+        <result column="name" property="username"/>
+        <result column="content" property="content"/>
+        <result column="order_no" property="order_no"/>
+    </resultMap>
+
+    <select id="getAll" resultMap="log">
+        SELECT l.*,u.name,c.content FROM t_xt_log_app l
+        LEFT JOIN t_app_user u
+        ON l.job_no = u.job_no
+        LEFT JOIN t_xt_log_app_code c
+        ON l.type = c.type_id
+        ORDER BY l.time DESC
+    </select>
+
+    <insert id="save">
+        INSERT INTO t_xt_log_app
+        (job_no,type,time,order_no)
+        VALUES (#{log.job_no},#{log.type},now(),#{log.order_no})
+    </insert>
+
+</mapper>

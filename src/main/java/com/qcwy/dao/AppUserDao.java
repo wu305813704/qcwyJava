@@ -36,4 +36,6 @@ public interface AppUserDao {
     //通过工号查询姓名
     String getUserName(@Param("jobNo") String jobNo);
 
+    //获取所有工程师列表
+    List<AppUser> getAllUser();
 }

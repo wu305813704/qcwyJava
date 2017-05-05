@@ -1,11 +1,14 @@
 package com.qcwy.service.impl;
 
+import com.qcwy.dao.AppUserDao;
 import com.qcwy.dao.PartDetailDao;
 import com.qcwy.dao.bg.*;
+import com.qcwy.entity.AppUser;
 import com.qcwy.entity.PartDetail;
 import com.qcwy.entity.Role;
 import com.qcwy.entity.bg.BgUser;
 import com.qcwy.entity.bg.Menu;
+import com.qcwy.entity.bg.SystemInfo;
 import com.qcwy.service.BgUserService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +29,15 @@ public class BgUserServiceImpl implements BgUserService {
     @Autowired
     private BgUserDao bgUserDao;
     @Autowired
+    private AppUserDao appUserDao;
+    @Autowired
     private UserRoleDao userRoleDao;
     @Autowired
     private PartDetailDao partDetailDao;
     @Autowired
     private PartPriceRecordDao partPriceRecordDao;
+    @Autowired
+    private SystemInfoDao systemInfoDao;
 
     @Override
     public void addUser(BgUser bgUser) {
@@ -42,6 +49,9 @@ public class BgUserServiceImpl implements BgUserService {
         BgUser bgUser = bgUserDao.login(username, pwd);
         if (bgUser == null) {
             throw new Exception("用户名或密码错误");
+        }
+        if (bgUser.getState() == 1) {
+            throw new Exception("离职员工，不可登陆");
         }
         List<Integer> roleIds = userRoleDao.getRoleIdsByUserId(bgUser.getId());
         List<Role> roles = new ArrayList<>(roleIds.size());
@@ -119,8 +129,33 @@ public class BgUserServiceImpl implements BgUserService {
     }
 
     @Override
+    public List<AppUser> getEngineerList() {
+        return appUserDao.getAllUser();
+    }
+
+    @Override
     public boolean hasUsername(String username) {
         return bgUserDao.hasUsername(username);
+    }
+
+    @Override
+    public void addUserRole(int userId, int roleId) {
+        userRoleDao.save(userId, roleId);
+    }
+
+    @Override
+    public void updateSystemInfo(SystemInfo systemInfo) {
+        systemInfoDao.update(systemInfo);
+    }
+
+    @Override
+    public BgUser getUser(String userNo, String oldPwd) {
+        return bgUserDao.getUser(userNo,oldPwd);
+    }
+
+    @Override
+    public void updatePwd(String userNo, String newPwd) {
+        bgUserDao.updatePwd(userNo,newPwd);
     }
 
 }
