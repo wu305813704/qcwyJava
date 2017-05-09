@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.qcwy.entity.WxAccessToken;
 import com.qcwy.entity.WxInfo;
 import com.qcwy.entity.WxUser;
+import com.qcwy.entity.bg.SystemInfo;
 import com.qcwy.service.OrderService;
 import com.qcwy.utils.JsonResult;
 import com.qcwy.utils.StringUtils;
@@ -31,13 +32,9 @@ import java.util.*;
  */
 public class WxUtils {
     private static HttpClient client = new HttpClient();
-    private static Gson gson = new Gson();
 
-    public static WxAccessToken getAccessToken(WxInfo wxInfo, String code) throws IOException {
-        StringBuilder url = new StringBuilder("https://api.weixin.qq.com/sns/oauth2/access_token?appid=");
-        url.append(wxInfo.getAppid() + "&secret=")
-                .append(wxInfo.getSecret() + "&code=")
-                .append(code + "&grant_type=authorization_code");
+    //get请求
+    private static String getResult(String url) throws IOException{
         // 设置代理服务器地址和端口
         //client.getHostConfiguration().setProxy("proxy_host_addr",proxy_port);
         // 使用 GET 方法 ，如果服务器需要通过 HTTPS 连接，那只需要将下面 URL 中的 http 换成 https
@@ -50,6 +47,17 @@ public class WxUtils {
         result = new String(result.getBytes("ISO-8859-1"), "UTF-8");
         //释放连接
         method.releaseConnection();
+        return result;
+    }
+
+    private static Gson gson = new Gson();
+
+    public static WxAccessToken getAccessToken(WxInfo wxInfo, String code) throws IOException {
+        StringBuilder url = new StringBuilder("https://api.weixin.qq.com/sns/oauth2/access_token?appid=");
+        url.append(wxInfo.getAppid() + "&secret=")
+                .append(wxInfo.getSecret() + "&code=")
+                .append(code + "&grant_type=authorization_code");
+        String result = getResult(url.toString());
         WxAccessToken token = gson.fromJson(result, WxAccessToken.class);
         return token;
     }
@@ -59,16 +67,9 @@ public class WxUtils {
         StringBuilder url = new StringBuilder("https://api.weixin.qq.com/sns/userinfo?access_token=")
                 .append(accessToken + "&openid=")
                 .append(openId + "&lang=zh_CN");
-        HttpMethod method = new GetMethod(url.toString());
-        //使用POST方法
-        //HttpMethod method = new PostMethod("http://java.sun.com");
-        client.executeMethod(method);
-        String result = method.getResponseBodyAsString();
-        // 编码后的json
-        result = new String(result.getBytes("ISO-8859-1"), "UTF-8");
-        //释放连接
-        method.releaseConnection();
+        String result = getResult(url.toString());
         WxUser wxUser = gson.fromJson(result, WxUser.class);
+        System.out.println(wxUser.getNickname());
         return wxUser;
     }
 

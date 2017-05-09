@@ -7,7 +7,7 @@
         <result column="user_no" property="user_no"/>
         <result column="type" property="type"/>
         <result column="time" property="time"/>
-        <result column="nickname" property="username"/>
+        <result column="name" property="username"/>
         <result column="content" property="content"/>
         <result column="order_no" property="order_no"/>
     </resultMap>

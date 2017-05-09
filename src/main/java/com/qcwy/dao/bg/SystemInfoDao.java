@@ -9,4 +9,7 @@ import org.apache.ibatis.annotations.Param;
 public interface SystemInfoDao {
     //更新系统信息
     void update(@Param("sys") SystemInfo sys);
+
+    //获取系统信息
+    SystemInfo getSystemInfo();
 }

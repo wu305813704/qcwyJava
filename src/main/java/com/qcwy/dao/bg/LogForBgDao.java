@@ -1,6 +1,5 @@
 package com.qcwy.dao.bg;
 
-import com.qcwy.entity.bg.LogForApp;
 import com.qcwy.entity.bg.LogForBg;
 import org.apache.ibatis.annotations.Param;
 

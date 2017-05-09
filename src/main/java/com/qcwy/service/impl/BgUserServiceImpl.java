@@ -38,6 +38,8 @@ public class BgUserServiceImpl implements BgUserService {
     private PartPriceRecordDao partPriceRecordDao;
     @Autowired
     private SystemInfoDao systemInfoDao;
+    @Autowired
+    private RoleMenuDao roleMenuDao;
 
     @Override
     public void addUser(BgUser bgUser) {
@@ -62,8 +64,11 @@ public class BgUserServiceImpl implements BgUserService {
     }
 
     @Override
-    public void addRole(@Param("role") Role role) {
+    public void addRole(String roleName, List<Integer> roleIds) {
+        Role role = new Role();
+        role.setRole_name(roleName);
         roleDao.add(role);
+        roleMenuDao.addRoleMenu(role.getId(), roleIds);
     }
 
     @Override
@@ -144,18 +149,23 @@ public class BgUserServiceImpl implements BgUserService {
     }
 
     @Override
+    public SystemInfo getSystemInfo() {
+        return systemInfoDao.getSystemInfo();
+    }
+
+    @Override
     public void updateSystemInfo(SystemInfo systemInfo) {
         systemInfoDao.update(systemInfo);
     }
 
     @Override
     public BgUser getUser(String userNo, String oldPwd) {
-        return bgUserDao.getUser(userNo,oldPwd);
+        return bgUserDao.getUser(userNo, oldPwd);
     }
 
     @Override
     public void updatePwd(String userNo, String newPwd) {
-        bgUserDao.updatePwd(userNo,newPwd);
+        bgUserDao.updatePwd(userNo, newPwd);
     }
 
 }

@@ -85,7 +85,7 @@ public class PartServiceImpl implements PartService {
                 dest.getParentFile().mkdirs();
             }
             //设置图片路径
-            partDetail.setImage(GlobalConstant.IMAGE_PATH_PART + trueName);
+            partDetail.setImage("image/part/" + trueName);
             //存入数据库
             partDetailDao.addPart(partDetail);
             //保存成功后上传文件

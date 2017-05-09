@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.Jedis;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,6 +73,7 @@ public class BackgroundController {
             bgUser.setSex(sex);
             bgUser.setTel(tel);
             bgUserService.addUser(bgUser);
+            System.out.println(bgUser.getId());
             //添加用户角色对应
             bgUserService.addUserRole(bgUser.getId(), roleId);
         } catch (Exception e) {
@@ -641,6 +643,24 @@ public class BackgroundController {
         return new JsonResult<>(true);
     }
 
+    //查询系统设置
+    @GetMapping("getSysInfo")
+    @ApiOperation("查询系统设置")
+    public JsonResult<?> getSysInfo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        SystemInfo systemInfo;
+        try {
+            systemInfo = bgUserService.getSystemInfo();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(systemInfo);
+    }
+
     //更新系统设置
     @GetMapping("/updateSysInfo")
     @ApiOperation("更新系统设置")
@@ -868,4 +888,48 @@ public class BackgroundController {
         return new JsonResult<>(true);
     }
 
+    //黑名单列表
+    @GetMapping("/getBlacklist")
+    @ApiOperation("黑名单列表")
+    public JsonResult<?> blacklist(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                   @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                   @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<WxUser> blacklist;
+        try {
+            blacklist = wxUserService.getBlacklist();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(blacklist));
+    }
+
+    //添加角色
+    @PostMapping("/addRole")
+    @ApiOperation("添加角色")
+    public JsonResult<?> addRole(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                 @ApiParam(required = true, name = "roleName", value = "角色名称") @RequestParam(value = "roleName") String roleName,
+                                 @ApiParam(required = true, name = "menuIds", value = "菜单ID数组(1-2-3)") @RequestParam(value = "menuIds") String menuIds) {
+        String tokenValue = jedis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            List<Integer> menulist = new ArrayList<>();
+            String[] menuArr = menuIds.split("-");
+            for (String s : menuArr) {
+                menulist.add(Integer.parseInt(s));
+            }
+            bgUserService.addRole(roleName, menulist);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        jedis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
 }

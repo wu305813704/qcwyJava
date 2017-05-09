@@ -49,4 +49,8 @@
         WHERE openid = #{openid}
     </update>
 
+    <select id="getBlacklist" resultType="com.qcwy.entity.WxUser">
+        SELECT * FROM t_wx_user
+        WHERE state = 1
+    </select>
 </mapper>

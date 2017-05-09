@@ -350,9 +350,15 @@
     </update>
 
     <select id="getAllOrders" resultMap="order">
-        SELECT * FROM t_xt_order o
+        SELECT o.*,d.*,d.id AS detail_id ,a.id AS app_id,a.name,a.tel,w.id AS wx_id
+        FROM t_xt_order o
         LEFT JOIN t_xt_order_detail d
         ON o.order_no = d.order_no
+        LEFT JOIN t_app_user a
+        ON o.job_no = a.job_no
+        LEFT JOIN t_wx_user w
+        ON o.open_id = w.openid
+        WHERE o.state != 0
         ORDER BY o.send_time DESC
     </select>
 

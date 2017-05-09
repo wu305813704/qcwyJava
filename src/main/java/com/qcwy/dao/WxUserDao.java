@@ -34,4 +34,7 @@ public interface WxUserDao {
 
     //取消拉黑
     void rejectBlock(@Param("openid") String openid);
+
+    //黑名单列表
+    List<WxUser> getBlacklist();
 }

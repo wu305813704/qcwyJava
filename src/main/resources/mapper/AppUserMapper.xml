@@ -17,15 +17,15 @@
     </resultMap>
 
     <select id="getUserByJobNo" resultType="com.qcwy.entity.AppUser">
-        SELECT job_no,name,lon,lati FROM t_app_user
+        SELECT * FROM t_app_user
         WHERE job_no = #{jobNo}
     </select>
 
     <!-- useGeneratedKeys="true" keyProperty="id" 自动赋值自增长的值给实体类 -->
     <insert id="save" parameterType="com.qcwy.entity.AppUser" useGeneratedKeys="true" keyProperty="id">
         insert into
-        t_app_user (job_no, name, id_card, birthday)
-        values (#{job_no},#{name},#{id_card},#{birthday})
+        t_app_user (job_no, name, id_card, birthday,regist_time)
+        values (#{job_no},#{name},#{id_card},#{birthday},now())
     </insert>
 
     <select id="login" resultMap="user">

@@ -55,4 +55,7 @@ public interface WxUserService {
 
     //取消拉黑
     void rejectBlock(String openid);
+
+    //黑名单列表
+    List<WxUser> getBlacklist();
 }
