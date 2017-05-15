@@ -27,4 +27,7 @@ public interface BgUserDao {
 
     //修改密码
     void updatePwd(@Param("userNo") String userNo,@Param("pwd") String newPwd);
+
+    //修改后台用户
+    void updateBgUser(@Param("bgUser") BgUser bgUser);
 }

@@ -37,30 +37,40 @@ spring:
 #          location: d:/temp # 上传文件的临时目录
           max-file-size: 5Mb # 最大支持文件大小
           max-request-size: 10Mb # 最大支持请求大小
-    ########################################################
-    ###REDIS (RedisProperties) redis基本配置；
-    ########################################################
-    # database name
-    redis:
-        database: 0
-    # server host
-        host: 127.0.0.1
-    # server password
-    # password:
-    #connection port
-        port: 6379
-    # pool settings ...
-        pool:
-            max-idle: 8
-            min-idle: 0
-            max-active: 8
-            max-wait: -1
-    # name of Redis server
-    #spring.redis.sentinel.master=
-    # comma-separated list of host:portpairs
-    #spring.redis.sentinel.nodes=
+
+#    ########################################################
+#    ###REDIS (RedisProperties) redis基本配置；
+#    ########################################################
+#    # database name
+#    redis:
+#        database: 0
+#    # server host
+#        host: 127.0.0.1
+#    # server password
+#    # password:
+#    #connection port
+#        port: 6379
+#    # pool settings ...
+#        pool:
+#            max-idle: 8
+#            min-idle: 0
+#            max-active: 8
+#            max-wait: -1
+#    # name of Redis server
+#    #spring.redis.sentinel.master=
+#    # comma-separated list of host:portpairs
+#    #spring.redis.sentinel.nodes=
 
 mybatis:
     mapper-locations: classpath*:mapper/*Mapper.xml
     state-aliases-package: com.qcwy.entity
+
+jedis :
+  pool :
+    host : 127.0.0.1
+    port : 6379
+    config :
+      maxTotal: 100
+      maxIdle: 10
+      maxWaitMillis : 100000
 

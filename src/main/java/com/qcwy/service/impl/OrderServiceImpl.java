@@ -85,6 +85,9 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderDao.getOrderByOrderNo(orderNo);
         WxUser wxUser = wxUserDao.selectUserByOpenId(order.getOpen_id());
         order.setWxUser(wxUser);
+        AppUser appUser = appUserDao.getUserByJobNo(order.getJob_no());
+        appUser.setPwd(null);
+        order.setAppUser(appUser);
         OrderDetail orderDetail = orderDetailDao.getOrderDetail(orderNo);
         String time = orderDetail.getSend_time();
         orderDetail.setSend_time(time.substring(0, time.lastIndexOf(".")));
@@ -321,9 +324,41 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void returnVisit(String userNo, int orderNo, String content) {
+    public void returnVisit(String userNo, int orderNo, String content) throws Exception {
+        if (orderDao.getOrder(orderNo).getIs_return_visit() != 0) {
+            throw new Exception("该订单已回访，不要重复回访");
+        }
         orderVisitDao.save(userNo, orderNo, content);
-        orderVisitDao.updateReturnState(orderNo);
+        orderDao.updateReturnState(orderNo);
+    }
+
+    @Override
+    public void telPlaceOrder(Order order) {
+        WxUser wxUser = order.getWxUser();
+        wxUserDao.register(wxUser);
+        if (order.getType() == 0) {
+            orderDao.saveOrder(order);
+        } else if (order.getType() == 1) {
+            orderDao.appointmentOrder(order);
+        }
+    }
+
+    @Override
+    public void distributeOrder(Integer orderNo, String jobNo) {
+        orderDao.setJobNo(orderNo, jobNo);
+        AppOrderMessage msg = new AppOrderMessage();
+        msg.setOrder_no(orderNo);
+        msg.setType(3);//3-后台派发的订单
+        msg.setJob_no(jobNo);
+        appOrderMessageDao.save(msg);
+        //修改bgOrder的state为1
+        bgOrderDao.updateState(orderNo,1);
+        model.distributeToEngineer(jobNo, orderNo);
+    }
+
+    @Override
+    public Integer getCountHoldOrders(String jobNo) {
+        return orderDao.getCountHoldOrders(jobNo);
     }
 
     //加价

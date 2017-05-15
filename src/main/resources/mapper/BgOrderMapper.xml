@@ -13,6 +13,8 @@
         <result column="fault_id" property="fault_id"/>
         <result column="fault_description" property="fault_description"/>
         <result column="loc" property="loc"/>
+        <result column="lati" property="lati"/>
+        <result column="lon" property="lon"/>
         <result column="send_time" property="send_time"/>
         <result column="appointment_time" property="appointment_time"/>
         <result column="app_name" property="app_name"/>
@@ -49,6 +51,7 @@
         LEFT JOIN t_app_user u
         ON o.job_no = u.job_no
         WHERE b.type = 0
+        AND b.state = 0
         ORDER BY b.state
     </select>
 
@@ -62,4 +65,10 @@
         ON o.job_no = u.job_no
         WHERE b.state = 0
     </select>
+
+    <update id="updateState">
+        UPDATE t_bg_order
+        SET state = #{state}
+        WHERE order_no = #{orderNo}
+    </update>
 </mapper>

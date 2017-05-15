@@ -53,5 +53,6 @@
         ON w.part_detail_id = d.part_detail_id
         LEFT JOIN t_xt_part p
         ON d.part_no = p.part_id
+        ORDER BY d.part_detail_id
     </select>
 </mapper>

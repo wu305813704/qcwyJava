@@ -28,7 +28,7 @@ public interface BgUserService {
     void deleteRole(int id);
 
     //修改角色
-    void updateRole(Role role);
+    void updateRole(Integer roleId,String roleName,List<Integer> menuIdList);
 
     //通过Id查询
     Role selectRoleById(int id) throws Exception;
@@ -68,4 +68,7 @@ public interface BgUserService {
 
     //修改密码
     void updatePwd(String userNo, String newPwd);
+
+    //修改后台用户
+    void updateBgUser(BgUser bgUser);
 }

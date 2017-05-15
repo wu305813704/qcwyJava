@@ -1,12 +1,14 @@
 package com.qcwy.controller;
 
+import com.qcwy.entity.bg.SystemInfo;
 import com.qcwy.utils.DateUtils;
 import com.qcwy.utils.GlobalConstant;
+import com.qcwy.utils.JsonResult;
 import io.swagger.annotations.ApiParam;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -16,7 +18,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
-@Controller
+@RestController
 public class TestController {
 
     @RequestMapping("/test")
@@ -27,7 +29,7 @@ public class TestController {
     }
 
     @PostMapping("/testFile")
-    public void testFile(@ApiParam(name = "file", value = "图片") @RequestParam(value = "file") MultipartFile file) throws NoSuchAlgorithmException, IOException {
+    public JsonResult<?> testFile(@ApiParam(name = "file", value = "图片") @RequestParam(value = "file") MultipartFile file) throws NoSuchAlgorithmException, IOException {
         if (file != null) {
             //上传图片
             // 获取文件名
@@ -51,5 +53,16 @@ public class TestController {
             }
             file.transferTo(dest);
         }
+        return new JsonResult<>(true);
+    }
+
+    @PostMapping("/test1")
+    public JsonResult<?> test1(@ApiParam(required = true, name = "a", value = "a") @RequestParam(required = false, value = "a") String a,
+                               @ApiParam(required = true, name = "b", value = "b") @RequestParam(required = false, value = "b") String b,
+                               @ApiParam(required = true, name = "c", value = "c") @RequestParam(required = false, value = "c") String c) {
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c);
+        return new JsonResult<>(true);
     }
 }

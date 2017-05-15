@@ -20,7 +20,7 @@
     <insert id="save">
         INSERT INTO t_xt_order_visit
         (order_no,content,time,user_no)
-        VALUES (#{order_no},#{content},now(),#{user_no})
+        VALUES (#{orderNo},#{content},now(),#{userNo})
     </insert>
 
     <select id="getAllList" resultMap="order">

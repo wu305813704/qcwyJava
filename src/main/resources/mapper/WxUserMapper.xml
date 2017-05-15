@@ -21,8 +21,17 @@
 
     <update id="updateWxUser">
         UPDATE t_wx_user
-        SET nickname = #{wxUser.nickname},sex = #{wxUser.sex},province = #{wxUser.province},city = #{wxUser.city},
-        country = #{wxUser.country},headimgurl = #{wxUser.headimgurl},unionid = #{wxUser.unionid}
+        <set>
+            <if test="wxUser.nickname != null">
+                nickname = #{wxUser.nickname},
+            </if>
+            <if test="wxUser.sex != null">
+                sex = #{wxUser.sex},
+            </if>
+            <if test="wxUser.tel != null">
+                tel = #{wxUser.tel},
+            </if>
+        </set>
         WHERE openid = #{wxUser.openid}
     </update>
 
@@ -34,6 +43,7 @@
 
     <select id="getWxUsers" resultType="com.qcwy.entity.WxUser">
         SELECT * FROM t_wx_user
+        WHERE state = 0
         ORDER BY last_repairs_time DESC
     </select>
 

@@ -24,4 +24,7 @@ public interface BgOrderDao {
 
     //获取待派发订单
     List<BgOrder> getDistributeOrders();
+
+    //修改订单状态为已派发
+    void updateState(@Param("orderNo") Integer orderNo, @Param("state") Integer state);
 }

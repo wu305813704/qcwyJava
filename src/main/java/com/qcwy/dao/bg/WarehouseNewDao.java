@@ -12,8 +12,11 @@ public interface WarehouseNewDao {
     //添加零件
     void addPart(@Param("partDetailId") int partDetailId, @Param("count") int count);
 
-    //添加数量
-    void updateCount(@Param("partDetailId") int partDetailId, @Param("count") int count);
+    //添加零件数量
+    void addPartCount(@Param("partDetailId") int partDetailId, @Param("count") int count);
+
+    //修改零件数量
+    void updatePartCount(@Param("partDetailId") int partDetailId, @Param("count") int count);
 
     //查询是否已存在
     Integer getIdByPartDetailId(@Param("partDetailId") int partDetailId);

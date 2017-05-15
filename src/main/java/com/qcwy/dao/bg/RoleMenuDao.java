@@ -10,4 +10,7 @@ import java.util.List;
 public interface RoleMenuDao {
     //批量添加
     void addRoleMenu(@Param("roleId") int roleId, @Param("menuIds") List<Integer> menuIds);
+
+    //删除某角色所有菜单
+    void deleteByRoleId(@Param("roleId") Integer roleId);
 }

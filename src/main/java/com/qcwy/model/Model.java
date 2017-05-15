@@ -120,11 +120,24 @@ public class Model {
 
     /**
      * 用户验收后推送
-     * @param jobNo     工号
-     * @param orderNo   订单号
+     *
+     * @param jobNo   工号
+     * @param orderNo 订单号
      */
-    public void pushCheckAndAccept(String jobNo, int orderNo){
+    public void pushCheckAndAccept(String jobNo, int orderNo) {
         String msg = "订单编号:" + orderNo + "用户已验收";
+        PushPayload pushPayload = JpushUtils.buildPushObject_all_alert_messageWithAlias(jobNo, "订单消息",
+                msg, "orderMsg", msg);
+        push(pushPayload);
+    }
+
+    /**
+     *
+     * @param jobNo
+     * @param orderNo
+     */
+    public void distributeToEngineer(String jobNo, int orderNo) {
+        String msg = "您收到了后台派发的订单,订单编号:" + orderNo;
         PushPayload pushPayload = JpushUtils.buildPushObject_all_alert_messageWithAlias(jobNo, "订单消息",
                 msg, "orderMsg", msg);
         push(pushPayload);

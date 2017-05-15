@@ -6,7 +6,6 @@ import com.qcwy.entity.bg.BgOrder;
 import com.qcwy.entity.bg.LogForApp;
 import com.qcwy.service.*;
 import com.qcwy.utils.DateUtils;
-import com.qcwy.utils.JedisUtil;
 import com.qcwy.utils.JsonResult;
 import com.qcwy.utils.StringUtils;
 import io.swagger.annotations.Api;
@@ -669,6 +668,19 @@ public class AppUserController {
             return new JsonResult<>(e);
         }
         return new JsonResult<>(count);
+    }
+
+    //获取工程师信息
+    @GetMapping("/getUser")
+    @ApiOperation("获取工程师信息")
+    public JsonResult<?> getUser(@ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo) {
+        AppUser appUser;
+        try {
+            appUser = appUserService.getUserByJobNo(jobNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        return new JsonResult<>(appUser);
     }
 
     //微信认证

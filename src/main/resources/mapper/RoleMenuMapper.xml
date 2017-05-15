@@ -10,4 +10,9 @@
             (#{roleId},#{menuId})
         </foreach>
     </insert>
+
+    <delete id="deleteByRoleId">
+        DELETE FROM t_bg_role_menu
+        WHERE role_id = #{roleId}
+    </delete>
 </mapper>

@@ -2,11 +2,11 @@ package com.qcwy.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.qcwy.RedisClient;
 import com.qcwy.entity.*;
 import com.qcwy.entity.bg.*;
 import com.qcwy.service.*;
 import com.qcwy.utils.DateUtils;
-import com.qcwy.utils.JedisUtil;
 import com.qcwy.utils.JsonResult;
 import com.qcwy.utils.StringUtils;
 import com.qcwy.utils.wx.WxUtils;
@@ -16,11 +16,15 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import redis.clients.jedis.Jedis;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by KouKi on 2017/2/14.
@@ -46,8 +50,9 @@ public class BackgroundController {
     private WarehouseService warehouseService;
     @Autowired
     private LogService logService;
+    @Autowired
+    private RedisClient redis;
 
-    private Jedis jedis = JedisUtil.getInstance();
     //token有效期
     private final int validity = 7200;
 
@@ -61,9 +66,12 @@ public class BackgroundController {
                                    @ApiParam(required = true, name = "sex", value = "性别") @RequestParam(value = "sex") int sex,
                                    @ApiParam(required = true, name = "tel", value = "电话") @RequestParam(value = "tel") String tel,
                                    @ApiParam(required = true, name = "roleId", value = "角色ID") @RequestParam(value = "roleId") int roleId) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
+        }
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(pwd)) {
+            return new JsonResult<>("用户名或密码不能为空");
         }
         BgUser bgUser = new BgUser();
         try {
@@ -73,13 +81,12 @@ public class BackgroundController {
             bgUser.setSex(sex);
             bgUser.setTel(tel);
             bgUserService.addUser(bgUser);
-            System.out.println(bgUser.getId());
             //添加用户角色对应
             bgUserService.addUserRole(bgUser.getId(), roleId);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -92,21 +99,20 @@ public class BackgroundController {
         if (StringUtils.isEmpty(code)) {
             return new JsonResult<>("验证码不能为空");
         }
-        if (!(code.equalsIgnoreCase(jedis.get(codeId)))) {
+        if (!(code.equalsIgnoreCase(redis.get(codeId)))) {
             return new JsonResult<>("验证码错误");
         }
         List<Role> roles;
         try {
             roles = bgUserService.login(username, pwd);
-
             //登录成功移除此code
-            jedis.del(codeId);
+            redis.del(codeId);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
         String token = WxUtils.MD5(DateUtils.format(new Date(), "yyyyMMddHHmmssSSS"));
-        jedis.set(token, username);
-        jedis.setex(token, validity, username);
+        redis.set(token, username);
+        redis.setex(token, validity, username);
         return new JsonResult<>(0, token, roles);
     }
 
@@ -115,7 +121,7 @@ public class BackgroundController {
     @ApiOperation("登陆后选择角色")
     public JsonResult<?> selectRole(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                     @ApiParam(required = true, name = "roleId", value = "角色id") @RequestParam(value = "roleId") int roleId) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -125,7 +131,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(menus);
     }
 
@@ -136,7 +142,7 @@ public class BackgroundController {
                                     @ApiParam(required = true, name = "name", value = "姓名") @RequestParam(value = "name") String name,
                                     @ApiParam(required = true, name = "idCard", value = "身份证") @RequestParam(value = "idCard") String idCard,
                                     @ApiParam(required = true, name = "birthday", value = "生日") @RequestParam(value = "birthday") String birthday) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -150,7 +156,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(appUser.getId());
     }
 
@@ -161,7 +167,7 @@ public class BackgroundController {
                                     @ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo,
                                     @ApiParam(required = true, name = "partDetailId", value = "零件编号") @RequestParam(value = "partDetailId") int partDetailId,
                                     @ApiParam(required = true, name = "count", value = "添加的数量") @RequestParam(value = "count") int count) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -174,7 +180,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -183,7 +189,7 @@ public class BackgroundController {
     @ApiOperation("根据单号获取订单")
     public JsonResult<?> getOrderByOrderNo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                            @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -196,7 +202,7 @@ public class BackgroundController {
         if (order == null) {
             return new JsonResult<>("订单号不存在");
         } else {
-            jedis.expire(token, validity);
+            redis.expire(token, validity);
             return new JsonResult<>(order);
         }
     }
@@ -206,7 +212,7 @@ public class BackgroundController {
     public JsonResult<?> getAllPart(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                     @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                     @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -217,7 +223,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(parts));
     }
 
@@ -226,7 +232,7 @@ public class BackgroundController {
     @ApiOperation("根据完成的订单量排名")
     public JsonResult<?> getOrderCountRank(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                            @ApiParam(required = true, name = "date", value = "日期(yyyy/yyyyMM/yyyyMMdd)") @RequestParam(value = "date") String date) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -236,7 +242,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(ranks);
     }
 
@@ -245,7 +251,7 @@ public class BackgroundController {
     @ApiOperation("根据平均分值排名")
     public JsonResult<?> getOrderScoreRank(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                            @ApiParam(required = true, name = "date", value = "日期(yyyy/yyyyMM/yyyyMMdd)") @RequestParam(value = "date") String date) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -255,7 +261,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(ranks);
     }
 
@@ -263,7 +269,7 @@ public class BackgroundController {
     @GetMapping("/getAllRole")
     @ApiOperation("查询所有角色")
     public JsonResult<?> getAllRole(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -273,7 +279,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(roles);
     }
 
@@ -281,7 +287,7 @@ public class BackgroundController {
     @GetMapping("/getAllMenu")
     @ApiOperation("查询所有菜单")
     public JsonResult<?> getAllMenu(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -291,7 +297,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(menus);
     }
 
@@ -304,7 +310,7 @@ public class BackgroundController {
                                          @ApiParam(required = true, name = "priceNew", value = "以旧换新价格") @RequestParam(value = "priceNew") double priceNew,
                                          @ApiParam(required = true, name = "priceOld", value = "以旧换旧价格") @RequestParam(value = "priceOld") double priceOld,
                                          @ApiParam(required = true, name = "username", value = "修改者") @RequestParam(value = "username") String username) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -318,7 +324,65 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //通过商品id查询商品
+    @GetMapping("/getPartDetailById")
+    @ApiOperation("通过商品id查询商品")
+    public JsonResult<?> getPartDetailById(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                           @ApiParam(name = "partId", value = "零件ID") @RequestParam(value = "partId") int partId) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PartDetail partDetail;
+        try {
+            partDetail = partService.getPartDetailByPartId(partId);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(partDetail);
+    }
+
+    //修改商品
+    @PostMapping("/updatePart")
+    @ApiOperation("修改商品")
+    public JsonResult<?> updatePart(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                    @ApiParam(name = "partId", value = "零件详情ID") @RequestParam(value = "partId") Integer partId,
+                                    @ApiParam(name = "partNo", value = "零件分类ID") @RequestParam(required = false, value = "partNo") Integer partNo,
+                                    @ApiParam(name = "model", value = "型号") @RequestParam(required = false, value = "model") String model,
+                                    @ApiParam(name = "unit", value = "单位") @RequestParam(required = false, value = "unit") String unit,
+                                    @ApiParam(name = "price", value = "价格") @RequestParam(required = false, value = "price") Double price,
+                                    @ApiParam(name = "priceNew", value = "以旧换新价格") @RequestParam(required = false, value = "priceNew") Double priceNew,
+                                    @ApiParam(name = "priceOld", value = "以旧换旧价格") @RequestParam(required = false, value = "priceOld") Double priceOld,
+                                    @ApiParam(name = "isGuaratees", value = "是否三包") @RequestParam(required = false, value = "isGuaratees") Integer isGuaratees,
+                                    @ApiParam(name = "guaranteesLimit", value = "三包期(月)") @RequestParam(required = false, value = "guaranteesLimit") Integer guaranteesLimit,
+                                    @ApiParam(name = "remark", value = "备注") @RequestParam(required = false, value = "remark") String remark,
+                                    @ApiParam(name = "file", value = "图片") @RequestParam(required = false, value = "file") MultipartFile file) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PartDetail partDetail = new PartDetail();
+        partDetail.setPart_detail_id(partId);
+        partDetail.setPart_no(partNo);
+        partDetail.setModel(model);
+        partDetail.setUnit(unit);
+        partDetail.setPrice(price);
+        partDetail.setPrice_new(priceNew);
+        partDetail.setPrice_old(priceOld);
+        partDetail.setIs_guarantees(isGuaratees);
+        partDetail.setGuarantees_limit(guaranteesLimit);
+        partDetail.setRemark(remark);
+        try {
+            partService.updatePart(partDetail, file);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -328,7 +392,7 @@ public class BackgroundController {
     public JsonResult<?> getBgUserList(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                        @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                        @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -339,7 +403,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(bgUsers));
     }
 
@@ -349,7 +413,7 @@ public class BackgroundController {
     public JsonResult<?> getEngineerList(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                          @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                          @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -360,7 +424,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(appUser));
     }
 
@@ -368,22 +432,22 @@ public class BackgroundController {
     @PostMapping("/addPart")
     @ApiOperation("添加商品")
     public JsonResult<?> addPart(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
-                                 @ApiParam(required = true, name = "partNo", value = "零件分类ID") @RequestParam(value = "partNo") int partNo,
+                                 @ApiParam(required = true, name = "partId", value = "零件分类ID") @RequestParam(value = "partId") Integer partId,
                                  @ApiParam(required = true, name = "model", value = "型号") @RequestParam(value = "model") String model,
                                  @ApiParam(required = true, name = "unit", value = "单位") @RequestParam(value = "unit") String unit,
-                                 @ApiParam(required = true, name = "price", value = "价格") @RequestParam(value = "price") double price,
-                                 @ApiParam(required = true, name = "priceNew", value = "以旧换新价格") @RequestParam(value = "priceNew") double priceNew,
-                                 @ApiParam(required = true, name = "priceOld", value = "以旧换旧价格") @RequestParam(value = "priceOld") double priceOld,
-                                 @ApiParam(required = true, name = "isGuaratees", value = "是否三包") @RequestParam(value = "isGuaratees") int isGuaratees,
-                                 @ApiParam(required = true, name = "guaranteesLimit", value = "三包期(月)") @RequestParam(value = "guaranteesLimit") int guaranteesLimit,
+                                 @ApiParam(required = true, name = "price", value = "价格") @RequestParam(value = "price") Double price,
+                                 @ApiParam(required = true, name = "priceNew", value = "以旧换新价格") @RequestParam(value = "priceNew") Double priceNew,
+                                 @ApiParam(required = true, name = "priceOld", value = "以旧换旧价格") @RequestParam(value = "priceOld") Double priceOld,
+                                 @ApiParam(required = true, name = "isGuaratees", value = "是否三包") @RequestParam(value = "isGuaratees") Integer isGuaratees,
+                                 @ApiParam(required = true, name = "guaranteesLimit", value = "三包期(月)") @RequestParam(value = "guaranteesLimit") Integer guaranteesLimit,
                                  @ApiParam(required = true, name = "remark", value = "备注") @RequestParam(value = "remark") String remark,
                                  @ApiParam(name = "file", value = "图片") @RequestParam(value = "file") MultipartFile file) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
         PartDetail partDetail = new PartDetail();
-        partDetail.setPart_no(partNo);
+        partDetail.setPart_no(partId);
         partDetail.setModel(model);
         partDetail.setUnit(unit);
         partDetail.setPrice(price);
@@ -397,7 +461,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -408,18 +472,18 @@ public class BackgroundController {
                                      @ApiParam(required = true, name = "classify", value = "类型") @RequestParam(value = "classify") int classify,
                                      @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                      @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
         PageHelper.startPage(pageNum, pageSize);
-        List<Part> parts;
+        List<PartDetail> parts;
         try {
             parts = partService.getPartsByClassify(classify);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(parts));
     }
 
@@ -429,7 +493,7 @@ public class BackgroundController {
     public JsonResult<?> getAllOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                       @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                       @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -440,7 +504,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(orders));
     }
 
@@ -450,7 +514,7 @@ public class BackgroundController {
     public JsonResult<?> getServiceOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                           @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                           @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -461,7 +525,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(orders));
     }
 
@@ -471,7 +535,7 @@ public class BackgroundController {
     public JsonResult<?> getAppointmentOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                               @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                               @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -482,7 +546,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(orders));
     }
 
@@ -492,7 +556,7 @@ public class BackgroundController {
     public JsonResult<?> getHistoryOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                           @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                           @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -503,7 +567,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(orders));
     }
 
@@ -513,7 +577,7 @@ public class BackgroundController {
     public JsonResult<?> getAfterSaleOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                             @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                             @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -524,7 +588,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(orders));
     }
 
@@ -533,7 +597,7 @@ public class BackgroundController {
     public JsonResult<?> rejectOrder(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                      @ApiParam(required = true, name = "orderNo", value = "orderNo") @RequestParam(value = "orderNo") int orderNo,
                                      @ApiParam(required = true, name = "cause", value = "驳回原因") @RequestParam(value = "cause") String cause) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -547,7 +611,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -557,7 +621,7 @@ public class BackgroundController {
     public JsonResult<?> getWxUsers(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                     @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                     @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -568,7 +632,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(wxUsers));
     }
 
@@ -579,7 +643,7 @@ public class BackgroundController {
                                       @ApiParam(required = true, name = "type", value = "仓库类型(0-正品仓1-废品仓2-周转仓)") @RequestParam(value = "type") int type,
                                       @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                       @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -603,7 +667,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(partDetails));
     }
 
@@ -612,7 +676,7 @@ public class BackgroundController {
     @ApiOperation("拉黑")
     public JsonResult<?> block(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                @ApiParam(required = true, name = "openid", value = "openid") @RequestParam(value = "openid") String openid) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -621,7 +685,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -630,7 +694,7 @@ public class BackgroundController {
     @ApiOperation("取消黑名单")
     public JsonResult<?> rejectBlock(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                      @ApiParam(required = true, name = "openid", value = "openid") @RequestParam(value = "openid") String openid) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -639,7 +703,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -647,7 +711,7 @@ public class BackgroundController {
     @GetMapping("getSysInfo")
     @ApiOperation("查询系统设置")
     public JsonResult<?> getSysInfo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -657,7 +721,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(systemInfo);
     }
 
@@ -672,7 +736,7 @@ public class BackgroundController {
                                        @ApiParam(required = true, name = "complaintTel", value = "投诉电话") @RequestParam(value = "complaintTel") String complaintTel,
                                        @ApiParam(required = true, name = "recordsInfo", value = "备案信息") @RequestParam(value = "recordsInfo") String recordsInfo,
                                        @ApiParam(required = true, name = "versionInfo", value = "版本信息") @RequestParam(value = "versionInfo") String versionInfo) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -689,7 +753,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -700,7 +764,7 @@ public class BackgroundController {
                                   @ApiParam(required = true, name = "type", value = "日志类型(0-微信1-工程师2-后台)") @RequestParam(value = "type") int type,
                                   @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                   @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -712,7 +776,7 @@ public class BackgroundController {
                 try {
                     logWx = logService.logForWxList();
                 } catch (Exception e) {
-                    jedis.expire(token, validity);
+                    redis.expire(token, validity);
                     return new JsonResult<>(e);
                 }
                 return new JsonResult<>(new PageInfo<>(logWx));
@@ -722,7 +786,7 @@ public class BackgroundController {
                 try {
                     logApp = logService.logForAppList();
                 } catch (Exception e) {
-                    jedis.expire(token, validity);
+                    redis.expire(token, validity);
                     return new JsonResult<>(e);
                 }
                 return new JsonResult<>(new PageInfo<>(logApp));
@@ -732,7 +796,7 @@ public class BackgroundController {
                 try {
                     logBg = logService.logForBgList();
                 } catch (Exception e) {
-                    jedis.expire(token, validity);
+                    redis.expire(token, validity);
                     return new JsonResult<>(e);
                 }
                 return new JsonResult<>(new PageInfo<>(logBg));
@@ -746,7 +810,7 @@ public class BackgroundController {
     public JsonResult<?> getReassignmentOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                                @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                                @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -757,7 +821,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(bgOrders));
     }
 
@@ -767,7 +831,7 @@ public class BackgroundController {
     public JsonResult<?> getOverTimeOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                            @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                            @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -778,7 +842,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(bgOrders));
     }
 
@@ -788,7 +852,7 @@ public class BackgroundController {
     public JsonResult<?> getDistributeOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                              @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                              @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -799,7 +863,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(bgOrders));
     }
 
@@ -809,7 +873,7 @@ public class BackgroundController {
     public JsonResult<?> returnVisitList(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                          @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                          @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -820,7 +884,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(orders));
     }
 
@@ -830,7 +894,7 @@ public class BackgroundController {
     public JsonResult<?> hadReturnVisitList(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                             @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                             @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -841,7 +905,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(orders));
     }
 
@@ -852,7 +916,7 @@ public class BackgroundController {
                                      @ApiParam(required = true, name = "userNo", value = "用户帐号") @RequestParam(value = "userNo") String userNo,
                                      @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo,
                                      @ApiParam(required = true, name = "content", value = "回访内容") @RequestParam(value = "content") String content) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -861,7 +925,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -872,7 +936,7 @@ public class BackgroundController {
                                    @ApiParam(required = true, name = "userNo", value = "用户帐号") @RequestParam(value = "userNo") String userNo,
                                    @ApiParam(required = true, name = "oldPwd", value = "原密码") @RequestParam(value = "oldPwd") String oldPwd,
                                    @ApiParam(required = true, name = "newPwd", value = "新密码") @RequestParam(value = "newPwd") String newPwd) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -884,7 +948,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
 
@@ -894,7 +958,7 @@ public class BackgroundController {
     public JsonResult<?> blacklist(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                    @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
                                    @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -905,7 +969,7 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(blacklist));
     }
 
@@ -915,7 +979,7 @@ public class BackgroundController {
     public JsonResult<?> addRole(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
                                  @ApiParam(required = true, name = "roleName", value = "角色名称") @RequestParam(value = "roleName") String roleName,
                                  @ApiParam(required = true, name = "menuIds", value = "菜单ID数组(1-2-3)") @RequestParam(value = "menuIds") String menuIds) {
-        String tokenValue = jedis.get(token);
+        String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
@@ -929,7 +993,310 @@ public class BackgroundController {
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        jedis.expire(token, validity);
+        redis.expire(token, validity);
         return new JsonResult<>(true);
     }
+
+    //400派单
+    @PostMapping("/telPlaceOrder")
+    @ApiOperation("400派单")
+    public JsonResult<?> telPlaceOrder(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                       @ApiParam(required = true, name = "type", value = "订单类型(0-普通订单 1-预约单)") @RequestParam(value = "type") Integer type,
+                                       @ApiParam(required = true, name = "nickname", value = "客户名称") @RequestParam(value = "nickname") String nickname,
+                                       @ApiParam(required = true, name = "sex", value = "性别") @RequestParam(value = "sex") String sex,
+                                       @ApiParam(required = true, name = "tel", value = "电话") @RequestParam(value = "tel") String tel,
+                                       @ApiParam(required = true, name = "faultId", value = "故障ID(1-2-3)") @RequestParam(value = "faultId") String faultId,
+                                       @ApiParam(name = "faultDescription", value = "故障详情") @RequestParam(required = false, value = "faultDescription") String faultDescription,
+                                       @ApiParam(name = "appointmentTime", value = "预约时间") @RequestParam(required = false, value = "appointmentTime") Long appointmentTime,
+                                       @ApiParam(required = true, name = "lon", value = "经度") @RequestParam(value = "lon") Double lon,
+                                       @ApiParam(required = true, name = "lati", value = "维度") @RequestParam(value = "lati") Double lati,
+                                       @ApiParam(required = true, name = "loc", value = "位置描述") @RequestParam(value = "loc") String loc,
+                                       @ApiParam(required = true, name = "carType", value = "车辆类型(0-两轮车1-三轮车)") @RequestParam(value = "carType") Integer carType) {
+        //正则表达式匹配故障ID
+        String regEx = "(^[1-9]\\d?)(-[1-9]\\d?)*$";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(faultId);
+        boolean rs = matcher.matches();
+        if (!rs) {
+            return new JsonResult<>("故障ID不匹配");
+        }
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        Order order = new Order();
+        try {
+            //从当时时间MD5
+            String time = DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSS");
+            // 生成一个MD5加密计算摘要
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            // 计算md5函数
+            md.update(time.getBytes());
+            // digest()最后确定返回md5 hash值，返回值为8为字符串。因为md5 hash值是16位的hex值，实际上就是8位的字符
+            // BigInteger函数则将8位的字符串转换成16位hex值，用字符串来表示；得到字符串形式的hash值
+            String openId = new BigInteger(1, md.digest()).toString(16);
+            order.setOpen_id(openId);
+            order.setType(type);//0-普通订单 1-预约单
+            order.setSend_time(new Timestamp(System.currentTimeMillis()));
+            order.setCar_type(carType);
+            if (appointmentTime != null) {
+                order.setAppointment_time(new Timestamp(appointmentTime));
+            }
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setFault_id(faultId);
+            orderDetail.setFault_description(faultDescription);
+            if (appointmentTime != null) {
+                orderDetail.setAppointment_time(DateUtils.format(new Date(appointmentTime), "yyyyMMddHHmmss"));
+            }
+            orderDetail.setLon(String.valueOf(lon));
+            orderDetail.setLati(String.valueOf(lati));
+            orderDetail.setLoc(loc);
+            //当前时间
+            String sendTime = DateUtils.format(new Date(), "yyyyMMddHHmmss");
+            orderDetail.setSend_time(sendTime);
+            order.setOrderDetail(orderDetail);
+            WxUser wxUser = new WxUser();
+            wxUser.setOpenid(openId);
+            wxUser.setNickname(nickname);
+            wxUser.setSex(sex);
+            wxUser.setTel(tel);
+            order.setWxUser(wxUser);
+            orderService.telPlaceOrder(order);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //获取所有零件类型
+    @GetMapping("/getAllPartModel")
+    @ApiOperation("获取所有零件类型")
+    public JsonResult<?> getAllPartModel(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        List<PartModel> partModels;
+        try {
+            partModels = partService.getAllPartModel();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(partModels);
+    }
+
+    //根据零件类型获取该类型下的所有零件名
+    @GetMapping("/getPartByClassify")
+    @ApiOperation("根据零件类型获取该类型下的所有零件名")
+    public JsonResult<?> getPartByClassify(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                           @ApiParam(required = true, name = "classify", value = "零件类型ID") @RequestParam(value = "classify") Integer classify) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        List<Part> parts;
+        try {
+            parts = partService.getPartByClassify(classify);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(parts);
+    }
+
+    //修改角色
+    @PostMapping("/updateRole")
+    @ApiOperation("修改角色")
+    public JsonResult<?> updateRole(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                    @ApiParam(required = true, name = "roleId", value = "角色ID") @RequestParam(value = "roleId") Integer roleId,
+                                    @ApiParam(name = "roleName", value = "角色名称") @RequestParam(required = false, value = "roleId") String roleName,
+                                    @ApiParam(name = "menuIds", value = "菜单ID") @RequestParam(required = false, value = "menuIds") String menuIds) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        List<Integer> menuIdList = new ArrayList<>();
+        if (!StringUtils.isEmpty(menuIds)) {
+            for (String id : menuIds.split("-")) {
+                menuIdList.add(Integer.parseInt(id));
+            }
+        }
+        try {
+            bgUserService.updateRole(roleId, roleName, menuIdList);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //修改微信用户信息
+    @PostMapping("/updateWxUser")
+    @ApiOperation("修改微信用户信息")
+    public JsonResult<?> updateWxUser(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                      @ApiParam(required = true, name = "openid", value = "openid") @RequestParam(value = "openid") String openid,
+                                      @ApiParam(name = "nickname", value = "昵称") @RequestParam(required = false, value = "nickname") String nickname,
+                                      @ApiParam(name = "sex", value = "性别") @RequestParam(required = false, value = "sex") String sex,
+                                      @ApiParam(name = "tel", value = "电话") @RequestParam(required = false, value = "tel") String tel) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        WxUser wxUser = new WxUser();
+        wxUser.setOpenid(openid);
+        wxUser.setNickname(nickname);
+        wxUser.setSex(sex);
+        wxUser.setTel(tel);
+        try {
+            wxUserService.updateWxUser(wxUser);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //仓库添加商品
+    @GetMapping("/addPartToWarehouse")
+    @ApiOperation("仓库添加商品")
+    public JsonResult<?> addPartToWarehouse(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                            @ApiParam(required = true, name = "type", value = "仓库类型(0-正品仓1-废品仓)") @RequestParam(value = "type") Integer type,
+                                            @ApiParam(required = true, name = "partDetailId", value = "零件ID") @RequestParam(value = "partDetailId") Integer partDetailId,
+                                            @ApiParam(required = true, name = "count", value = "数量") @RequestParam(required = false, value = "count") Integer count) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            switch (type) {
+                case 0:
+                    warehouseService.addPartNew(partDetailId, count);
+                    break;
+                case 1:
+                    warehouseService.addPartOld(partDetailId, count);
+                    break;
+            }
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //修改仓库商品数量
+    @GetMapping("/updatePartCount")
+    @ApiOperation("修改仓库商品数量")
+    public JsonResult<?> updatePartCount(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                         @ApiParam(required = true, name = "type", value = "仓库类型(0-正品仓1-废品仓)") @RequestParam(value = "type") Integer type,
+                                         @ApiParam(required = true, name = "partDetailId", value = "零件ID") @RequestParam(value = "partDetailId") Integer partDetailId,
+                                         @ApiParam(name = "count", value = "数量") @RequestParam(required = false, value = "count") Integer count) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            switch (type) {
+                case 0:
+                    warehouseService.updateCountNew(partDetailId, count);
+                    break;
+                case 1:
+                    warehouseService.updateCountOld(partDetailId, count);
+                    break;
+            }
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //客服派发订单
+    @GetMapping("/distributeOrder")
+    @ApiOperation("客服派发订单")
+    public JsonResult<?> distributeOrder(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                         @ApiParam(required = true, name = "orderNo", value = "订单编号") @RequestParam(value = "orderNo") Integer orderNo,
+                                         @ApiParam(required = true, name = "jobNo", value = "工程师工号") @RequestParam(value = "jobNo") String jobNo) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            Order order = orderService.getOrder(orderNo);
+            if (order.getState() != 0) {
+                return new JsonResult<>("该订单已派发，请勿重复派发");
+            }
+            orderService.distributeOrder(orderNo, jobNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //修改后台用户信息
+    @GetMapping("/updateBgUser")
+    @ApiOperation("修改后台用户信息")
+    public JsonResult<?> distributeOrder(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                         @ApiParam(required = true, name = "userNo", value = "用户名") @RequestParam(value = "userNo") String userNo,
+                                         @ApiParam(name = "name", value = "姓名") @RequestParam(required = false, value = "name") String name,
+                                         @ApiParam(name = "sex", value = "性别(1-男2-女)") @RequestParam(required = false, value = "sex") Integer sex,
+                                         @ApiParam(name = "tel", value = "电话") @RequestParam(required = false, value = "tel") String tel,
+                                         @ApiParam(name = "state", value = "在职状态(0-在职1-离职)") @RequestParam(required = false, value = "state") Integer state) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            BgUser bgUser = new BgUser();
+            bgUser.setUser_no(userNo);
+            bgUser.setName(name);
+            bgUser.setSex(sex);
+            bgUser.setTel(tel);
+            bgUser.setState(state);
+            bgUserService.updateBgUser(bgUser);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    @GetMapping("/findAllOnline")
+    @ApiOperation("查询所有在线工程师")
+    public JsonResult<?> findAllOnline(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        List<AppUser> appUsers;
+        try {
+            appUsers = appUserService.findAllOnline();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(appUsers);
+    }
+
+    //查询工程师所持订单数
+    @GetMapping("/getCountHoldOrders")
+    @ApiOperation("查询工程师所持订单数")
+    public JsonResult<?> getCountHoldOrders(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                            @ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        Integer count;
+        try {
+            count = orderService.getCountHoldOrders(jobNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(count);
+    }
+
 }

@@ -10,6 +10,7 @@ import com.qcwy.entity.bg.BgUser;
 import com.qcwy.entity.bg.Menu;
 import com.qcwy.entity.bg.SystemInfo;
 import com.qcwy.service.BgUserService;
+import com.qcwy.utils.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,8 +78,14 @@ public class BgUserServiceImpl implements BgUserService {
     }
 
     @Override
-    public void updateRole(@Param("role") Role role) {
-        roleDao.update(role);
+    public void updateRole(Integer roleId, String roleName, List<Integer> menuIdList) {
+        if (!StringUtils.isEmpty(roleName)) {
+            roleDao.update(roleId, roleName);
+        }
+        if (!menuIdList.isEmpty()) {
+            roleMenuDao.deleteByRoleId(roleId);
+            roleMenuDao.addRoleMenu(roleId, menuIdList);
+        }
     }
 
     @Override
@@ -166,6 +173,11 @@ public class BgUserServiceImpl implements BgUserService {
     @Override
     public void updatePwd(String userNo, String newPwd) {
         bgUserDao.updatePwd(userNo, newPwd);
+    }
+
+    @Override
+    public void updateBgUser(BgUser bgUser) {
+        bgUserDao.updateBgUser(bgUser);
     }
 
 }

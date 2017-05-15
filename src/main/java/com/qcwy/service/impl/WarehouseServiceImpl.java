@@ -28,7 +28,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         if (warehouseNewDao.getIdByPartDetailId(partDetailId) == null) {
             warehouseNewDao.addPart(partDetailId, count);
         } else {
-            warehouseNewDao.updateCount(partDetailId, count);
+            warehouseNewDao.addPartCount(partDetailId, count);
         }
     }
 
@@ -37,7 +37,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         if (warehouseOldDao.getIdByPartDetailId(partDetailId) == null) {
             warehouseOldDao.addPart(partDetailId, count);
         } else {
-            warehouseOldDao.updateCount(partDetailId, count);
+            warehouseOldDao.addPartCount(partDetailId, count);
         }
     }
 
@@ -54,6 +54,16 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public List<PartDetail> getPartListRevolve() {
         return warehouseRevolveDao.getPartList();
+    }
+
+    @Override
+    public void updateCountNew(Integer partDetailId, Integer count) {
+        warehouseNewDao.updatePartCount(partDetailId, count);
+    }
+
+    @Override
+    public void updateCountOld(Integer partDetailId, Integer count) {
+        warehouseOldDao.updatePartCount(partDetailId, count);
     }
 
 }

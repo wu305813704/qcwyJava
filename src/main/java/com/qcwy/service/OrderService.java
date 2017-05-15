@@ -164,5 +164,14 @@ public interface OrderService {
     List<OrderVisit> hadReturnVisitList();
 
     //回访
-    void returnVisit(String userNo, int orderNo, String content);
+    void returnVisit(String userNo, int orderNo, String content) throws Exception;
+
+    //400电话下单
+    void telPlaceOrder(Order order);
+
+    //客服派单
+    void distributeOrder(Integer orderNo, String jobNo);
+
+    //查询工程师所持订单数
+    Integer getCountHoldOrders(String jobNo);
 }

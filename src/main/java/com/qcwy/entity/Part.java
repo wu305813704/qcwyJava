@@ -3,6 +3,7 @@ package com.qcwy.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by KouKi on 2017/3/2.
@@ -17,7 +18,7 @@ public class Part implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String image;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private PartDetail partDetail;
+    private List<PartDetail> partDetail;
 
     public int getPart_id() {
         return part_id;
@@ -51,11 +52,11 @@ public class Part implements Serializable {
         this.image = image;
     }
 
-    public PartDetail getPartDetail() {
+    public List<PartDetail> getPartDetail() {
         return partDetail;
     }
 
-    public void setPartDetail(PartDetail partDetail) {
+    public void setPartDetail(List<PartDetail> partDetail) {
         this.partDetail = partDetail;
     }
 }
