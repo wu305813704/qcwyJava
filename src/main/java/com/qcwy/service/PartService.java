@@ -1,9 +1,8 @@
 package com.qcwy.service;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageInfo;
 import com.qcwy.entity.Part;
 import com.qcwy.entity.PartDetail;
+import com.qcwy.entity.bg.PartModel;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ public interface PartService {
     List<PartDetail> getAllPartDetail();
 
     //通过分类查询part
-    List<Part> getPartsByClassify(int classify);
+    List<PartDetail> getPartsByClassify(int classify);
 
     //通过零件编号查询零件详情
     List<PartDetail> getPartDetailByPartNo(int partNo);
@@ -31,4 +30,14 @@ public interface PartService {
 
     //添加商品
     void addPart(PartDetail partDetail, MultipartFile file) throws NoSuchAlgorithmException, IOException;
+
+    //修改商品
+    void updatePart(PartDetail partDetail, MultipartFile file) throws NoSuchAlgorithmException, IOException;
+
+    //获取所有零件类型
+    List<PartModel> getAllPartModel();
+
+    //获取某类型下所有零件
+    List<Part> getPartByClassify(int classify);
+
 }

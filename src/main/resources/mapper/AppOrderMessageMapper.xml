@@ -3,8 +3,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qcwy.dao.AppOrderMessageDao">
     <insert id="save" useGeneratedKeys="true" keyProperty="msg.msg_id">
-        insert into t_app_order_msg (job_no, order_no, state,send_time)
-        values (#{msg.job_no},#{msg.order_no},#{msg.state},now())
+        insert into t_app_order_msg (job_no, order_no, type,send_time)
+        values (#{msg.job_no},#{msg.order_no},#{msg.type},now())
     </insert>
 
     <select id="getMsgByJobNo" resultType="com.qcwy.entity.AppOrderMessage">

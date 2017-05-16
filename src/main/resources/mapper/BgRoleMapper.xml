@@ -2,10 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qcwy.dao.bg.BgRoleDao">
+    <resultMap id="role" type="com.qcwy.entity.Role">
+        <id column="id" property="id"/>
+        <result column="role_name" property="role_name"/>
+        <result column="time" property="time"/>
+        <collection property="menus" ofType="com.qcwy.entity.bg.Menu">
+            <id column="m_id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="parent_id" property="parent_id"/>
+            <result column="order_id" property="order_id"/>
+        </collection>
+    </resultMap>
 
-    <insert id="add">
-        INSERT INTO t_bg_role (role_name,type)
-        VALUES (#{role.role_name},0)
+    <insert id="add" useGeneratedKeys="true" keyProperty="role.id">
+        INSERT INTO t_bg_role
+        (role_name,time)
+        VALUES
+        (#{role.role_name},now())
     </insert>
 
     <delete id="delete">
@@ -15,8 +28,8 @@
 
     <update id="update">
         UPDATE t_bg_role
-        SET role_name = #{role.role_name}
-        WHERE id = #{role.id} AND type = #{role.type}
+        SET role_name = #{roleName}
+        WHERE id = #{roleId}
     </update>
 
     <select id="selectById" resultType="com.qcwy.entity.Role">
@@ -24,8 +37,13 @@
         WHERE id = #{id}
     </select>
 
-    <select id="selectAll" resultType="com.qcwy.entity.Role">
-        SELECT id,role_name FROM t_bg_role
+    <select id="selectAll" resultMap="role">
+        SELECT *,m.id AS m_id
+        FROM t_bg_role r
+        LEFT JOIN t_bg_role_menu rm
+        ON r.id = rm.role_id
+        LEFT JOIN t_bg_menu m
+        ON rm.menu_id = m.id
     </select>
 
 </mapper>

@@ -5,7 +5,11 @@
     <update id="update">
         UPDATE t_xt_system_info
         SET company_name = #{sys.company_name},address = #{sys.address},email = #{sys.email},service_tel = #{sys.service_tel},complaint_tel = #{sys.complaint_tel},
-        recods_info = #{sys.recods_info},version_info = #{sys.version_info}
+        records_info = #{sys.records_info},version_info = #{sys.version_info}
     </update>
+
+    <select id="getSystemInfo" resultType="com.qcwy.entity.bg.SystemInfo">
+        SELECT * FROM t_xt_system_info
+    </select>
 
 </mapper>

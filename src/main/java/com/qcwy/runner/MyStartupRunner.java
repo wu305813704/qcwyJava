@@ -1,11 +1,10 @@
 package com.qcwy.runner;
 
+import com.qcwy.RedisClient;
 import com.qcwy.dao.WxInfoDao;
-import com.qcwy.utils.JedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
 
 /**
  * Created by KouKi on 2017/4/17.
@@ -13,7 +12,8 @@ import redis.clients.jedis.Jedis;
  */
 @Component
 public class MyStartupRunner implements CommandLineRunner {
-    private Jedis jedis = JedisUtil.getInstance();
+    @Autowired
+    private RedisClient jedis;
     @Autowired
     private WxInfoDao dao;
 

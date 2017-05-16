@@ -1,5 +1,6 @@
 package com.qcwy.dao;
 
+import com.qcwy.entity.Part;
 import com.qcwy.entity.PartDetail;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -27,4 +28,11 @@ public interface PartDetailDao {
 
     //添加零件
     void addPart(@Param("partDetail") PartDetail partDetail);
+
+    //修改零件
+    void updatePart(@Param("partDetail") PartDetail partDetail);
+
+    //通过分类查询零件
+    //零件分类(1-四大部件,2-制动系统,3-结构部件,4-电器配件,5-通用配件,6-三轮车配件7,水电瓶车)
+    List<PartDetail> getPartsByClassify(@Param("classify") int classify);
 }

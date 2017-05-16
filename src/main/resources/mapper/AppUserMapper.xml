@@ -8,24 +8,27 @@
         <result property="job_no" column="job_no"/>
         <result property="pwd" column="pwd"/>
         <result property="name" column="name"/>
+        <result property="tel" column="tel"/>
         <result property="sex" column="sex"/>
         <result property="id_card" column="id_card"/>
         <result property="birthday" column="birthday"/>
         <result property="online" column="online"/>
         <result property="lon" column="lon"/>
         <result property="lati" column="lati"/>
+        <result property="update_time" column="update_time"/>
+        <result property="regist_time" column="regist_time"/>
     </resultMap>
 
-    <select id="getUserByJobNo" resultType="com.qcwy.entity.AppUser">
-        SELECT job_no,name,lon,lati FROM t_app_user
+    <select id="getUserByJobNo" resultMap="user">
+        SELECT * FROM t_app_user
         WHERE job_no = #{jobNo}
     </select>
 
     <!-- useGeneratedKeys="true" keyProperty="id" 自动赋值自增长的值给实体类 -->
     <insert id="save" parameterType="com.qcwy.entity.AppUser" useGeneratedKeys="true" keyProperty="id">
         insert into
-        t_app_user (job_no, name, id_card, birthday)
-        values (#{job_no},#{name},#{id_card},#{birthday})
+        t_app_user (job_no, name, id_card, birthday,regist_time)
+        values (#{job_no},#{name},#{id_card},#{birthday},now())
     </insert>
 
     <select id="login" resultMap="user">

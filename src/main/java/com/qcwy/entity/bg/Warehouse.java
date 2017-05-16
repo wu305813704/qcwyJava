@@ -2,6 +2,7 @@ package com.qcwy.entity.bg;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.qcwy.entity.Part;
+import com.qcwy.entity.PartDetail;
 
 import java.io.Serializable;
 
@@ -10,15 +11,15 @@ import java.io.Serializable;
  */
 public class Warehouse implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Part part;
+    private PartDetail part;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private int count;
 
-    public Part getPart() {
+    public PartDetail getPart() {
         return part;
     }
 
-    public void setPart(Part part) {
+    public void setPart(PartDetail part) {
         this.part = part;
     }
 

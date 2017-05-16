@@ -108,4 +108,13 @@ public interface OrderDao {
 
     //获取回访列表
     List<Order> getReturnVisitList();
+
+    //派发订单给工程师
+    void setJobNo(@Param("orderNo")Integer orderNo,@Param("jobNo") String jobNo);
+
+    //修改回访状态未已回访
+    void updateReturnState(@Param("orderNo") int orderNo);
+
+    //查询历史售后订单
+    List<Order> getHistoryAfterSale();
 }

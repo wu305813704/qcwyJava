@@ -1,8 +1,9 @@
 package com.qcwy.controller;
 
-import com.qcwy.utils.JedisUtil;
+import com.qcwy.RedisClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,8 @@ public class CoderController {
     private char[] codeSequence = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J',
             'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
             'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7', '8', '9'};
-    private Jedis jedis = JedisUtil.getInstance();
+    @Autowired
+    private RedisClient jedis;
 
     @GetMapping("/code")
     public void getCode(@ApiParam(required = true, name = "codeId", value = "随机数") @RequestParam(value = "codeId") String codeId,

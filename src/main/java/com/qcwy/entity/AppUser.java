@@ -33,6 +33,8 @@ public class AppUser implements Serializable {
     private String lati;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp update_time;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Timestamp regist_time;
 
     public int getId() {
         return id;
@@ -128,5 +130,13 @@ public class AppUser implements Serializable {
 
     public void setUpdate_time(Timestamp update_time) {
         this.update_time = update_time;
+    }
+
+    public Timestamp getRegist_time() {
+        return regist_time;
+    }
+
+    public void setRegist_time(Timestamp regist_time) {
+        this.regist_time = regist_time;
     }
 }

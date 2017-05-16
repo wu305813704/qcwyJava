@@ -22,4 +22,10 @@ public interface WarehouseService {
 
     //周转仓列表
     List<PartDetail> getPartListRevolve();
+
+    //修改正品仓数量
+    void updateCountNew(Integer partDetailId, Integer count);
+
+    //修改废品仓数量
+    void updateCountOld(Integer partDetailId, Integer count);
 }

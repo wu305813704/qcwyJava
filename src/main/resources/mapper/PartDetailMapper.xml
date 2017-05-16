@@ -2,6 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qcwy.dao.PartDetailDao">
+    <resultMap id="part" type="com.qcwy.entity.PartDetail">
+        <id column="part_detail_id" property="part_detail_id"/>
+        <result column="part_no" property="part_no"/>
+        <result column="model" property="model"/>
+        <result column="unit" property="unit"/>
+        <result column="price" property="price"/>
+        <result column="price_new" property="price_new"/>
+        <result column="price_old" property="price_old"/>
+        <result column="is_guarantees" property="is_guarantees"/>
+        <result column="guarantees_limit" property="guarantees_limit"/>
+        <result column="remark" property="remark"/>
+        <result column="img_d" property="image"/>
+        <result column="name" property="name"/>
+    </resultMap>
+
     <insert id="addPart">
         INSERT INTO t_xt_part_detail
         (part_no,model,unit,price,price_new,price_old,is_guarantees,guarantees_limit,remark,image)
@@ -34,4 +49,53 @@
         WHERE part_detail_id = #{partDetail.part_detail_id}
     </update>
 
+    <update id="updatePart">
+        UPDATE t_xt_part_detail
+        <set>
+            <if test="partDetail.part_no != null">
+                part_no = #{partDetail.part_no},
+            </if>
+            <if test="partDetail.model != null">
+                model = #{partDetail.model},
+            </if>
+            <if test="partDetail.unit != null">
+                unit = #{partDetail.unit},
+            </if>
+            <if test="partDetail.price != null">
+                price = #{partDetail.price},
+            </if>
+            <if test="partDetail.price_new != null">
+                price_new = #{partDetail.price_new},
+            </if>
+            <if test="partDetail.price_old != null">
+                price_old = #{partDetail.price_old},
+            </if>
+            <if test="partDetail.is_guarantees != null">
+                is_guarantees = #{partDetail.is_guarantees},
+            </if>
+            <if test="partDetail.guarantees_limit != null">
+                guarantees_limit = #{partDetail.guarantees_limit},
+            </if>
+            <if test="partDetail.remark != null">
+                remark = #{partDetail.remark},
+            </if>
+            <if test="partDetail.image != null">
+                image = #{partDetail.image},
+            </if>
+        </set>
+        WHERE part_detail_id = #{partDetail.part_detail_id}
+    </update>
+
+    <select id="getPartsByClassify" resultMap="part">
+        SELECT p.*,p.image AS img_p,d.*,d.image AS img_d
+        FROM t_xt_part_detail d
+        LEFT JOIN t_xt_part p
+        ON p.part_id = d.part_no
+        WHERE d.part_no IN
+        (
+        SELECT part_id
+        FROM t_xt_part
+        WHERE classify = #{classify}
+        )
+    </select>
 </mapper>

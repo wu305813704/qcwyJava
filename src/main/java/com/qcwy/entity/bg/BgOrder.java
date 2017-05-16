@@ -33,6 +33,10 @@ public class BgOrder implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String loc;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String lon;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String lati;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp send_time;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp appointment_time;
@@ -117,6 +121,22 @@ public class BgOrder implements Serializable {
 
     public void setLoc(String loc) {
         this.loc = loc;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public void setLon(String lon) {
+        this.lon = lon;
+    }
+
+    public String getLati() {
+        return lati;
+    }
+
+    public void setLati(String lati) {
+        this.lati = lati;
     }
 
     public Timestamp getSend_time() {

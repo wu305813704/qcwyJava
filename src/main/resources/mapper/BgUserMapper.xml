@@ -9,9 +9,11 @@
         <result column="sex" property="sex"/>
         <result column="tel" property="tel"/>
         <result column="state" property="state"/>
+        <result column="user_time" property="time"/>
         <collection property="roles" ofType="com.qcwy.entity.Role">
             <id column="role_id" property="id"/>
             <result column="role_name" property="role_name"/>
+            <result column="role_time" property="time"/>
         </collection>
     </resultMap>
 
@@ -21,18 +23,17 @@
     </select>
 
     <insert id="addUser" useGeneratedKeys="true" keyProperty="user.id">
-        INSERT INTO t_bg_user (user_no,pwd,name,sex,tel,state)
-        VALUES (#{user.user_no},#{user.pwd},#{user.name},#{user.sex},#{user.tel},0)
+        INSERT INTO t_bg_user (user_no,pwd,name,sex,tel,state,time)
+        VALUES (#{user.user_no},#{user.pwd},#{user.name},#{user.sex},#{user.tel},0,now())
     </insert>
 
     <select id="getBgUserList" resultMap="user">
-        SELECT u.*,r.id AS role_id,r.role_name
+        SELECT *,r.id AS role_id,u.time AS user_time,r.time AS role_time
         FROM t_bg_user u
         LEFT JOIN t_bg_user_role ur
         ON u.id = ur.user_id
         LEFT JOIN t_bg_role r
         ON ur.role_id = r.id
-        WHERE u.id = 1
     </select>
 
     <select id="hasUsername" resultType="Boolean">
@@ -51,4 +52,24 @@
         SET pwd = #{pwd}
         WHERE user_no = #{userNo}
     </update>
+    
+    <update id="updateBgUser">
+        UPDATE t_bg_user
+        <set>
+            <if test="bgUser.name != null">
+                name = #{bgUser.name},
+            </if>
+            <if test="bgUser.sex != null">
+                sex = #{bgUser.sex},
+            </if>
+            <if test="bgUser.tel != null">
+                tel = #{bgUser.tel},
+            </if>
+            <if test="bgUser.state != null">
+                state = #{bgUser.state},
+            </if>
+        </set>
+        WHERE user_no = #{bgUser.user_no}
+    </update>
+    
 </mapper>

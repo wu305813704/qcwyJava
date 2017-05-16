@@ -13,7 +13,10 @@ public interface WarehouseOldDao {
     void addPart(@Param("partDetailId") int partDetailId, @Param("count") int count);
 
     //添加数量
-    void updateCount(@Param("partDetailId") int partDetailId, @Param("count") int count);
+    void addPartCount(@Param("partDetailId") int partDetailId, @Param("count") int count);
+
+    //修改数量
+    void updatePartCount(@Param("partDetailId") int partDetailId, @Param("count") int count);
 
     //查询是否已存在
     Integer getIdByPartDetailId(@Param("partDetailId") int partDetailId);

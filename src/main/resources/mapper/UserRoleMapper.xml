@@ -4,7 +4,7 @@
 <mapper namespace="com.qcwy.dao.bg.UserRoleDao">
     <insert id="save">
         INSERT INTO t_bg_user_role (user_id,role_id)
-        VALUES #{userId},#{roleId}
+        VALUES (#{userId},#{roleId})
     </insert>
 
     <select id="getRoleIdsByUserId" resultType="Integer">

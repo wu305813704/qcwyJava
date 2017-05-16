@@ -4,24 +4,19 @@
 <mapper namespace="com.qcwy.dao.bg.WarehouseOldDao">
     <resultMap id="warehouse" type="com.qcwy.entity.bg.Warehouse">
         <result column="count" property="count"/>
-        <association property="part" javaType="com.qcwy.entity.Part">
-            <id column="part_id" property="part_id"/>
-            <result column="classify" property="classify"/>
+        <association property="part" javaType="com.qcwy.entity.PartDetail">
+            <id column="part_detail_id_D" property="part_detail_id"/>
+            <result column="part_no" property="part_no"/>
+            <result column="model" property="model"/>
+            <result column="unit" property="unit"/>
+            <result column="price" property="price"/>
+            <result column="price_new" property="price_new"/>
+            <result column="price_old" property="price_old"/>
+            <result column="is_guarantees" property="is_guarantees"/>
+            <result column="guarantees_limit" property="guarantees_limit"/>
+            <result column="remark" property="remark"/>
+            <result column="image" property="image"/>
             <result column="name" property="name"/>
-            <result column="imageP" property="image"/>
-            <association property="partDetail" javaType="com.qcwy.entity.PartDetail">
-                <id column="part_detail_id_D" property="part_detail_id"/>
-                <result column="part_no" property="part_no"/>
-                <result column="model" property="model"/>
-                <result column="unit" property="unit"/>
-                <result column="price" property="price"/>
-                <result column="price_new" property="price_new"/>
-                <result column="price_old" property="price_old"/>
-                <result column="is_guarantees" property="is_guarantees"/>
-                <result column="guarantees_limit" property="guarantees_limit"/>
-                <result column="remark" property="remark"/>
-                <result column="image" property="image"/>
-            </association>
         </association>
     </resultMap>
 
@@ -32,12 +27,17 @@
         (#{partDetailId},#{count})
     </insert>
 
-    <update id="updateCount">
+    <update id="addPartCount">
         UPDATE t_xt_warehouse_old
         SET count = count + #{count}
         WHERE part_detail_id = #{partDetailId}
     </update>
 
+    <update id="updatePartCount">
+        UPDATE t_xt_warehouse_old
+        SET count = #{count}
+        WHERE part_detail_id = #{partDetailId}
+    </update>
 
     <select id="getIdByPartDetailId" resultType="Integer">
         SELECT id FROM t_xt_warehouse_old

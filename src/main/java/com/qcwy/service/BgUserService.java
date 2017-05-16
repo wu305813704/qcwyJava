@@ -22,13 +22,13 @@ public interface BgUserService {
     List<Role> login(String username, String pwd) throws Exception;
 
     //添加角色
-    void addRole(Role role);
+    void addRole(String roleName,List<Integer> roleIds);
 
     //删除角色
     void deleteRole(int id);
 
     //修改角色
-    void updateRole(Role role);
+    void updateRole(Integer roleId,String roleName,List<Integer> menuIdList);
 
     //通过Id查询
     Role selectRoleById(int id) throws Exception;
@@ -57,6 +57,9 @@ public interface BgUserService {
     //添加角色权限
     void addUserRole(int id, int roleId);
 
+    //获取系统设置
+    SystemInfo getSystemInfo();
+
     //更新系统信息
     void updateSystemInfo(SystemInfo systemInfo);
 
@@ -65,4 +68,7 @@ public interface BgUserService {
 
     //修改密码
     void updatePwd(String userNo, String newPwd);
+
+    //修改后台用户
+    void updateBgUser(BgUser bgUser);
 }

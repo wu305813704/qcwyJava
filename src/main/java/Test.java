@@ -1,14 +1,8 @@
-import com.qcwy.entity.AppUser;
-import com.qcwy.utils.JedisUtil;
-import com.qcwy.utils.SerializeUtils;
+import com.qcwy.RedisClient;
 import com.qcwy.utils.wx.UnifiedOrderResponseData;
-import com.qcwy.utils.wx.WxUtils;
 import com.qcwy.utils.wx.XmlUtils;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.SAXException;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Transaction;
 
 import javax.websocket.ClientEndpoint;
 import javax.websocket.ContainerProvider;
@@ -17,8 +11,6 @@ import javax.websocket.WebSocketContainer;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +18,9 @@ import java.util.Map;
  */
 @ClientEndpoint
 public class Test {
+    @Autowired
+    private RedisClient jedis;
+
     private String deviceId;
     private Session session;
 
@@ -61,21 +56,20 @@ public class Test {
         XmlUtils.getObjectFromMap(map, data);
         System.out.println(data.getAppid());
 
-        Jedis jedis = JedisUtil.getInstance();
-        AppUser user = new AppUser();
-        user.setJob_no("12321/");
-        user.setName("243dskafj");
-        AppUser user1 = new AppUser();
-        user1.setName("444");
-        List<AppUser> userList = new ArrayList<>();
-        userList.add(user);
-        userList.add(user1);
-        Transaction transaction = jedis.multi();
-        transaction.set("user".getBytes(), SerializeUtils.serialize(userList));
-        transaction.exec();
-        List<AppUser> appUsers = (List<AppUser>) SerializeUtils.unserialize(jedis.get("user".getBytes()));
-        System.out.println(appUsers.get(0).getName());
-        System.out.println(appUsers.get(1).getName());
+//        AppUser user = new AppUser();
+//        user.setJob_no("12321/");
+//        user.setName("243dskafj");
+//        AppUser user1 = new AppUser();
+//        user1.setName("444");
+//        List<AppUser> userList = new ArrayList<>();
+//        userList.add(user);
+//        userList.add(user1);
+//        Transaction transaction = jedis.multi();
+//        transaction.set("user".getBytes(), SerializeUtils.serialize(userList));
+//        transaction.exec();
+//        List<AppUser> appUsers = (List<AppUser>) SerializeUtils.unserialize(jedis.get("user".getBytes()));
+//        System.out.println(appUsers.get(0).getName());
+//        System.out.println(appUsers.get(1).getName());
     }
 
 }

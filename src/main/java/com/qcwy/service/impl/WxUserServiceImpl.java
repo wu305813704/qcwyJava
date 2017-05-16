@@ -122,4 +122,9 @@ public class WxUserServiceImpl implements WxUserService {
         wxUserDao.rejectBlock(openid);
     }
 
+    @Override
+    public List<WxUser> getBlacklist() {
+        return wxUserDao.getBlacklist();
+    }
+
 }

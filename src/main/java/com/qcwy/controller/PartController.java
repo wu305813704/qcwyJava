@@ -32,7 +32,7 @@ public class PartController {
     @GetMapping("/getPartsByClassify")
     @ApiOperation("通过零件分类查询零件")
     public JsonResult<?> getPartsByClassify(@ApiParam(required = true, name = "classify", value = "零件分类") @RequestParam(value = "classify") int classify) {
-        List<Part> parts;
+        List<PartDetail> parts;
         try {
             parts = partService.getPartsByClassify(classify);
         } catch (Exception e) {

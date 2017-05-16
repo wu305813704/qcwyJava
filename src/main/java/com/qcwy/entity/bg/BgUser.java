@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.qcwy.entity.Role;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public class BgUser implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int id;
+    private Integer id;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String user_no;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,11 +20,13 @@ public class BgUser implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int sex;
+    private Integer sex;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String tel;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int state;
+    private Integer state;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Timestamp time;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Role> roles;
 
@@ -82,6 +85,14 @@ public class BgUser implements Serializable {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 
     public List<Role> getRoles() {

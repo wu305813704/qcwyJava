@@ -9,23 +9,23 @@ import java.io.Serializable;
  */
 public class PartDetail implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int part_detail_id;
+    private Integer part_detail_id;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int part_no;
+    private Integer part_no;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String model;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String unit;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private double price;
+    private Double price;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private double price_old;
+    private Double price_old;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private double price_new;
+    private Double price_new;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int is_guarantees;
+    private Integer is_guarantees;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int guarantees_limit;
+    private Integer guarantees_limit;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String remark;
     @JsonInclude(JsonInclude.Include.NON_NULL)

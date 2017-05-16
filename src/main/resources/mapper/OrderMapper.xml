@@ -91,17 +91,17 @@
 
     <insert id="saveOrder" useGeneratedKeys="true" keyProperty="order.order_no">
         insert into t_xt_order (open_id,state,type,send_time,car_type)
-        values (#{order.open_id},0,#{order.type},#{order.send_time},#{order.car_type})
+        values (#{order.open_id},0,#{order.type},now(),#{order.car_type})
     </insert>
 
     <insert id="appointmentOrder" useGeneratedKeys="true" keyProperty="order.order_no">
         insert into t_xt_order (open_id,state,type,send_time,appointment_time,car_type)
-        values (#{order.open_id},4,1,#{order.state},#{order.appointment_time},#{order.car_type})
+        values (#{order.open_id},4,1,now(),#{order.appointment_time},#{order.car_type})
     </insert>
 
     <insert id="afterSaleOrder" useGeneratedKeys="true" keyProperty="order.order_no">
         insert into t_xt_order (old_order_no,open_id,state,type,send_time,appointment_time,car_type)
-        values (#{order.old_order_no},#{order.open_id},0,2,#{order.state},#{order.appointment_time},#{order.car_type})
+        values (#{order.old_order_no},#{order.open_id},0,2,now(),#{order.appointment_time},#{order.car_type})
     </insert>
 
     <update id="updateAppointmentTime">
@@ -350,9 +350,15 @@
     </update>
 
     <select id="getAllOrders" resultMap="order">
-        SELECT * FROM t_xt_order o
+        SELECT o.*,d.*,d.id AS detail_id ,a.id AS app_id,a.name,a.tel,w.id AS wx_id
+        FROM t_xt_order o
         LEFT JOIN t_xt_order_detail d
         ON o.order_no = d.order_no
+        LEFT JOIN t_app_user a
+        ON o.job_no = a.job_no
+        LEFT JOIN t_wx_user w
+        ON o.open_id = w.openid
+        WHERE o.state != 0
         ORDER BY o.send_time DESC
     </select>
 
@@ -409,7 +415,21 @@
 
     <update id="updateReturnState">
         UPDATE t_xt_order
-        set is_return_visit = 1
+        SET is_return_visit = 1
         WHERE order_no = #{orderNo}
     </update>
+
+    <update id="setJobNo">
+        UPDATE t_xt_order
+        SET job_no = #{jobNo},state = 1
+        WHERE order_no = #{orderNo}
+    </update>
+
+    <select id="getHistoryAfterSale" resultMap="order">
+        SELECT *,d.id AS detail_id FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        WHERE o.type = 2 AND o.state IN (5,11)
+    </select>
+
 </mapper>

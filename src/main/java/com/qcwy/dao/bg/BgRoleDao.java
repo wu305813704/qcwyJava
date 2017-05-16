@@ -16,7 +16,7 @@ public interface BgRoleDao {
     void delete(@Param("id") int id);
 
     //修改角色
-    void update(@Param("role") Role role);
+    void update(@Param("roleId") Integer roleId, @Param("roleName") String roleName);
 
     //通过Id查询
     Role selectById(@Param("id") int id);
