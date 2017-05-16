@@ -295,6 +295,7 @@ public class OrderServiceImpl implements OrderService {
     //驳回售后订单
     @Override
     public void rejectOrder(int orderNo, String cause) {
+        orderDao.updateState(5,orderNo);//修改订单状态为取消
         orderAfterSaleDao.save(orderNo, cause);
     }
 
@@ -359,6 +360,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Integer getCountHoldOrders(String jobNo) {
         return orderDao.getCountHoldOrders(jobNo);
+    }
+
+    @Override
+    public List<Order> getHistoryAfterSale() {
+        return orderDao.getHistoryAfterSale();
     }
 
     //加价

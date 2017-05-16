@@ -425,4 +425,11 @@
         WHERE order_no = #{orderNo}
     </update>
 
+    <select id="getHistoryAfterSale" resultMap="order">
+        SELECT *,d.id AS detail_id FROM t_xt_order o
+        LEFT JOIN t_xt_order_detail d
+        ON o.order_no = d.order_no
+        WHERE o.type = 2 AND o.state IN (5,11)
+    </select>
+
 </mapper>

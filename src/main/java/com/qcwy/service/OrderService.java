@@ -174,4 +174,7 @@ public interface OrderService {
 
     //查询工程师所持订单数
     Integer getCountHoldOrders(String jobNo);
+
+    //查询历史售后订单
+    List<Order> getHistoryAfterSale();
 }

@@ -1299,4 +1299,25 @@ public class BackgroundController {
         return new JsonResult<>(count);
     }
 
+    //历史申请的售后订单
+    @GetMapping("/getHistoryAfterSale")
+    @ApiOperation("历史申请的售后订单")
+    public JsonResult<?> getHistoryAfterSale(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                             @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                             @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orders;
+        try {
+            orders = orderService.getHistoryAfterSale();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(orders));
+    }
+
 }
