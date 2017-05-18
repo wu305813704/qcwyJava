@@ -60,15 +60,13 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public void updateLoc(String lati, String lon, Timestamp updateTime, String jobNo) throws IOException {
-        appUserDao.updateLoc(lati, lon, updateTime, jobNo);
+    public void updateLoc(String lati, String lon, String loc, String jobNo) throws IOException {
+        appUserDao.updateLoc(lati, lon, loc, jobNo);
         //WebSocket推送给后台页面
         AppUser appUser = new AppUser();
         appUser.setJob_no(jobNo);
         appUser.setLati(lati);
         appUser.setLon(lon);
-        BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
-                new WebSocketMessage<>(MessageTypeUtils.UPDATE_LOCATION, appUser)));
     }
 
     @Override

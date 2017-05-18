@@ -25,7 +25,7 @@ public class BgWebSocket {
     private static AtomicInteger onlineCount = new AtomicInteger(0);
 
     //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
-//    private static CopyOnWriteArraySet<MyWebSocket> webSocketSet = new CopyOnWriteArraySet<>();
+    //private static CopyOnWriteArraySet<MyWebSocket> webSocketSet = new CopyOnWriteArraySet<>();
     public static CopyOnWriteArrayList<BgWebSocket> webSockets = new CopyOnWriteArrayList<>();
 
     private String username;
@@ -43,7 +43,7 @@ public class BgWebSocket {
         webSockets.add(this);     //加入set中
         map.put(username, session);
         addOnlineCount();           //在线数加1
-        System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());
+        System.out.println("有新连接加入！当前后台在线人数为" + getOnlineCount());
         try {
             sendMessage(username);
         } catch (IOException e) {
@@ -58,7 +58,7 @@ public class BgWebSocket {
     public void onClose() {
         webSockets.remove(this);  //从set中删除
         subOnlineCount();           //在线数减1
-        System.out.println("有一连接关闭！当前在线人数为" + getOnlineCount());
+        System.out.println("有一连接关闭！当前后台在线人数为" + getOnlineCount());
     }
 
     /**
@@ -68,7 +68,7 @@ public class BgWebSocket {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("来自" + username + "的消息:" + message);
+//        System.out.println("来自" + username + "的消息:" + message);
         //群发消息
         for (BgWebSocket item : webSockets) {
             try {
@@ -85,7 +85,7 @@ public class BgWebSocket {
      * @OnError
      **/
     public void onError(Session session, Throwable error) {
-        System.out.println("发生错误");
+        System.out.println("后台WebSocket发生错误");
         error.printStackTrace();
     }
 

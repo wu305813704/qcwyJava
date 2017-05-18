@@ -15,4 +15,6 @@ public interface OrderVisitDao {
     //保存回访记录
     void save(@Param("userNo") String userNo, @Param("orderNo") int orderNo, @Param("content") String content);
 
+    //获取回访详情
+    OrderVisit getReturnVisitInfo(@Param("orderNo") Integer orderNo);
 }

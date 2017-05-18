@@ -25,7 +25,7 @@ public interface AppUserDao {
     List<AppUser> findAllOnline();
 
     //工程师上传实时地理位置
-    void updateLoc(@Param("lati") String lati, @Param("lon") String lon, @Param("updateTime") Timestamp updateTime, @Param("jobNo") String jobNo);
+    void updateLoc(@Param("lati") String lati, @Param("lon") String lon, @Param("loc") String loc, @Param("jobNo") String jobNo);
 
     //修改密码
     void updatePwd(@Param("pwd") String pwd, @Param("jobNo") String jobNo);

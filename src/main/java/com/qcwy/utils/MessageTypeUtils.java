@@ -31,6 +31,9 @@ public class MessageTypeUtils {
     //订单维修完成
     public static final int OFFLINE_PAY = 7;
 
+    //售后订单驳回
+    public static final int REJECT_ORDER = 8;
+
     /**
      * 后台
      */

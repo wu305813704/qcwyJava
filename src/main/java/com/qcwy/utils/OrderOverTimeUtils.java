@@ -31,21 +31,22 @@ public class OrderOverTimeUtils {
             }
             if (orderDao.getStateByNo(orderNo) == 0) {
                 //提醒后台订单超时
+                //保存至数据库
+                BgOrder bgOrder = new BgOrder();
+                bgOrder.setOrder_no(orderNo);
+                bgOrder.setType(0);//超时订单
+                bgOrder.setCause("订单超时");
+                bgOrder.setState(0);//未处理
+                bgOrderDao.save(bgOrder);
+                System.out.println("订单号:" + orderNo + "已超时");
+                //推送给后台
                 try {
                     BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
-                            new WebSocketMessage<>(MessageTypeUtils.ORDER_OVER_TIME, orderNo)
+                            new WebSocketMessage<>(MessageTypeUtils.ORDER_OVER_TIME, orderDao.getOrder(orderNo))
                     ));
-                    //保存至数据库
-                    BgOrder bgOrder = new BgOrder();
-                    bgOrder.setOrder_no(orderNo);
-                    bgOrder.setType(0);//超时订单
-                    bgOrder.setCause("订单超时");
-                    bgOrder.setState(0);//未处理
-                    bgOrderDao.save(bgOrder);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                System.out.println("订单号:" + orderNo + "已超时");
             } else {
                 System.out.println("订单号:" + orderNo + "未超时");
             }

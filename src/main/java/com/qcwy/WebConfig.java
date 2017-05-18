@@ -12,9 +12,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
+    //本地文件映射
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/image/**").addResourceLocations("file:D:/image/");
+        registry.addResourceHandler("/image/**").addResourceLocations("file:/qcwy/image/");
         super.addResourceHandlers(registry);
     }
+
+//    //拦截器注册
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+////        registry.addInterceptor(new MyInterceptor()).addPathPatterns("/**")/** 需要拦截的请求*/.excludePathPatterns()/** 派出拦截的请求*/;
+//        super.addInterceptors(registry);
+//    }
 }

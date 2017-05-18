@@ -15,14 +15,11 @@
         <result property="online" column="online"/>
         <result property="lon" column="lon"/>
         <result property="lati" column="lati"/>
+        <result property="loc" column="loc"/>
         <result property="update_time" column="update_time"/>
         <result property="regist_time" column="regist_time"/>
+        <result property="order_count" column="order_count"/>
     </resultMap>
-
-    <select id="getUserByJobNo" resultMap="user">
-        SELECT * FROM t_app_user
-        WHERE job_no = #{jobNo}
-    </select>
 
     <!-- useGeneratedKeys="true" keyProperty="id" 自动赋值自增长的值给实体类 -->
     <insert id="save" parameterType="com.qcwy.entity.AppUser" useGeneratedKeys="true" keyProperty="id">
@@ -31,19 +28,38 @@
         values (#{job_no},#{name},#{id_card},#{birthday},now())
     </insert>
 
+    <select id="getUserByJobNo" resultMap="user">
+        SELECT a.*,count(o.order_no) AS order_count
+        FROM t_app_user a
+        LEFT JOIN t_xt_order o
+        ON a.job_no = o.job_no
+        AND o.state IN (1,2,3,6,7,8,9)
+        OR (o.state = 4 AND date_format(o.appointment_time,'%Y%m%d') = date_format(now(),'%Y%m%d'))
+        WHERE a.job_no = #{jobNo}
+    </select>
+
     <select id="login" resultMap="user">
         select * from t_app_user
         where job_no = #{jobNo} and pwd = #{pwd}
     </select>
 
     <select id="findAllOnline" resultMap="user">
-        select job_no,name,sex,online,lon,lati from t_app_user
-        where online = 1
+        SELECT *,count(order_no) AS order_count
+        FROM
+        (
+            SELECT a.*,o.order_no
+            FROM t_app_user a
+            LEFT JOIN t_xt_order o
+            ON a.job_no = o.job_no
+            AND o.state IN (1,2,3,6,7,8,9)
+            OR (o.state = 4 AND date_format(o.appointment_time,'%Y%m%d') = date_format(now(),'%Y%m%d'))
+        ) AS obj
+        GROUP BY obj.job_no
     </select>
 
     <update id="updateLoc">
         update t_app_user
-        set lati = #{lati}, lon = #{lon},update_time = #{updateTime}
+        set lati = #{lati}, lon = #{lon},loc = #{loc},update_time = now()
         where job_no = #{jobNo}
     </update>
 
@@ -64,9 +80,8 @@
         where job_no = #{jobNo}
     </select>
 
-    <select id="getAllUser" resultType="com.qcwy.entity.AppUser">
-        SELECT id,job_no,name,sex,id_card,birthday,online,lon,lati FROM t_app_user
-        ORDER BY name
+    <select id="getAllUser" resultMap="user">
+        SELECT * FROM t_app_user
     </select>
 
 </mapper>

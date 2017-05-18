@@ -180,4 +180,9 @@ public class BgUserServiceImpl implements BgUserService {
         bgUserDao.updateBgUser(bgUser);
     }
 
+    @Override
+    public BgUser getUserByUserNo(String userNo) {
+        return bgUserDao.getUserByUserNo(userNo);
+    }
+
 }
