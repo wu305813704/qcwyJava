@@ -52,7 +52,7 @@
         SET pwd = #{pwd}
         WHERE user_no = #{userNo}
     </update>
-    
+
     <update id="updateBgUser">
         UPDATE t_bg_user
         <set>
@@ -71,5 +71,11 @@
         </set>
         WHERE user_no = #{bgUser.user_no}
     </update>
-    
+
+    <select id="getUserByUserNo" resultType="com.qcwy.entity.bg.BgUser">
+        SELECT id,user_no,name,sex,tel,state,time
+        FROM t_bg_user
+        WHERE user_no = #{userNo}
+    </select>
+
 </mapper>

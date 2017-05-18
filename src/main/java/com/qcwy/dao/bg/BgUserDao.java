@@ -30,4 +30,7 @@ public interface BgUserDao {
 
     //修改后台用户
     void updateBgUser(@Param("bgUser") BgUser bgUser);
+
+    //获取后台用户信息
+    BgUser getUserByUserNo(@Param("userNo") String userNo);
 }

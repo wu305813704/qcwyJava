@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -97,6 +98,7 @@ public class CoderController {
 //        session.setAttribute("code", randomCode.toString());
         //保存codeId-code
         jedis.set(codeId, randomCode.toString());
+        jedis.expire(codeId, 3000);
         // 禁止图像缓存。
         resp.setHeader("Pragma", "no-cache");
         resp.setHeader("Cache-Control", "no-cache");
@@ -106,5 +108,29 @@ public class CoderController {
         ServletOutputStream sos = resp.getOutputStream();
         ImageIO.write(buffImg, "jpeg", sos);
         sos.close();
+    }
+
+    //微信认证
+    // 自定义 token
+    private String TOKEN = "weixin";
+
+    @GetMapping("/token")
+    public void token(HttpServletRequest request, HttpServletResponse response) {
+        // 微信加密签名
+        String signature = request.getParameter("signature");
+        // 随机字符串
+        String echostr = request.getParameter("echostr");
+        // 时间戳
+        String timestamp = request.getParameter("timestamp");
+        // 随机数
+        String nonce = request.getParameter("nonce");
+        String[] str = {TOKEN, timestamp, nonce};
+        Arrays.sort(str); // 字典序排序
+        String bigStr = str[0] + str[1] + str[2];
+        try {
+            response.getWriter().print(echostr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

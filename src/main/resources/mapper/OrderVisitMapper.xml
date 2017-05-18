@@ -34,4 +34,11 @@
         ORDER BY v.time DESC
     </select>
 
+    <select id="getReturnVisitInfo" resultMap="order">
+        SELECT v.*,u.name FROM t_xt_order_visit v
+        LEFT JOIN t_bg_user u
+        ON v.user_no = u.user_no
+        WHERE v.order_no = #{orderNo}
+    </select>
+
 </mapper>

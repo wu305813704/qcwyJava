@@ -9,13 +9,13 @@ public class GlobalConstant {
     //app故障url
     public static final String IMAGE_URL_APP_FAULT = "image/fault/app/";
     //app故障保存地址
-    public static final String IMAGE_PATH_APP_FAULT = "D:/image/fault/app/";
+    public static final String IMAGE_PATH_APP_FAULT = "/qcwy/image/fault/app/";
     //商品图片url
     public static final String IMAGE_URL_PATH_PART = "image/fault/app/";
     //商品图片保存地址
-    public static final String IMAGE_PATH_PART = "D:/image/part/";
+    public static final String IMAGE_PATH_PART = "/qcwy/image/part/";
     //wx故障url
     public static final String IMAGE_URL_WX_FAULT = "image/fault/wx/";
     //wx故障保存地址
-    public static final String IMAGE_PATH_WX_FAULT = "D:/image/fault/wx/";
+    public static final String IMAGE_PATH_WX_FAULT = "/qcwy/image/fault/wx/";
 }

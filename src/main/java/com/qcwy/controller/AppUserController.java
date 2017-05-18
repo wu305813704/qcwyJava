@@ -5,9 +5,8 @@ import com.qcwy.entity.*;
 import com.qcwy.entity.bg.BgOrder;
 import com.qcwy.entity.bg.LogForApp;
 import com.qcwy.service.*;
-import com.qcwy.utils.DateUtils;
-import com.qcwy.utils.JsonResult;
-import com.qcwy.utils.StringUtils;
+import com.qcwy.utils.*;
+import com.qcwy.websocket.BgWebSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -72,10 +71,14 @@ public class AppUserController {
     @ApiOperation("工程师实时上传位置")
     public JsonResult<?> updateLoc(@ApiParam(required = true, name = "lati", value = "维度") @RequestParam(value = "lati") String lati,
                                    @ApiParam(required = true, name = "lon", value = "经度") @RequestParam(value = "lon") String lon,
+                                   @ApiParam(required = true, name = "loc", value = "位置") @RequestParam(value = "loc") String loc,
                                    @ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo) {
         try {
-            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-            appUserService.updateLoc(lati, lon, updateTime, jobNo);
+            appUserService.updateLoc(lati, lon, loc, jobNo);
+            //推送给后台
+            BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
+                    new WebSocketMessage<>(MessageTypeUtils.UPDATE_LOCATION, appUserService.getUserByJobNo(jobNo))
+            ));
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -682,29 +685,5 @@ public class AppUserController {
         }
         return new JsonResult<>(appUser);
     }
-
-    //微信认证
-    // 自定义 token
-//    private String TOKEN = "weixin";
-//    @GetMapping("/token")
-//    public void token(HttpServletRequest request, HttpServletResponse response){
-//        // 微信加密签名
-//        String signature = request.getParameter("signature");
-//        // 随机字符串
-//        String echostr = request.getParameter("echostr");
-//        // 时间戳
-//        String timestamp = request.getParameter("timestamp");
-//        // 随机数
-//        String nonce = request.getParameter("nonce");
-//
-//        String[] str = { TOKEN, timestamp, nonce };
-//        Arrays.sort(str); // 字典序排序
-//        String bigStr = str[0] + str[1] + str[2];
-//        try {
-//            response.getWriter().print(echostr);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 }

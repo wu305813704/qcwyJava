@@ -43,7 +43,7 @@ public class WxWebSocket {
         webSockets.add(this);     //加入set中
         map.put(openId, session);
         addOnlineCount();           //在线数加1
-        System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());
+        System.out.println("有新连接加入！当前微信在线人数为" + getOnlineCount());
         try {
             sendMessage(openId);
         } catch (IOException e) {
@@ -58,7 +58,7 @@ public class WxWebSocket {
     public void onClose() {
         webSockets.remove(this);  //从set中删除
         subOnlineCount();           //在线数减1
-        System.out.println("有一连接关闭！当前在线人数为" + getOnlineCount());
+        System.out.println("有一连接关闭！当前微信在线人数为" + getOnlineCount());
     }
 
     /**
@@ -68,7 +68,7 @@ public class WxWebSocket {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("来自" + openId + "的消息:" + message);
+//        System.out.println("来自" + openId + "的消息:" + message);
         //群发消息
         for (WxWebSocket item : webSockets) {
             try {
@@ -85,7 +85,7 @@ public class WxWebSocket {
      * @OnError
      **/
     public void onError(Session session, Throwable error) {
-        System.out.println("发生错误");
+        System.out.println("微信WebSocket发生错误");
         error.printStackTrace();
     }
 

@@ -32,9 +32,13 @@ public class AppUser implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String lati;
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String loc;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp update_time;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp regist_time;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer order_count;
 
     public int getId() {
         return id;
@@ -124,6 +128,14 @@ public class AppUser implements Serializable {
         this.lati = lati;
     }
 
+    public String getLoc() {
+        return loc;
+    }
+
+    public void setLoc(String loc) {
+        this.loc = loc;
+    }
+
     public Timestamp getUpdate_time() {
         return update_time;
     }
@@ -138,5 +150,13 @@ public class AppUser implements Serializable {
 
     public void setRegist_time(Timestamp regist_time) {
         this.regist_time = regist_time;
+    }
+
+    public Integer getOrder_count() {
+        return order_count;
+    }
+
+    public void setOrder_count(Integer order_count) {
+        this.order_count = order_count;
     }
 }

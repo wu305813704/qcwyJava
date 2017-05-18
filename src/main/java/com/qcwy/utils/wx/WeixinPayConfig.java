@@ -11,9 +11,9 @@ public class WeixinPayConfig {
     //mch_id-商户号
     public static final String MCH_ID = "1384760002";
     //支付回调通知地址
-    public static final String NOTIFY_URL = "http://1699y0i558.iask.in/qcwy/wx/notifyUrl";
+    public static final String NOTIFY_URL = "http://wechat.qichengwuyou.com/qcwy/wx/notifyUrl";
     //支付body
-    public static final String BODY = "骑程无忧-维修费";
+    public static final String BODY = "骑程无忧";
     //trade_type
     public static final String JSAPI = "JSAPI";
 }

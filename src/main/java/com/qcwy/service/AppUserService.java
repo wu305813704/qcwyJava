@@ -27,7 +27,7 @@ public interface AppUserService {
     List<AppUser> findAllOnline();
 
     //工程师上传实时地理位置
-    void updateLoc(String lati, String lon, Timestamp updateTime, String jobNo) throws IOException;
+    void updateLoc(String lati, String lon, String loc, String jobNo) throws IOException;
 
     //修改密码
     void updatePwd(String pwd, String jobNo);

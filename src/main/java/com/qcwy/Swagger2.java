@@ -30,8 +30,8 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("骑程无忧API")
-                .description("baseUrl--http://192.168.3.108:8080/qcwy")
-                .termsOfServiceUrl("http://www.baidu.com/")
+//                .description("baseUrl--http://192.168.3.108:8080/qcwy")
+//                .termsOfServiceUrl("http://www.baidu.com/")
                 .contact("KouKi")
                 .version("1.0")
                 .build();

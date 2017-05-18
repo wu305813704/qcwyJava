@@ -4,8 +4,11 @@ import com.github.pagehelper.PageHelper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import java.util.Properties;
 
@@ -28,4 +31,11 @@ public class Application {
         pageHelper.setProperties(p);
         return pageHelper;
     }
+
+    //WebSocket(必须放在Application中，单独创建类会打包失败)
+    @Bean
+    public ServerEndpointExporter serverEndpointExporter() {
+        return new ServerEndpointExporter();
+    }
+
 }

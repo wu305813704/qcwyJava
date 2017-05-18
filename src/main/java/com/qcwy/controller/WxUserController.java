@@ -8,13 +8,12 @@ import com.qcwy.service.AppUserService;
 import com.qcwy.service.LogService;
 import com.qcwy.service.OrderService;
 import com.qcwy.service.WxUserService;
-import com.qcwy.utils.DateUtils;
-import com.qcwy.utils.JsonResult;
-import com.qcwy.utils.StringUtils;
+import com.qcwy.utils.*;
 import com.qcwy.utils.wx.UnifiedOrderNotifyRequestData;
 import com.qcwy.utils.wx.WeixinConstant;
 import com.qcwy.utils.wx.WeixinPayConfig;
 import com.qcwy.utils.wx.WxUtils;
+import com.qcwy.websocket.BgWebSocket;
 import com.qcwy.websocket.WxWebSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -276,6 +275,10 @@ public class WxUserController {
             logForWx.setOrder_no(order.getOrder_no());
             logForWx.setOpenid(openId);
             logService.saveLogWx(logForWx);
+            //推送给后台
+            BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
+                    new WebSocketMessage<>(MessageTypeUtils.APPOINTMENT_ORDER, order)
+            ));
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -332,6 +335,10 @@ public class WxUserController {
             logForWx.setOrder_no(order.getOrder_no());
             logForWx.setOpenid(openId);
             logService.saveLogWx(logForWx);
+            //推送给后台
+            BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
+                    new WebSocketMessage<>(MessageTypeUtils.AFTER_SALE_ORDER, order)
+            ));
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -562,9 +569,9 @@ public class WxUserController {
                                            @ApiParam(required = true, name = "ip", value = "ip") @RequestParam(value = "ip") String ip) {
         JsonResult<?> responseData;
         try {
-            int totalFee /*= (int) (orderService.getOrderDetail(orderNo).getTotal_price() * 100)*/;
-            //TODO 测试全部改成 1 分钱
-            totalFee = 1;
+            int totalFee = (int) (orderService.getOrderDetail(orderNo).getTotal_price() * 100);
+//            //测试全部改成 1 分钱
+//            totalFee = 1;
             responseData = WxUtils.getAdvancePackege(WeixinPayConfig.APP_ID, WeixinPayConfig.BODY, String.valueOf(orderNo), totalFee, ip, WeixinPayConfig.JSAPI, openid);
         } catch (Exception e) {
             return new JsonResult<>(e);
@@ -623,7 +630,6 @@ public class WxUserController {
         logForWx.setOpenid(orderService.getOpenIdByOrderNo(orderNo));
         logService.saveLogWx(logForWx);
         //TODO 推送给工程师，该用户申请线下支付
-
         return new JsonResult<>(true);
     }
 

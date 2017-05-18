@@ -6,10 +6,9 @@ import com.qcwy.RedisClient;
 import com.qcwy.entity.*;
 import com.qcwy.entity.bg.*;
 import com.qcwy.service.*;
-import com.qcwy.utils.DateUtils;
-import com.qcwy.utils.JsonResult;
-import com.qcwy.utils.StringUtils;
+import com.qcwy.utils.*;
 import com.qcwy.utils.wx.WxUtils;
+import com.qcwy.websocket.WxWebSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -603,11 +602,14 @@ public class BackgroundController {
         }
         try {
             //保存驳回原因
+
             orderService.rejectOrder(orderNo, cause);
             //微信端添加消息
             //TODO
             //推送给微信
-            //TODO
+            WxWebSocket.sendMsgByOpenId(orderService.getOpenIdByOrderNo(orderNo), ObjectMapperUtils.getInstence().writeValueAsString(
+                    new WebSocketMessage<>(MessageTypeUtils.REJECT_ORDER, cause))
+            );
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -1224,7 +1226,7 @@ public class BackgroundController {
         }
         try {
             Order order = orderService.getOrder(orderNo);
-            if (order.getState() != 0) {
+            if (order.getState() != 0 && order.getState() != 4) {
                 return new JsonResult<>("该订单已派发，请勿重复派发");
             }
             orderService.distributeOrder(orderNo, jobNo);
@@ -1320,4 +1322,41 @@ public class BackgroundController {
         return new JsonResult<>(new PageInfo<>(orders));
     }
 
+    //获取后台用户信息
+    @GetMapping("/getUserInfo")
+    @ApiOperation("获取后台用户信息")
+    public JsonResult<?> getUserInfo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                     @ApiParam(required = true, name = "userNo", value = "用户帐号") @RequestParam(value = "userNo") String userNo) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        BgUser bgUser;
+        try {
+            bgUser = bgUserService.getUserByUserNo(userNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(bgUser);
+    }
+
+    //查询回访详情
+    @GetMapping("/getReturnVisitInfo")
+    @ApiOperation("查询回访详情")
+    public JsonResult<?> getReturnVisitInfo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                     @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") Integer orderNo) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        OrderVisit orderVisit;
+        try {
+            orderVisit = orderService.getReturnVisitInfo(orderNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(orderVisit);
+    }
 }

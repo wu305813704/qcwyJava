@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  */
 public class Order implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private int order_no;
+    private Integer order_no;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private int old_order_no;
     @JsonInclude(JsonInclude.Include.NON_NULL)

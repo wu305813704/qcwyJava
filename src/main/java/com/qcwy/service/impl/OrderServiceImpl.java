@@ -276,9 +276,12 @@ public class OrderServiceImpl implements OrderService {
         orderDetailDao.saveOrderDetail(order.getOrder_no(), order.getOrderDetail());
         order.setOrderDetail(orderDetailDao.getOrderDetail(order.getOrder_no()));
         orderRecordDao.save(order.getOrder_no());
-        //推送给后台派发
-        BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
-                new WebSocketMessage<>(MessageTypeUtils.APPOINTMENT_ORDER, order)));
+        //保存至后台
+        BgOrder bgOrder = new BgOrder();
+        bgOrder.setOrder_no(order.getOrder_no());
+        bgOrder.setType(2);//预约单
+        bgOrder.setCause("预约单");
+        bgOrder.setState(0);//未处理
     }
 
     @Override
@@ -295,7 +298,7 @@ public class OrderServiceImpl implements OrderService {
     //驳回售后订单
     @Override
     public void rejectOrder(int orderNo, String cause) {
-        orderDao.updateState(5,orderNo);//修改订单状态为取消
+        orderDao.updateState(5, orderNo);//修改订单状态为取消
         orderAfterSaleDao.save(orderNo, cause);
     }
 
@@ -334,13 +337,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void telPlaceOrder(Order order) {
+    public void telPlaceOrder(Order order) throws IOException {
         WxUser wxUser = order.getWxUser();
         wxUserDao.register(wxUser);
         if (order.getType() == 0) {
-            orderDao.saveOrder(order);
+            placeOrder(order);
         } else if (order.getType() == 1) {
-            orderDao.appointmentOrder(order);
+            appointmentOrder(order);
         }
     }
 
@@ -353,7 +356,7 @@ public class OrderServiceImpl implements OrderService {
         msg.setJob_no(jobNo);
         appOrderMessageDao.save(msg);
         //修改bgOrder的state为1
-        bgOrderDao.updateState(orderNo,1);
+        bgOrderDao.updateState(orderNo, 1);
         model.distributeToEngineer(jobNo, orderNo);
     }
 
@@ -365,6 +368,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getHistoryAfterSale() {
         return orderDao.getHistoryAfterSale();
+    }
+
+    @Override
+    public OrderVisit getReturnVisitInfo(Integer orderNo) {
+        return orderVisitDao.getReturnVisitInfo(orderNo);
     }
 
     //加价

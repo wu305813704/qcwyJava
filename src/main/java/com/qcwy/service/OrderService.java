@@ -167,7 +167,7 @@ public interface OrderService {
     void returnVisit(String userNo, int orderNo, String content) throws Exception;
 
     //400电话下单
-    void telPlaceOrder(Order order);
+    void telPlaceOrder(Order order) throws IOException;
 
     //客服派单
     void distributeOrder(Integer orderNo, String jobNo);
@@ -177,4 +177,7 @@ public interface OrderService {
 
     //查询历史售后订单
     List<Order> getHistoryAfterSale();
+
+    //查询回访详情
+    OrderVisit getReturnVisitInfo(Integer orderNo);
 }

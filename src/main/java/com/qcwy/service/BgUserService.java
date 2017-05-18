@@ -71,4 +71,7 @@ public interface BgUserService {
 
     //修改后台用户
     void updateBgUser(BgUser bgUser);
+
+    //获取后台用户信息
+    BgUser getUserByUserNo(String userNo);
 }
