@@ -1,0 +1,188 @@
+<!--<h1>{{title}}</h1>-->
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">员工列表</div>
+        <div class="top_PFr">
+            <span class="selectName" id="selectStaffName">姓名</span>
+            <select class="selectName selectName1" style="opacity: 0">
+                <option value="姓名">姓名</option>
+                <option value="工号">工号</option>
+            </select>
+            <input type="text" id="seletNameValue" value="张先生">
+            <span class="addStaff" style="cursor: pointer">添加员工</span>
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber">序号</span>
+        <span class="top_pLoginName">登录名</span>
+        <span class="top_pName">姓名</span>
+        <span class="top_pTel">电话</span>
+        <span class="top_pCompany">性别</span>
+        <span class="top_pPermission">角色名称</span>
+        <span class="top_pType">状态</span>
+        <span class="top_pOperation">操作</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2" ng-repeat="item in itemData track by $index">
+            <span class="top_pNumber">&nbsp;{{$index+1}}</span>
+            <span class="top_pLoginName">&nbsp;{{item.user_no}}</span>
+            <span class="top_pName">&nbsp;{{item.name}}</span>
+            <span class="top_pTel">&nbsp;{{item.tel}}</span>
+            <span class="top_pCompany">{{item.sex == 1 ? "先生" : "女士"}}</span>
+            <span class="top_pPermission">&nbsp;{{typeNamerole(item.roles)}}</span>
+            <span class="top_pType">
+                <span class="top_pTypeIn">{{item.state == 0 ? "在职" : "离职"}}</span>
+            </span>
+            <span class="top_pOperation">
+                <img src="../Quote/img/business/leftbar_bj.png" alt="" class="top_pOperationImg" ng-click="orderDescription(item.user_no)" style="cursor: pointer">
+                <!--<img src="../Quote/img/business/leftbar_sc.png" alt="" class="top_pOperationImg" ng-click="test($index+1)">-->
+            </span>
+        </div>
+    </div>
+</div>
+<div id="pageNumber">
+    <div id="pageLftUp" style="position: absolute;top: 893px;left: 1481px;display: none">下一页</div>
+    <div class="ep-pages" style="position: absolute;top: 868px;right: 130px;"></div>
+    <div id="pageRightDown" style="position: absolute;top: 893px;left: 1180px;display: none">上一页</div>
+</div>
+<!--*********************隐藏添加员工界面*******************-->
+<div class="mark1">
+    <div id="addStaff">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                添加员工
+            </div>
+            <div class="addStaff_TopR" style="cursor: pointer">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom">
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    登录账号：
+                </span>
+                <span class="addStaff_BottomSpan1">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input" ng-model="userNo">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    登录密码：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="password" value="cw154863" class="addStaff_BottomSpan1_input" ng-model="passWord">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    员工姓名：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input" ng-model="userName">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    员工电话：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input" ng-model="userTel">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    员工性别：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <span class="span400_2"><input type="radio" style="opacity: 0"><span class="radio on" style="cursor: pointer"></span>先生</span>
+                    <span class="span400_3"><input type="radio" style="opacity: 0"><span class="radio" style="cursor: pointer"></span>女士</span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    角色权限：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <span class="selectROle">管理角色1</span>
+                    <select name="" id="selectROle1">
+                        <option ng-repeat="item in itemRoleList track by $index" value="{{item.id}}">{{item.role_name}}</option>
+                    </select>
+                    <span class="addStaff_BottomSpan2Type">添加状态：</span>
+                    <span class="typeSelectValue">在职</span>
+                    <select name="" id="typeSelect">
+                        <option value="0">在职</option>
+                        <option value="1">离职</option>
+                    </select>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1">
+                    信息备注：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <textarea class="addStaff_BottomSpan2Textarea">请填写备注内容</textarea>
+                </span>
+            </div>
+            <ul class="ul400">
+                <li id="addStaff_Btom">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren" style="cursor: pointer">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset" style="cursor: pointer">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--***************************隐藏订单详情***************************-->
+    <div id="orderDescription" style="display: none;height: 326px;margin-top: -163px">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                员工详情
+            </div>
+            <div class="addStaff_TopR" style="cursor: pointer">
+                X
+            </div>
+        </div>
+        <div class="orderDescription_Bottom">
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">员工账号:</span>
+                <span class="addStaff_BottomSpan2">{{userName}}</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">员工状态:</span>
+                <span class="addStaff_BottomSpan2">
+                    <span>
+                        <select id="staffType" style="width: 80px;height: 20px;">
+                            <option value="0">在职</option>
+                            <option value="1">离职</option>
+                        </select>
+                    </span>
+                    <span style="margin-left: 20px">
+                        员工性别：
+                        <select name="" id="staffSex" style="width: 80px;height: 20px;">
+                            <option value="1">男</option>
+                            <option value="2">女</option>
+                        </select>
+                    </span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">员工电话:</span>
+                <span class="addStaff_BottomSpan2-2">
+                    <input type="text" style="width: 245px;height: 20px;" id="staffTel">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">员工姓名:</span>
+                <span class="addStaff_BottomSpan2-2">
+                    <input type="text" style="width: 245px;height: 20px;" id="staffName">
+                </span>
+            </div>
+            <ul class="ul400 ul401" style="position: relative;top: -60px;">
+                <li id="addStaff_Btom1" style="position: relative;top: 10px;left: -200px;">
+                    <span class="span400_1_1 on sapn400queren addStaff_Bottom_1" ng-click="amendStaff()" style="cursor: pointer">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset_1" ng-click="resetStaff()" style="cursor: pointer">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+

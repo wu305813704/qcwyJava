@@ -1,0 +1,93 @@
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        工程师日志
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber">序号</span>
+        <span class="top_pLoginName">操作人名称</span>
+        <span class="top_pName topDefalut">订单编号</span>
+        <span class="top_pCompany" style="width: 325px">日志内容</span>
+        <span class="top_pPermission" style="width: 265px;">操作时间</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2" ng-repeat="item in itemData track by $index">
+            <span class="top_pNumber">{{$index+1}}</span>
+            <span class="top_pLoginName">{{item.username}}</span>
+            <span class="top_pName topDefalut">{{item.order_no}}</span>
+            <span class="top_pCompany" style="width: 325px">{{item.content}}</span>
+            <span class="top_pPermission"  style="width: 265px;">{{getLocalTime(item.time)}}</span>
+        </div>
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张师傅</span>-->
+            <!--<span class="top_pName topDefalut">管理角色1</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">超威集团</span>-->
+            <!--<span class="top_pCompany" style="width: 325px">派发订单成功</span>-->
+            <!--<span class="top_pPermission"  style="width: 265px;">2017-03-14  18:30</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张师傅</span>-->
+            <!--<span class="top_pName topDefalut">管理角色1</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">超威集团</span>-->
+            <!--<span class="top_pCompany" style="width: 325px">派发订单成功</span>-->
+            <!--<span class="top_pPermission"  style="width: 265px;">2017-03-14  18:30</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张师傅</span>-->
+            <!--<span class="top_pName topDefalut">管理角色1</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">超威集团</span>-->
+            <!--<span class="top_pCompany" style="width: 325px">派发订单成功</span>-->
+            <!--<span class="top_pPermission"  style="width: 265px;">2017-03-14  18:30</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张师傅</span>-->
+            <!--<span class="top_pName topDefalut">管理角色1</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">超威集团</span>-->
+            <!--<span class="top_pCompany" style="width: 325px">派发订单成功</span>-->
+            <!--<span class="top_pPermission"  style="width: 265px;">2017-03-14  18:30</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张师傅</span>-->
+            <!--<span class="top_pName topDefalut">管理角色1</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">超威集团</span>-->
+            <!--<span class="top_pCompany" style="width: 325px">派发订单成功</span>-->
+            <!--<span class="top_pPermission"  style="width: 265px;">2017-03-14  18:30</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张师傅</span>-->
+            <!--<span class="top_pName topDefalut">管理角色1</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">超威集团</span>-->
+            <!--<span class="top_pCompany" style="width: 325px">派发订单成功</span>-->
+            <!--<span class="top_pPermission"  style="width: 265px;">2017-03-14  18:30</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张师傅</span>-->
+            <!--<span class="top_pName topDefalut">管理角色1</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">超威集团</span>-->
+            <!--<span class="top_pCompany" style="width: 325px">派发订单成功</span>-->
+            <!--<span class="top_pPermission"  style="width: 265px;">2017-03-14  18:30</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张师傅</span>-->
+            <!--<span class="top_pName topDefalut">管理角色1</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">超威集团</span>-->
+            <!--<span class="top_pCompany" style="width: 325px">派发订单成功</span>-->
+            <!--<span class="top_pPermission"  style="width: 265px;">2017-03-14  18:30</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张师傅</span>-->
+            <!--<span class="top_pName topDefalut">管理角色1</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">超威集团</span>-->
+            <!--<span class="top_pCompany" style="width: 325px">派发订单成功</span>-->
+            <!--<span class="top_pPermission"  style="width: 265px;">2017-03-14  18:30</span>-->
+        <!--</div>-->
+    </div>
+</div>

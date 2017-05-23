@@ -1,55 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>微信支付</title>
+    <meta charset="UTF-8"/>
+    <title>骑程无忧</title>
 </head>
 <body>
-<button id="btn"></button>
 <script>
-        var btn = document.getElementById("btn");
-        btn.onclick = function () {
-            alert(123)
-            function onBridgeReady(){
-                alert("weixinzhifu");
-                WeixinJSBridge.invoke(
-                    'getBrandWCPayRequest',
-                    $.parseJSON(wxJsApiData.resultData),{
-                        "appId":"wx0d172b65b0a49776",     //公众号名称，由商户传入
-                        "timeStamp":"1492416718",         //时间戳，自1970年以来的秒数
-                        "nonceStr":"3FJ3X4T6BJHWSJ0XMCX86NW1YRYMD8XK",
-                        //随机串
-                        "package":"prepay_id=wx201704171611587e7510f8280094470603",
-
-                        "signType":"MD5",         //微信签名方式：
-                        "paySign":"9F66C65BCE5630CC744931E5D4BFA0EA"
-//微信签名
-                    },
-                    function(res){
-                        alert(res.err_msg+"123");
-                        console.log(res.err_msg+"123");
-                        if(res.err_msg == "get_brand_wcpay_request:ok" ) {
-                            //新添加
-                            // window.location.href="/wxpay/paysuccess/"+{$order.sn};
-                        }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
-                    }
-                );
-            }
-            if (typeof WeixinJSBridge == "undefined"){
-                alert("weixinzhifunini")
-                if( document.addEventListener ){
-                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-                }else if (document.attachEvent){
-                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-                }
-            }else{
-                alert("微信支付")
-                onBridgeReady();
-            }
-        }
-
-
+    window.onload = function () {
+        window.location = "http://wechat.qichengwuyou.com/login.html";
+    }
 </script>
 </body>
 </html>

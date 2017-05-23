@@ -1,0 +1,288 @@
+<!--<h1>{{title}}</h1>-->
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">维修订单</div>
+        <div class="top_PFr">
+            <span class="selectName" id="selectStaffName">订单号</span>
+            <select class="selectName selectName1" style="opacity: 0">
+                <option value="订单号">订单号</option>
+                <option value="工号">工号</option>
+            </select>
+            <input type="text" id="seletNameValue" value="00568">
+            <span style="position: relative;top: 10px;right: 80px;width: 30px;height: 30px;">
+                <img src="../Quote/img/search/搜索-搜索%20(1).png" alt="" style="width: 100%" ng-click="referOrder()">
+            </span>
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber">序号</span>
+        <span class="top_pLoginName">订单号</span>
+        <span class="top_pName topDefalut">故障描述</span>
+        <span class="top_pTel top_addressBaoxiu">报修地址</span>
+        <span class="top_pCompany">来源</span>
+        <span class="top_pPermission">发起日期</span>
+        <span class="top_pType">状态</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2" ng-repeat="item in itemData track by $index" ng-if="orderList">
+            <span class="top_pNumber" style="overflow: hidden">{{$index+1}}</span>
+            <span class="top_pLoginName" style="overflow: hidden">{{item.order_no}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden">{{formatDescription(item.orderDetail.fault_id,1)}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden">{{item.orderDetail.loc}}</span>
+            <span class="top_pCompany" style="overflow: hidden">{{item.wxUser.type == 0? "微信订单":"400订单"}}</span>
+            <span class="top_pPermission" style="overflow: hidden">{{item.orderDetail.send_time.substring(0,item.orderDetail.send_time.lastIndexOf(" "))}}</span>
+            <span class="top_pType" style="overflow: hidden">
+                {{orderType(item.state)}}
+            </span>
+        </div>
+        <div class="top_P1 top_P2" ng-if="orderRefer">
+            <span class="top_pNumber" style="overflow: hidden">1</span>
+            <span class="top_pLoginName" style="overflow: hidden">{{itemData.order_no}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden">{{formatDescription(itemData.orderDetail.fault_id,1)}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden">{{itemData.orderDetail.loc}}</span>
+            <span class="top_pCompany" style="overflow: hidden">{{itemData.wxUser.type == 0? "微信订单":"400订单"}}</span>
+            <span class="top_pPermission" style="overflow: hidden">{{itemData.orderDetail.send_time.substring(0,itemData.orderDetail.send_time.lastIndexOf(" "))}}</span>
+            <span class="top_pType" style="overflow: hidden">
+                {{orderType(itemData.state)}}
+            </span>
+        </div>
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">00568</span>-->
+            <!--<span class="top_pName topDefalut">车胎没气了</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">萍水西街83号</span>-->
+            <!--<span class="top_pCompany">来源</span>-->
+            <!--<span class="top_pPermission">2017-03-14</span>-->
+            <!--<span class="top_pType">-->
+                <!--维修中-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">00568</span>-->
+            <!--<span class="top_pName topDefalut">车胎没气了</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">萍水西街83号</span>-->
+            <!--<span class="top_pCompany">来源</span>-->
+            <!--<span class="top_pPermission">2017-03-14</span>-->
+            <!--<span class="top_pType">-->
+                <!--维修中-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">00568</span>-->
+            <!--<span class="top_pName topDefalut">车胎没气了</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">萍水西街83号</span>-->
+            <!--<span class="top_pCompany">来源</span>-->
+            <!--<span class="top_pPermission">2017-03-14</span>-->
+            <!--<span class="top_pType">-->
+                <!--暂停中-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">00568</span>-->
+            <!--<span class="top_pName topDefalut">车胎没气了</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">萍水西街83号</span>-->
+            <!--<span class="top_pCompany">来源</span>-->
+            <!--<span class="top_pPermission">2017-03-14</span>-->
+            <!--<span class="top_pType">-->
+                <!--改派中-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">00568</span>-->
+            <!--<span class="top_pName topDefalut">车胎没气了</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">萍水西街83号</span>-->
+            <!--<span class="top_pCompany">来源</span>-->
+            <!--<span class="top_pPermission">2017-03-14</span>-->
+            <!--<span class="top_pType">-->
+                <!--维修中-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">00568</span>-->
+            <!--<span class="top_pName topDefalut">车胎没气了</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">萍水西街83号</span>-->
+            <!--<span class="top_pCompany">来源</span>-->
+            <!--<span class="top_pPermission">2017-03-14</span>-->
+            <!--<span class="top_pType">-->
+                <!--维修中-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">00568</span>-->
+            <!--<span class="top_pName topDefalut">车胎没气了</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">萍水西街83号</span>-->
+            <!--<span class="top_pCompany">来源</span>-->
+            <!--<span class="top_pPermission">2017-03-14</span>-->
+            <!--<span class="top_pType">-->
+                <!--维修中-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">00568</span>-->
+            <!--<span class="top_pName topDefalut">车胎没气了</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">萍水西街83号</span>-->
+            <!--<span class="top_pCompany">来源</span>-->
+            <!--<span class="top_pPermission">2017-03-14</span>-->
+            <!--<span class="top_pType">-->
+                <!--维修中-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">00568</span>-->
+            <!--<span class="top_pName topDefalut">车胎没气了</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">萍水西街83号</span>-->
+            <!--<span class="top_pCompany">来源</span>-->
+            <!--<span class="top_pPermission">2017-03-14</span>-->
+            <!--<span class="top_pType">-->
+                <!--维修中-->
+            <!--</span>-->
+        <!--</div>-->
+    </div>
+</div>
+<div id="pageNumber">
+    <div id="pageLftUp" style="position: absolute;top: 893px;left: 1481px;display: none">下一页</div>
+    <div class="ep-pages" style="position: absolute;top: 868px;right: 130px;"></div>
+    <div id="pageRightDown" style="position: absolute;top: 893px;left: 1180px;display: none">上一页</div>
+</div>
+<!--*********************隐藏添加员工界面*******************-->
+<!--<div class="mark1">-->
+    <!--<div id="addStaff">-->
+        <!--<div class="addStaff_Top">-->
+            <!--<div class="addStaff_TopL">-->
+                <!--添加员工-->
+            <!--</div>-->
+            <!--<div class="addStaff_TopR">-->
+                <!--X-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="addStaff_Bottom">-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--登录账号：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--密码登录：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--员工姓名：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--员工电话：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--公司职务：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpanCompany">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomDuty">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--角色权限：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<span class="selectROle">管理角色1</span>-->
+                    <!--<select name="" id="selectROle1">-->
+                        <!--<option value="管理角色1">管理角色1</option>-->
+                        <!--<option value="管理角色2">管理角色2</option>-->
+                    <!--</select>-->
+                    <!--<span class="addStaff_BottomSpan2Type">添加状态：</span>-->
+                    <!--<span class="typeSelectValue">在职</span>-->
+                    <!--<select name="" id="typeSelect">-->
+                        <!--<option value="在职">在职</option>-->
+                        <!--<option value="离职">离职</option>-->
+                    <!--</select>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1">-->
+                    <!--信息备注：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<textarea class="addStaff_BottomSpan2Textarea">请填写备注内容</textarea>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<ul class="ul400">-->
+                <!--<li id="addStaff_Btom">-->
+                    <!--<span class="span400_1_1 on sapn400queren addStaff_Btomqueren">确认</span>-->
+                    <!--<span class="span400_1_1 sapn400reset addStaff_Btomreset">取消</span>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;***************************隐藏订单详情***************************&ndash;&gt;-->
+    <!--<div id="orderDescription">-->
+        <!--<div class="addStaff_Top">-->
+            <!--<div class="addStaff_TopL">-->
+                <!--员工详情-->
+            <!--</div>-->
+            <!--<div class="addStaff_TopR">-->
+                <!--X-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="orderDescription_Bottom">-->
+            <!--<div class="addStaff_Bottom1-1">-->
+                <!--<span class="addStaff_BottomSpan1_1_1">员工账号:</span>-->
+                <!--<span class="addStaff_BottomSpan2">cdhs52</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1-1">-->
+                <!--<span class="addStaff_BottomSpan1_1_1">员工密码:</span>-->
+                <!--<span class="addStaff_BottomSpan2">55328</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1-1">-->
+                <!--<span class="addStaff_BottomSpan1_1_1">员工电话:</span>-->
+                <!--<span class="addStaff_BottomSpan2-2">13888888888</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1-1">-->
+                <!--<span class="addStaff_BottomSpan1_1_1">员工姓名:</span>-->
+                <!--<span class="addStaff_BottomSpan2-2">张某某</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1-1">-->
+                <!--<span class="addStaff_BottomSpan1_1_1">公司职务:</span>-->
+                <!--<span class="addStaff_BottomSpan2-2">超威集团/职务</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1-1">-->
+                <!--<span class="addStaff_BottomSpan1_1_1">员工权限:</span>-->
+                <!--<span class="addStaff_BottomSpan2-2">角色管理1，角色管理2</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1-1">-->
+                <!--<span class=" addStaff_BottomSpan1_1_1">员工状态:</span>-->
+                <!--<span class="addStaff_BottomSpan2-2">在职</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1-1">-->
+                <!--<span class="addStaff_BottomSpan1_1_1">员工备注:</span>-->
+                <!--<span class="addStaff_BottomSpan2-2">无</span>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+

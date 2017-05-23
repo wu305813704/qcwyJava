@@ -1,0 +1,190 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+ul li{
+    list-style: none;
+}
+a , span{
+    display: inline-block;
+}
+a{
+    text-decoration:none;
+}
+table td{
+    text-align: center;
+    margin: 0 auto;
+}
+html , body{
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+table td{
+    text-align: center;
+    margin: 0 auto;
+}
+#wrap_logInPage{
+    width: 100%;
+    height:100%;
+    display: block;
+    background-image: url("Quote/img/LogIn/bg_glbj.png");
+    position: relative;
+}
+#wrap_login{
+    position: absolute;
+    top:50%;
+    left: 50%;
+    margin:0 auto;
+    margin-left: -360px;
+    margin-top: -300px;
+    display: block;
+    /*background-image: url("../img/LogIn/big_bg.png");*/
+    /*background-size:100% 100%;*/
+    width: 720px;
+    height: 500px;
+}
+#wrap_login_loginBg{
+    position: absolute;
+    top:50%;
+    left: 50%;
+    margin:0 auto;
+    margin-left: -360px;
+    margin-top: -190px;
+    display: block;
+    background-image: url("Quote/img/LogIn/big_bg.png");
+    background-size:100% 100%;
+    width: 720px;
+    height: 480px;
+    border:1px solid white;
+    border-radius: 3px;
+}
+#management_p{
+    color: white;
+    font-size: 44px;
+    text-align: right;
+    margin-bottom: 10px;
+
+}
+#tableLogin{
+    margin: 0 auto;
+}
+#wrap_login_loginLi{
+    background-image: url(Quote/img/LogIn/small_bg.png);
+    width: 600px;
+    height: 344px;
+    margin: 0 auto;
+    position: relative;
+    top: 65px;
+    padding-top: 35px;
+}
+.div1{
+    width: 450px;
+    margin: 30px auto;
+}
+.div1 span{
+    height: 40px;
+    line-height: 40px;
+}
+.div1 .span1{
+    font-size: 20px;
+    color: #ffffff;
+}
+.div1 .span2{
+    margin-left: 40px;
+}
+.div1 .span3{
+    position: relative;
+    top: -15px;
+}
+#userName ,#passWord{
+    width: 270px;
+    height: 40px;
+}
+#passWord{
+    position: relative;
+    left:-4px;
+}
+#code{
+    height: 40px;
+    width: 100px;
+}
+#codeBg{
+    width: 160px;
+    height: 40px;
+    margin-left: 5px;
+}
+#codeBg img{
+    width: 160px;
+    height: 40px;
+}
+.div2{
+    margin-top: 38px;
+    position: relative;
+    left: 25px;
+}
+.div1 .logIn_reset{
+    height: 40px;
+    width: 140px;
+    line-height: 40px;
+    margin: 0 20px;
+    background-image: url(Quote/img/LogIn/btn_bg.png);
+    color: #ffffff;
+    text-align: center;
+}
+/****************************wrap_select角色选择*******************************/
+#wrap_select{
+    position: absolute;
+    top:50%;
+    left:50%;
+    margin-left: -312.5px;
+    margin-top: -188.5px;
+    width: 625px;
+    height: 270px;
+    background-image: url(Quote/img/LogIn/small_bg.png);
+    display: none;
+}
+#select_paly{
+    opacity: 0;
+    position: relative;
+    left: 50%;
+    margin-left: -345px;
+    width: 340px;
+    height: 40px;
+    margin-top: 100px;
+    font-size: 16px;
+    line-height: 40px;
+    color: #ffffff;
+    background-color: #175A9A;
+}
+#select_paly_span{
+    position: relative;
+    left: 50%;
+    margin-left: -170px;
+    text-align: center;
+    width: 340px;
+    height: 40px;
+    font-size: 16px;
+    line-height: 40px;
+    color: #ffffff;
+    background-color: #175A9A;
+    border: 1px solid white;
+}
+#select_paly option{
+    text-align: center;
+    color: #ffffff;
+}
+#select_paly_logIn{
+    width: 370px;
+    margin: 0 auto;
+    margin-top: 40px;
+}
+#select_paly_logIn  .logIn_reset1{
+    height: 40px;
+    width: 140px;
+    line-height: 40px;
+    margin: 0 20px;
+    background-image: url(Quote/img/LogIn/btn_bg.png);
+    color: #ffffff;
+    text-align: center;
+}

@@ -1,0 +1,61 @@
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">黑名单</div>
+        <div class="top_PFr">
+            <span class="selectName" id="selectStaffName">订单号</span>
+            <select class="selectName selectName1" style="opacity: 0">
+                <option value="订单号">订单号</option>
+                <option value="工号">工号</option>
+            </select>
+            <input type="text" id="seletNameValue" value="00568">
+            <span style="position: relative;top: 10px;right: 80px;width: 30px;height: 30px;">
+                <img src="../Quote/img/search/搜索-搜索%20(1).png" alt="" style="width: 100%">
+            </span>
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber">序号</span>
+        <span class="top_pLoginName">客户名称</span>
+        <span class="top_pName topDefalut">客户电话</span>
+        <span class="top_pTel top_addressBaoxiu">性别</span>
+        <span class="top_pPermission" style="width: 310px;">禁用原因</span>
+        <span class="top_pType" style="width: 100px;">禁用时间</span>
+        <span class="top_pOperation" style="width: 187px">操作</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2" ng-repeat="item in itemData track by $index">
+            <span class="top_pNumber" style="overflow: hidden">{{$index+1}}</span>
+            <span class="top_pLoginName" style="overflow: hidden">{{item.nickname}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden">{{item.tel}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden">{{item.sex}}</span>
+            <span class="top_pPermission"  style="width: 310px;overflow: hidden">我是禁用原因...</span>
+            <span class="top_pType"  style="width: 100px;overflow: hidden">2014-04-15</span>
+            <span class="top_pOperation"  style="width: 187px;overflow: hidden;cursor: pointer" ng-click="delete(item.openid)">
+                删除
+            </span>
+        </div>
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber" style="overflow: hidden">1</span>-->
+            <!--<span class="top_pLoginName" style="overflow: hidden">张先生</span>-->
+            <!--<span class="top_pName topDefalut" style="overflow: hidden">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu" style="overflow: hidden">个人</span>-->
+            <!--<span class="top_pPermission"  style="width: 310px;overflow: hidden">我是禁用原因...</span>-->
+            <!--<span class="top_pType"  style="width: 100px;overflow: hidden">2017-03-14</span>-->
+            <!--<span class="top_pOperation"  style="width: 187px;overflow: hidden">-->
+                <!--删除-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber" style="overflow: hidden">1</span>-->
+            <!--<span class="top_pLoginName" style="overflow: hidden">张先生</span>-->
+            <!--<span class="top_pName topDefalut" style="overflow: hidden">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu" style="overflow: hidden">个人</span>-->
+            <!--<span class="top_pPermission"  style="width: 310px;overflow: hidden">我是禁用原因...</span>-->
+            <!--<span class="top_pType"  style="width: 100px;overflow: hidden">2017-03-14</span>-->
+            <!--<span class="top_pOperation"  style="width: 187px;overflow: hidden">-->
+                <!--删除-->
+            <!--</span>-->
+        <!--</div>-->
+    </div>
+</div>
+<!--********************************************详情页样式******************************************-->

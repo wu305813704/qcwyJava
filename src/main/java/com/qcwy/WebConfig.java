@@ -15,7 +15,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     //本地文件映射
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/image/**").addResourceLocations("file:/qcwy/image/");
+//        registry.addResourceHandler("/image/**").addResourceLocations("file:D:/qcwy/image/");//windows
+        registry.addResourceHandler("/image/**").addResourceLocations("file:/qcwy/image/");//Linux
         super.addResourceHandlers(registry);
     }
 

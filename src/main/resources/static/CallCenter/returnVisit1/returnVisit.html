@@ -1,0 +1,91 @@
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">已回访列表</div>
+        <div class="top_PFr">
+            <span class="selectName" id="selectStaffName">订单号</span>
+            <select class="selectName selectName1" style="opacity: 0">
+                <option value="订单号">订单号</option>
+                <option value="工号">工号</option>
+            </select>
+            <input type="text" id="seletNameValue" value="00568">
+            <span style="position: relative;top: 10px;right: 80px;width: 30px;height: 30px;">
+                <img src="../Quote/img/search/搜索-搜索%20(1).png" alt="" style="width: 100%" ng-click="referOrder()">
+            </span>
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber">序号</span>
+        <span class="top_pLoginName">订单号</span>
+        <span class="top_pName topDefalut">故障描述</span>
+        <span class="top_pTel top_addressBaoxiu">报修地址</span>
+        <!--<span class="top_pCompany" style="width: 110px">客户</span>-->
+        <span class="top_pPermission" style="width: 130px;">预约日期</span>
+        <span class="top_pType" style="width: 100px;">状态</span>
+        <span class="top_pType" style="width: 200px;">回访时间</span>
+        <span class="top_pOperation" style="width: 150px">操作</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2" ng-repeat="item in itemData track by $index" ng-if="orderList">
+            <span class="top_pNumber" style="overflow: hidden" style="overflow: hidden;">{{$index+1}}</span>
+            <span class="top_pLoginName" style="overflow: hidden">{{item.order_no}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden">{{formatDescription(item.fault_id,1)}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden">{{item.loc}}</span>
+            <!--<span class="top_pCompany" style="width: 110px">来源</span>-->
+            <span class="top_pPermission"  style="width: 130px;overflow: hidden">{{getLocalTime(item.time)}}</span>
+            <span class="top_pType"  style="width: 100px;overflow: hidden">已完成订单</span>
+            <span class="top_pType"  style="width: 200px;overflow: hidden">{{getLocalTime(item.time)}}</span>
+            <span class="top_pOperation"  style="width: 150px;overflow: hidden">
+                <span class="paifa on" style="cursor: pointer"  ng-click="distributeOver(item.order_no)">详情</span>
+            </span>
+        </div>
+        <div class="top_P1 top_P2" ng-if="orderRefer">
+            <span class="top_pNumber" style="overflow: hidden">1</span>
+            <span class="top_pLoginName" style="overflow: hidden">{{itemData.order_no}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden">{{formatDescription(itemData.fault_id,1)}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden">{{item.loc}}</span>
+            <!--<span class="top_pCompany" style="width: 110px">来源</span>-->
+            <span class="top_pPermission"  style="width: 130px;overflow: hidden">{{itemData.orderDetail.send_time.substring(0,itemData.orderDetail.send_time.lastIndexOf(":"))}}</span>
+            <span class="top_pType"  style="width: 100px;">维修中</span>
+            <span class="top_pType"  style="width: 200px;overflow: hidden">张师傅</span>
+            <span class="top_pOperation"  style="width: 150px;overflow: hidden">
+                 <span class="paifa on" style="cursor: pointer"  ng-click="distributeOver(itemData.order_no)">详情</span>
+            </span>
+        </div>
+    </div>
+</div>
+<div id="pageNumber">
+    <div id="pageLftUp" style="position: absolute;top: 893px;left: 1481px;display: none">下一页</div>
+    <div class="ep-pages" style="position: absolute;top: 868px;right: 130px;"></div>
+    <div id="pageRightDown" style="position: absolute;top: 893px;left: 1180px;display: none">上一页</div>
+</div>
+<!--***********************************回访弹窗**********************************-->
+<div class="mark1">
+    <div id="addStaff" style="display: none;width: 500px;height: 300px;position: relative;margin-left: -250px;padding-top: 50px;margin-top: -175px">
+        <div id="return_top">
+           回访详情
+        </div>
+        <div style="font-size: 18px;margin-bottom: 20px;margin-left: 30px">
+            <span>订单编号：</span>
+            <span id="order_no"></span>
+        </div>
+        <div style="font-size: 18px;margin-bottom: 20px;margin-left: 30px">
+            <span>回访时间：</span>
+            <span id="time"></span>
+        </div>
+        <div style="font-size: 18px;margin-bottom: 20px;margin-left: 30px">
+            <span>客户建议：</span>
+            <span id="content"></span>
+        </div>
+        <div style="font-size: 18px;margin-bottom: 20px;margin-left: 30px">
+            <span>回访员工：</span>
+            <span id="name"></span>
+        </div>
+        <ul class="ul400 ul401" style="position: relative;left: -35px;margin-top: 0;top: 0;">
+            <li id="addStaff_Btom">
+                <span class="span400_1_1 on sapn400queren addStaff_Btomqueren">确认</span>
+                <span class="span400_1_1 sapn400reset addStaff_Btomreset">取消</span>
+            </li>
+        </ul>
+    </div>
+
+</div>

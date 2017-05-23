@@ -32,10 +32,4 @@ public class Application {
         return pageHelper;
     }
 
-    //WebSocket(必须放在Application中，单独创建类会打包失败)
-    @Bean
-    public ServerEndpointExporter serverEndpointExporter() {
-        return new ServerEndpointExporter();
-    }
-
 }

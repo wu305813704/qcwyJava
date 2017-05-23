@@ -1,0 +1,271 @@
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">用户管理</div>
+        <div class="top_PFr">
+            <span class="selectName" id="selectStaffName">订单号</span>
+            <select class="selectName selectName1" style="opacity: 0">
+                <option value="订单号">订单号</option>
+                <option value="工号">工号</option>
+            </select>
+            <input type="text" id="seletNameValue" value="00568">
+            <span style="position: relative;top: 10px;right: 80px;width: 30px;height: 30px;">
+                <img src="../Quote/img/search/搜索-搜索%20(1).png" alt="" style="width: 100%" ng-click="referOrder()">
+            </span>
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber">序号</span>
+        <span class="top_pLoginName">客户名称</span>
+        <span class="top_pName topDefalut">客户电话</span>
+        <span class="top_pTel top_addressBaoxiu">公司</span>
+        <span class="top_pCompany" style="width: 340px">最后一次报修时间</span>
+        <span class="top_pOperation" style="width: 250px">操作</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2" ng-repeat="item in itemData track by $index">
+            <span class="top_pNumber" style="overflow: hidden">{{$index+1}}</span>
+            <span class="top_pLoginName" style="overflow: hidden">{{item.username}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden">{{getLocalTime(item.time)}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden">{{item.tel}}</span>
+            <span class="top_pCompany" style="width: 340px;overflow: hidden">{{getLocalTime(item.time)}}</span>
+            <span class="top_pOperation"  style="width: 250px;overflow: hidden">
+                <span class="top_pOperationConfirmL" id="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR" id="top_pOperationConfirmR">驳回</span>
+            </span>
+        </div>
+        <div class="top_P1 top_P2" ng-if="orderRefer1">
+            <span class="top_pNumber" style="overflow: hidden">1</span>
+            <span class="top_pLoginName" style="overflow: hidden">{{itemData.wxUser.nickname}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden">{{itemData.wxUser.tel}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden">{{getLocalTime(itemData.wxUser.last_repairs_time)}}</span>
+            <span class="top_pCompany" style="width: 340px;overflow: hidden">{{itemData.type}}</span>
+            <span class="top_pOperation"  style="width: 250px;overflow: hidden">
+                <span class="top_pOperationConfirmL" id="top_pOperationConfirmL1">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR" id="top_pOperationConfirmR1">驳回</span>
+            </span>
+        </div>
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张先生</span>-->
+            <!--<span class="top_pName topDefalut">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">个人</span>-->
+            <!--<span class="top_pCompany" style="width: 340px">来源</span>-->
+            <!--<span class="top_pOperation"  style="width: 250px">-->
+                <!--<span class="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR">驳回</span>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张先生</span>-->
+            <!--<span class="top_pName topDefalut">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">个人</span>-->
+            <!--<span class="top_pCompany" style="width: 340px">来源</span>-->
+            <!--<span class="top_pOperation"  style="width: 250px">-->
+                <!--<span class="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR">驳回</span>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张先生</span>-->
+            <!--<span class="top_pName topDefalut">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">个人</span>-->
+            <!--<span class="top_pCompany" style="width: 340px">来源</span>-->
+            <!--<span class="top_pOperation"  style="width: 250px">-->
+                <!--<span class="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR">驳回</span>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张先生</span>-->
+            <!--<span class="top_pName topDefalut">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">个人</span>-->
+            <!--<span class="top_pCompany" style="width: 340px">来源</span>-->
+            <!--<span class="top_pOperation"  style="width: 250px">-->
+                <!--<span class="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR">驳回</span>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张先生</span>-->
+            <!--<span class="top_pName topDefalut">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">个人</span>-->
+            <!--<span class="top_pCompany" style="width: 340px">来源</span>-->
+            <!--<span class="top_pOperation"  style="width: 250px">-->
+                <!--<span class="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR">驳回</span>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张先生</span>-->
+            <!--<span class="top_pName topDefalut">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">个人</span>-->
+            <!--<span class="top_pCompany" style="width: 340px">来源</span>-->
+            <!--<span class="top_pOperation"  style="width: 250px">-->
+                <!--<span class="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR">驳回</span>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张先生</span>-->
+            <!--<span class="top_pName topDefalut">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">个人</span>-->
+            <!--<span class="top_pCompany" style="width: 340px">来源</span>-->
+            <!--<span class="top_pOperation"  style="width: 250px">-->
+                <!--<span class="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR">驳回</span>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张先生</span>-->
+            <!--<span class="top_pName topDefalut">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">个人</span>-->
+            <!--<span class="top_pCompany" style="width: 340px">来源</span>-->
+            <!--<span class="top_pOperation"  style="width: 250px">-->
+                <!--<span class="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR">驳回</span>-->
+            <!--</span>-->
+        <!--</div>-->
+        <!--<div class="top_P1 top_P2">-->
+            <!--<span class="top_pNumber">1</span>-->
+            <!--<span class="top_pLoginName">张先生</span>-->
+            <!--<span class="top_pName topDefalut">13888888888</span>-->
+            <!--<span class="top_pTel top_addressBaoxiu">个人</span>-->
+            <!--<span class="top_pCompany" style="width: 340px">来源</span>-->
+            <!--<span class="top_pOperation"  style="width: 250px">-->
+                <!--<span class="top_pOperationConfirmL">确认</span><span class="top_pOperationConfirmM"></span><span class="top_pOperationConfirmR">驳回</span>-->
+            <!--</span>-->
+        <!--</div>-->
+    </div>
+</div>
+<!--*******************************************隐藏修改资料界面********************************************-->
+<div class="mark1">
+    <div id="addStaff" style="height: 544px;margin-top: -277px">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                修改资料
+            </div>
+            <div class="addStaff_TopR">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom">
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    客&nbsp;户&nbsp;名&nbsp;称：
+                </span>
+                <span class="addStaff_BottomSpan1">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    客&nbsp;户&nbsp;性&nbsp;别：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <span class="span400_2"><input type="radio" style="opacity: 0"><span class="radio on"></span>先生</span>
+                    <span class="span400_3"><input type="radio" style="opacity: 0"><span class="radio"></span>女士</span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    客&nbsp;户&nbsp;电&nbsp;话：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    所&nbsp;属&nbsp;公&nbsp;司：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    公司负责人：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpanCompany">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    负责人电话：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                   <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <ul class="ul400" style="margin-top: 0">
+                <li id="addStaff_Btom">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--***************************隐藏订单详情***************************-->
+    <div id="orderDescription" style="height: 400px;margin-top: -200px;width: 548px;margin-left: -274px">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                修改资料
+            </div>
+            <div class="addStaff_TopR">
+                X
+            </div>
+        </div>
+        <div class="orderDescription_Bottom">
+            <div class="addStaff_Bottom1" style="padding-left: 25px">
+                <span class="addStaff_BottomSpan1">
+                    客户名称：
+                </span>
+                <span class="addStaff_BottomSpan1">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="padding-left: 25px">
+                <span class="addStaff_BottomSpan1">
+                    客户性别：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <span class="span400_2"><input type="radio" style="opacity: 0"><span class="radio on"></span>先生</span>
+                    <span class="span400_3"><input type="radio" style="opacity: 0"><span class="radio"></span>女士</span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="padding-left: 25px">
+                <span class="addStaff_BottomSpan1">
+                    客户电话：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="padding-left: 25px">
+                <span class="addStaff_BottomSpan1">
+                    公&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;司：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <ul class="ul400" style="margin-top: 0">
+                <li id="addStaff_Btom1">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--*******************************隐藏驳回原因***********************************-->
+    <div id="bohuiSeasion" style="display: none;">
+        <ul class="ul400" style="margin-top: 20px">
+            <li>
+                <!--<span class="span400_1" id="beizhu" style="margin-left: 20px">备注：</span>-->
+                <textarea rows="5" cols="60" id="textarea" style="color: #cdcdcd;padding: 10px;border: 1px solid #cdcdcd;border-radius: 4px;box-sizing: border-box">请输入驳回原因...</textarea>
+            </li>
+            <li>
+                <span class="span400_1_1 on sapn400queren" style="left: 125px;">确认</span>
+                <span class="span400_1_1 sapn400reset" style="left: 125px;">取消</span>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,110 @@
+
+<div class="bigSquare">
+    <p class="top_P">400派单</p>
+    <ul class="ul400" style="margin-top: 13px;font-size: 14px">
+        <li>
+            <span class="span400_1">车辆类型：</span>
+            <span class="span400_2">
+                <span class="span400_2"><input type="radio" style="opacity: 0"><span class="radio on radio_carType"></span>两轮车</span>
+                <span class="span400_3"><input type="radio" style="opacity: 0"><span class="radio radio_carType"></span>三轮车</span>
+            </span>
+        </li>
+        <li>
+            <span class="span400_1">客户名称：</span>
+            <span class="span400_2"><input type="text" class="userName" value="{{userName}}" id="userName" style="height: 20px"></span>
+        </li>
+        <li>
+            <span class="span400_1">客户性别：</span>
+            <span class="span400_2" style="margin-left: 40px"><input type="radio" style="opacity: 0"><span class="radio on radioSex"></span>先生</span>
+            <span class="span400_3"><input type="radio" style="opacity: 0"><span class="radio radioSex"></span>女士</span>
+        </li>
+        <li>
+            <span class="span400_1">客户电话：</span>
+            <span class="span400_2"><input type="text" class="userName userTel" value="{{tel}}" id="tel"></span>
+        </li>
+        <li>
+            <span class="span400_1">报修故障：</span>
+            <span class="span400_2">
+                <span class="userName userTel" style="border: 1px solid #cdcdcd;color: black;font-size: 14px;height: 23px;line-height: 23px" ng-click="addDault()">{{problemDescription}}</span>
+            </span>
+        </li>
+        <li id="loc">
+            <span class="span400_1">维修地址：</span>
+            <span class="span400_2" style="position: relative;">
+                <input type="text" class="userName" placeholder="详细地址信息" value="{{address}}" id="address">
+                <section class="map-content" style="position: absolute;top: 24px;width: 285px;background-color: white">
+                    <ul id="ulll"></ul>
+                </section>
+               <!--<input type="text" id="suggestId" size="20" value="" style="width:280px;position: relative;left: -288px;height: 20px;" />-->
+                <!--<div id="searchResultPanel" style="border:1px solid #C0C0C0;width:280px;height:auto; display:none;position: relative;left: -288px;text-align: left"></div>-->
+            </span>
+            <!--<a href="">地图</a>-->
+        </li>
+        <li>
+            <span class="span400_1">经纬度：</span>
+            <span class="span400_2">
+                <span class="span400_2">经度：<span type="text" style="width: 80px;height: 20px;border: 1px solid black;font-size: 14px" id="lon"></span></span>
+                <span class="span400_3">维度：<span type="text" style="width: 80px;height: 20px;border: 1px solid black;font-size: 14px" id="lati"></span></span>
+            </span>
+        </li>
+        <li>
+            <span class="span400_1">订单类型：</span>
+            <span class="span400_2">
+                <span class="span400_2"><input type="radio" style="opacity: 0"><span class="radio on radioOrderType"></span>普通订单</span>
+                <span class="span400_3"><input type="radio" style="opacity: 0"><span class="radio radioOrderType"></span>预约订单</span>
+            </span>
+        </li>
+        <li style="display: none" id="hiddle400">
+            <div id="l-map" style="display: none"></div>
+            <span class="span400_1">预约时间：</span>
+            <input name="act_start_time" type="text" class="text-box" id="appointmentTime" value="{{appointmentTime}}" placeholder="选择时间" readonly="readonly" style="cursor:pointer;border: 1px solid black;width: 270px;height: 20px;margin-left: 20px"/>
+        </li>
+        <!--<li>-->
+            <!--<span class="span400_1">公&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;司：</span>-->
+            <!--<span class="span400_2 span400_21" id="company"></span>-->
+            <!--<select name="" id="select_paly_jigou">-->
+                <!--<option value="个人">个人</option>-->
+                <!--<option value="公司">公司</option>-->
+            <!--</select>-->
+        <!--</li>-->
+        <li>
+            <span class="span400_1" id="beizhu">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</span>
+            <textarea rows="5" cols="50" id="textarea">{{remark}}</textarea>
+        </li>
+        <li>
+            <span class="span400_1_1 on sapn400queren" ng-click="sendAffirm()">确认</span>
+            <span class="span400_1_1 sapn400reset" ng-click="sendDisable()">重置</span>
+        </li>
+    </ul>
+</div>
+<!--*****************************故障选取****************************-->
+<div class="mark1" style="display: block;" ng-if="markFlag">
+    <div id="addStaff" style="height: 450px;display: block;width: 370px;margin-left: -185px;margin-top: -225px" ng-if="markFlagDault">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                故障选择
+            </div>
+            <div class="addStaff_TopR" ng-click="close()">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom" style="padding-top: 10px">
+            <ul id="ul">
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">车有电不走了</span></li>
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">车轮故障了</span></li>
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">刹车系统故障</span></li>
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">电路故障</span></li>
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">锁故障</span></li>
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">更换电池</span></li>
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">更换充电器</span></li>
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">塑料破损</span></li>
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">车辆异响</span></li>
+                <li style="height: 30px;"><span class="checkbox"></span><span class="ppp">其他</span></li>
+            </ul>
+            <div>
+                <span ng-click="affirm()" class="checkboxSpan">确认</span><span ng-click="abolish()" class="checkboxSpan">取消</span>
+            </div>
+        </div>
+
+    </div>
+</div>

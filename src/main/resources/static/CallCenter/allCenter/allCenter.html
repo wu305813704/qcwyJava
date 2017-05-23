@@ -1,0 +1,126 @@
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">所有订单</div>
+        <div class="top_PFr">
+            <span class="selectName" id="selectStaffName">订单号</span>
+            <select class="selectName selectName1" style="opacity: 0">
+                <option value="订单号">订单号</option>
+                <option value="工号">工号</option>
+                <option value="客户电话">客户电话</option>
+            </select>
+            <input type="text" id="seletNameValue" value="00568">
+            <span style="position: relative;top: 10px;right: 80px;width: 30px;height: 30px;">
+                <img src="../Quote/img/search/搜索-搜索%20(1).png" alt="" style="width: 100%" ng-click="referOrder()">
+            </span>
+
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber">序号</span>
+        <span class="top_pLoginName">订单号</span>
+        <span class="top_pName topDefalut">故障描述</span>
+        <span class="top_pTel top_addressBaoxiu">报修地址</span>
+        <span class="top_pCompany" style="width: 110px">来源</span>
+        <span class="top_pPermission" style="width: 130px;">预约日期</span>
+        <span class="top_pType" style="width: 200px;">状态</span>
+        <span class="top_pType" style="width: 98px;">工程师</span>
+        <!--<span class="top_pOperation" style="width: 150px">操作</span>-->
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2 top_P6" ng-repeat="item in itemData track by $index" ng-if="orderList">
+            <span class="top_pNumber" style="overflow: hidden">{{$index+1}}</span>
+            <span class="top_pLoginName" style="overflow: hidden">{{item.order_no}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden">{{formatDescription(item.orderDetail.fault_id,1)}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden">{{item.orderDetail.loc}}</span>
+            <span class="top_pCompany" style="width: 110px;overflow: hidden">{{item.wxUser.type == 0? "微信订单":"400订单"}}</span>
+            <span class="top_pPermission"  style="width: 130px;overflow: hidden">{{item.orderDetail.send_time.substring(0,item.orderDetail.send_time.lastIndexOf(":"))}}</span>
+            <span class="top_pType"  style="width: 200px;overflow: hidden">{{orderType(item.state)}}</span>
+            <span class="top_pType"  style="width: 98px;overflow: hidden">{{item.appUser.name}}</span>
+            <!--<span class="top_pOperation"  style="width: 150px;overflow: hidden">-->
+                <!--<span class="paifa" style="overflow: hidden;position: relative;top: 10px;">派发</span>-->
+            <!--</span>-->
+        </div>
+        <div class="top_P1 top_P2 top_P6" ng-if="orderRefer">
+            <span class="top_pNumber" style="overflow: hidden">1</span>
+            <span class="top_pLoginName" style="overflow: hidden">{{itemData.order_no}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden">{{formatDescription(itemData.orderDetail.fault_id,1)}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden">{{itemData.orderDetail.loc}}</span>
+            <span class="top_pCompany" style="width: 110px;overflow: hidden">{{itemData.state}}</span>
+            <span class="top_pPermission"  style="width: 130px;overflow: hidden">{{itemData.orderDetail.send_time.substring(0,itemData.orderDetail.send_time.lastIndexOf(":"))}}</span>
+            <span class="top_pType"  style="width: 100px;overflow: hidden">{{itemData.type}}</span>
+            <span class="top_pType"  style="width: 98px;overflow: hidden">{{itemData.wxUser.nickname}}</span>
+            <!--<span class="top_pOperation"  style="width: 150px;overflow: hidden">-->
+                <!--<span class="paifa" style="overflow: hidden;position: relative;top: 10px;">派发</span>-->
+            <!--</span>-->
+        </div>
+
+    </div>
+</div>
+<div id="pageNumber">
+    <div id="pageLftUp" style="position: absolute;top: 893px;left: 1481px;display: none">下一页</div>
+    <div class="ep-pages" style="position: absolute;top: 868px;right: 130px;"></div>
+    <div id="pageRightDown" style="position: absolute;top: 893px;left: 1180px;display: none">上一页</div>
+</div>
+<!--******************************隐藏弹框订单详情*******************************-->
+<div class="mark1">
+    <div id="orderDescription" style="display: none;height: 700px;margin-top: -350px">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                订单详情
+            </div>
+            <div class="addStaff_TopR">
+                X
+            </div>
+        </div>
+        <div class="orderDescription_Bottom">
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">订单号码:</span>
+                <span class="addStaff_BottomSpan2">00568</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">报修故障:</span>
+                <span class="addStaff_BottomSpan2">其它/车胎没气了</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">实际故障:</span>
+                <span class="addStaff_BottomSpan2-2">其它/车胎没气了</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">报修地点:</span>
+                <span class="addStaff_BottomSpan2-2">杭州萍水西街80号</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">用户名称:</span>
+                <span class="addStaff_BottomSpan2-2">张先生</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">客户电话:</span>
+                <span class="addStaff_BottomSpan2-2">13888888888</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class=" addStaff_BottomSpan1_1_1">报修日期:</span>
+                <span class="addStaff_BottomSpan2-2">2016-03-04</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">维修日期:</span>
+                <span class="addStaff_BottomSpan2-2">2016-03-22</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">订单状态:</span>
+                <span class="addStaff_BottomSpan2-2">维修中</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">更换零件:</span>
+                <span class="addStaff_BottomSpan2-2">800w控制器、碟刹片*1</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class=" addStaff_BottomSpan1_1_1">订单总价:</span>
+                <span class="addStaff_BottomSpan2-2">112200元</span>
+            </div>
+            <div class="addStaff_Bottom1-1">
+                <span class="addStaff_BottomSpan1_1_1">订单备注:</span>
+                <span class="addStaff_BottomSpan2-2">无</span>
+            </div>
+        </div>
+    </div>
+</div>

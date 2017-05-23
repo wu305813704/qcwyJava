@@ -1,0 +1,161 @@
+<!--<h1>{{title}}</h1>-->
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">
+            <span class="span50 on">正品仓</span>
+            <span class="span51">废品仓</span>
+            <span class="span52">周转仓</span>
+            <!--<span class="span53">员工仓</span>-->
+        </div>
+        <div class="top_PFr">
+            <span class="selectName2" id="selectStaffName1">商品名</span>
+            <select class="selectName2 selectName3" style="opacity: 0">
+                <option value="四大部件">四大部件</option>
+                <option value="制动系统">制动系统</option>
+            </select>
+            <input type="text" id="seletNameValue1" value="振兴充电器">
+            <span class="addStaff" id="addStaffAdd" ng-click="addpart()"  style="cursor: pointer">添加商品</span>
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber1">序号</span>
+        <span class="top_pLoginName1">商品名</span>
+        <span class="top_pName1">规格</span>
+        <!--<span class="top_pTel1">销量</span>-->
+        <span class="top_pCompany1">库存量</span>
+        <!--<span class="top_pPermission1">加盟商</span>-->
+        <span class="top_pType1">价格</span>
+        <span class="top_pOperation">操作</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2 top_P3" ng-repeat="item in itemData track by $index">
+            <span class="top_pNumber1">{{$index+1}}</span>
+            <span class="top_pLoginName1">
+                <div class="top_pLoginName1_Fl">
+                    <img src="{{baseURL}}{{item.part.image}}" alt="" style="width: 100%;height: 100%;">
+                </div>
+                <div class="top_pLoginName1_Fr">
+                    <p class="top_pLoginName1_FrTop">{{item.part.name}}</p>
+                </div>
+                <div class="clear"></div>
+            </span>
+            <span class="top_pName1" style="height: 20px">
+                <p class="top_pName1_span" style="height: 20px">{{item.part.model}}</p>
+            </span>
+            <!--<span class="top_pTel1">{{item.count}}</span>-->
+            <span class="top_pCompany1">{{item.count}}</span>
+            <!--<span class="top_pPermission1">商家名称</span>-->
+            <span class="top_pType1">{{item.part.price}}</span>
+            <span class="top_pOperation">
+                <img src="../Quote/img/business/leftbar_bj.png" alt="" class="top_pOperationImg" ng-click="hiddle(item.part.part_detail_id,item.part.name,item.part.model)" style="cursor: pointer">
+            </span>
+        </div>
+    </div>
+</div>
+<!--页码分页部分-->
+<div id="pageNumber">
+    <div id="pageLftUp" style="position: absolute;top: 893px;left: 1481px;display: none">下一页</div>
+    <div class="ep-pages" style="position: absolute;top: 868px;right: 130px;"></div>
+    <div id="pageRightDown" style="position: absolute;top: 893px;left: 1180px;display: none">上一页</div>
+</div>
+<!--*********************隐藏添加商品界面*******************-->
+<div class="mark1">
+    <div id="addStaff" style="height: 330px;margin-top: -165px">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                添加商品
+            </div>
+            <div class="addStaff_TopR" style="cursor: pointer">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom" style="padding-top: 10px">
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    仓库类型：
+                </span>
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    <select class="addStaff_BottomSpan1_input" id="partName"style="height: 30px">
+                        <option value="0">正品仓</option>
+                        <option value="1">废品仓</option>
+                    </select>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    零件类型：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                    <select class="addStaff_BottomSpan1_input" id="partType" style="height: 30px">
+                        <option value="请选择零件种类">请选择零件种类</option>
+                        <option  ng-repeat="item in itemType track by $index" value="{{item.model_id}}">{{item.model_name}}</option>
+                    </select>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="line-height: 50px;">
+                <span class="addStaff_BottomSpan1">
+                    零件数量：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                    <span><input type="text" value="1000" style="width: 90px;height: 30px;margin-right: 10px;text-align: center" id="count">个</span>
+                    <span style="margin-left: 120px"  ng-if="partName">
+                        零件名称：
+                        <select id="degree" style="margin-right: 10px;width: 90px;height: 30px;text-align: center;margin-right: 78px">
+                        <option ng-repeat="item in itemPartNameList track by $index" value="{{item.part_id}}">{{item.name}}</option>
+                    </select>
+                    </span>
+                </span>
+            </div>
+            <ul class="ul400 ul401" style="position: relative;top: -60px;">
+                <li id="addStaff_Btom" style="position: relative;top: 0;">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren" style="cursor: pointer" ng-click="addSendAffrim()">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset"  style="cursor: pointer" ng-click="sendReset()">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--*********************************隐藏编辑商品界面************************************************-->
+    <div id="addStaff1" style="height: 306px;display: none;margin-top: -153px">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                商品编辑
+            </div>
+            <div class="addStaff_TopR"  style="cursor: pointer">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom" style="padding-top: 10px">
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    零件名称：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                   <span class="addStaff_BottomSpan2" style="line-height: 50px">{{partNAME}}</span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    零件规格：
+                </span>
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    <input type="text" value="{{modul}}" class="addStaff_BottomSpan1_input" id="partName1" style="height: 30px">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="line-height: 50px;">
+                <span class="addStaff_BottomSpan1">
+                    零件数量：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                    <span><input type="text" value="1000" style="width: 90px;height: 30px;margin-right: 10px;text-align: center" id="count1">个</span>
+                </span>
+            </div>
+            <ul class="ul400 ul401" style="position: relative;top: -60px;">
+                <li id="addStaff_Btom_1" style="position: relative;top: 0;left: -175px">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren" style="cursor: pointer" ng-click="sendAffrim1()">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset" style="cursor: pointer" ng-click="sendReset1()">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,128 @@
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">待回访列表</div>
+        <div class="top_PFr">
+            <span class="selectName" id="selectStaffName">订单号</span>
+            <select class="selectName selectName1" style="opacity: 0">
+                <option value="订单号">订单号</option>
+                <option value="工号">工号</option>
+            </select>
+            <input type="text" id="seletNameValue" value="00568">
+            <span style="position: relative;top: 10px;right: 80px;width: 30px;height: 30px;">
+                <img src="../Quote/img/search/搜索-搜索%20(1).png" alt="" style="width: 100%" ng-click="referOrder()">
+            </span>
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber">序号</span>
+        <span class="top_pLoginName">订单号</span>
+        <span class="top_pName topDefalut" style="width: 300px">故障描述</span>
+        <span class="top_pTel top_addressBaoxiu" style="width: 300px">报修地址</span>
+        <!--<span class="top_pCompany" style="width: 110px">客户</span>-->
+        <span class="top_pPermission" style="width: 230px;">完成日期</span>
+        <!--<span class="top_pType" style="width: 100px;">状态</span>-->
+        <!--<span class="top_pType" style="width: 98px;">回访时间</span>-->
+        <span class="top_pOperation" style="width: 200px">操作</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2" ng-repeat="item in itemData track by $index" ng-if="orderList">
+            <span class="top_pNumber" style="overflow: hidden;">{{$index+1}}</span>
+            <span class="top_pLoginName" style="overflow: hidden;">{{item.order_no}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden;width: 300px">{{formatDescription(item.orderDetail.fault_id,1)}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden;width: 300px">{{item.orderDetail.loc}}</span>
+            <!--<span class="top_pCompany" style="width: 110px">{{}}</span>-->
+            <span class="top_pPermission"  style="width: 130px;overflow: hidden;width: 230px">{{getLocalTime(item.complete_time)}}</span>
+            <!--<span class="top_pType"  style="width: 100px;">维修中</span>-->
+            <!--<span class="top_pType"  style="width: 98px;">张师傅</span>-->
+            <span class="top_pOperation"  style="width: 150px;overflow: hidden;width: 200px">
+                <span class="paifa on huifang" ng-click="returnVisit(item.order_no)" style="cursor: pointer">回访</span>
+            </span>
+        </div>
+        <div class="top_P1 top_P2" ng-if="orderRefer">
+            <span class="top_pNumber" style="overflow: hidden;">1</span>
+            <span class="top_pLoginName" style="overflow: hidden;">{{itemData.order_no}}</span>
+            <span class="top_pName topDefalut" style="overflow: hidden;width: 300px">{{formatDescription(itemData.orderDetail.fault_id,1)}}</span>
+            <span class="top_pTel top_addressBaoxiu" style="overflow: hidden;width: 300px">{{itemData.orderDetail.loc}}</span>
+            <!--<span class="top_pCompany" style="width: 110px">{{}}</span>-->
+            <span class="top_pPermission"  style="width: 130px;overflow: hidden;width: 230px">{{getLocalTime(item.complete_time)}}</span>
+            <!--<span class="top_pType"  style="width: 100px;">维修中</span>-->
+            <!--<span class="top_pType"  style="width: 98px;">张师傅</span>-->
+            <span class="top_pOperation"  style="width: 150px;overflow: hidden;width: 200px">
+                <span class="paifa on huifang">回访</span>
+            </span>
+        </div>
+    </div>
+</div>
+<div id="pageNumber">
+    <div id="pageLftUp" style="position: absolute;top: 893px;left: 1481px;display: none">下一页</div>
+    <div class="ep-pages" style="position: absolute;top: 868px;right: 130px;"></div>
+    <div id="pageRightDown" style="position: absolute;top: 893px;left: 1180px;display: none">上一页</div>
+</div>
+<!--***********************************回访弹窗**********************************-->
+<div class="mark1">
+    <div id="addStaff" style="display: none;width: 1200px;height: 600px;position: relative;margin-left: -600px;padding-top: 50px;margin-top: -300px">
+        <div id="return_top">
+            录入回访
+        </div>
+        <table id="returnTable" cellspacing="0">
+            <tr>
+                <td>订单号</td>
+                <td>{{itemReturn.order_no}}</td>
+                <td>原订单号</td>
+                <td>{{itemReturn.old_order_no == 0?"无":itemReturn.old_order_no}}</td>
+                <td>报修时间</td>
+                <td>{{getLocalTime(itemReturn.send_time)}}</td>
+                <td>维修时间</td>
+                <td>{{getLocalTime(itemReturn.wxUser.last_repairs_time)}}</td>
+            </tr>
+            <tr>
+                <td>报修地址</td>
+                <td colspan="3">{{itemReturn.orderDetail.loc}}</td>
+                <!--<td></td>-->
+                <!--<td></td>-->
+                <td>客户名称</td>
+                <td>{{itemReturn.wxUser.nickname}}</td>
+                <td>客户电话</td>
+                <td>{{itemReturn.wxUser.tel}}</td>
+            </tr>
+            <tr>
+                <td>工程师名称</td>
+                <td>{{itemReturn.appUser.name}}</td>
+                <td>工程师工号</td>
+                <td>{{itemReturn.appUser.job_no}}</td>
+                <td>付款方式</td>
+                <td>{{itemReturn.pay_type == 0?"微信支付":"现金"}}</td>
+                <td>总价订单</td>
+                <td>{{itemReturn.orderDetail.total_price}}</td>
+            </tr>
+            <tr>
+                <td>故障报修</td>
+                <td colspan="3">{{formatDescription(itemReturn.orderDetail.fault_id,1)}}</td>
+                <!--<td></td>-->
+                <!--<td></td>-->
+                <td>实际故障</td>
+                <td colspan="3">{{formatDescription(itemReturn.orderFault.fault_id,1)}}</td>
+                <!--<td></td>-->
+                <!--<td></td>-->
+            </tr>
+            <tr>
+                <td>订单类型</td>
+                <td>{{itemReturn.type == 0?"预约订单":"普通订单"}}</td>
+                <td>备注</td>
+                <td colspan="5">{{itemReturn.orderDetail.fault_description}}</td>
+                <!--<td></td>-->
+                <!--<td></td>-->
+                <!--<td></td>-->
+                <!--<td></td>-->
+            </tr>
+        </table>
+        <textarea id="returnText" style="width: 1042px;margin-left: 79px">填写回访记录</textarea>
+        <ul class="ul400 ul401" style="margin-top: -63px;margin-left: 724px">
+            <li id="addStaff_Btom">
+                <span class="span400_1_1 on sapn400queren addStaff_Btomqueren" ng-click="sentHuifang()">确认</span>
+                <span class="span400_1_1 sapn400reset addStaff_Btomreset">取消</span>
+            </li>
+        </ul>
+    </div>
+
+</div>
