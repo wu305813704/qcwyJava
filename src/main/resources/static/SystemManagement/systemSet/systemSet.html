@@ -1,0 +1,40 @@
+
+<div class="bigSquare">
+    <p class="top_P">系统设置</p>
+    <ul class="ul400" id="system">
+        <li>
+            <span class="span400_1">公司名称：</span>
+            <span class="span400_2" style="margin-left: 30px"><input type="text" class="userName" style="width: 320px;margin-right: 20px;opacity: 0" value="{{companyName}}"><span class="userNameReset">重置</span><span class="companyRight companyName">{{companyName}}</span></span>
+        </li>
+        <li>
+            <span class="span400_1">公司地址：</span>
+            <span class="span400_2"><input type="text" class="userName" value="{{companyAddress}}" style="width: 410px"></span>
+        </li>
+        <li>
+            <span class="span400_1">公司邮箱：</span>
+            <span class="span400_2" style="margin-left: 30px"><input type="text" class="userName userTel" style="width: 320px;margin-right: 20px;opacity: 0" value="{{companyEmail}}"><span class="userNameReset">重置</span><span class="companyRight companyEmail">{{companyEmail}}</span></span>
+        </li>
+        <li>
+            <span class="span400_1">客服电话：</span>
+            <span class="span400_2"><input type="text" class="userName userTel" style="width: 320px" ng-model="serviceTel"></span>
+        </li>
+        <li>
+            <span class="span400_1">投诉电话：</span>
+            <span class="span400_2"><input type="text" class="" placeholder="{{complaintTel}}"  style="width: 320px"></span>
+        </li>
+        <li>
+            <span class="span400_1" style="position: relative;top: -50px;">备案信息：</span>
+            <span class="span400_2">
+                <textarea rows="5" cols="50" id="textarea" style="width: 410px;margin-left: 0;border: 1px solid #cdcdcd;padding: 10px">{{records_info}}</textarea>
+            </span>
+        </li>
+        <li>
+            <span class="span400_1" id="beizhu">版本信息：</span>
+                <textarea rows="5" cols="50" id="textarea1" style="width: 410px;margin-left: 20px;border: 1px solid #cdcdcd;padding: 10px">{{version_info}}</textarea>
+        </li>
+        <li>
+            <span class="span400_1_1 on sapn400queren">确认</span>
+            <span class="span400_1_1 sapn400reset">重置</span>
+        </li>
+    </ul>
+</div>

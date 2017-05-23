@@ -1,0 +1,133 @@
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">工程师排名</div>
+        <div class="top_PFr">
+            <span id="marsterServiceTime">
+                接单数
+            </span>
+            <div id="marsterServiceTimeHiddle" style="overflow: hidden;display: none">
+                <p class="marsterServiceTimeHiddle1 dingdanliang">接单数</p>
+                <p class="marsterServiceTimeHiddle1 pingjunfen">平均评分值</p>
+            </div>
+        </div>
+    </div>
+    <div id="masterPANK" style="margin: 0 auto">
+        <h1 id="masterPANK_Top" style="text-align: center;margin: 30px auto">工程师业务排名</h1>
+        <p class="masterPANK" style="text-align: center;margin: 10px" ng-repeat="item in ArrayData track by $index">
+            <span class="masterPANK1"><img src="{{getImgUrl(item.rank)}}" alt="" class="imh" ng-if="item.rank < 4">{{item.rank}}</span>
+            <span class="masterPANK1">{{item.name}}</span>
+            <span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">
+                <span class="masterPANK2" style="width:{{item.score/totalOrder*800+'px'}}"></span>
+            </span>
+            <span class="masterPANK1" style="margin-left: 0">{{item.score}}</span>
+        </p>
+        <!--<p class="masterPANK" style="text-align: center;margin: 10px">-->
+            <!--<span class="masterPANK1">1</span>-->
+            <!--<span class="masterPANK1">张三</span>-->
+            <!--<span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">-->
+                <!--<span class="masterPANK2"></span>-->
+            <!--</span>-->
+            <!--<span class="masterPANK1" style="margin-left: 0">单数</span>-->
+        <!--</p>-->
+        <!--<p class="masterPANK" style="text-align: center;margin: 10px">-->
+            <!--<span class="masterPANK1">1</span>-->
+            <!--<span class="masterPANK1">张三</span>-->
+            <!--<span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">-->
+                <!--<span class="masterPANK2"></span>-->
+            <!--</span>-->
+            <!--<span class="masterPANK1" style="margin-left: 0">单数</span>-->
+        <!--</p>-->
+        <!--<p class="masterPANK" style="text-align: center;margin: 10px">-->
+            <!--<span class="masterPANK1">1</span>-->
+            <!--<span class="masterPANK1">张三</span>-->
+            <!--<span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">-->
+                <!--<span class="masterPANK2"></span>-->
+            <!--</span>-->
+            <!--<span class="masterPANK1" style="margin-left: 0">单数</span>-->
+        <!--</p>-->
+        <!--<p class="masterPANK" style="text-align: center;margin: 10px">-->
+            <!--<span class="masterPANK1">1</span>-->
+            <!--<span class="masterPANK1">张三</span>-->
+            <!--<span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">-->
+                <!--<span class="masterPANK2"></span>-->
+            <!--</span>-->
+            <!--<span class="masterPANK1" style="margin-left: 0">单数</span>-->
+        <!--</p>-->
+        <!--<p class="masterPANK" style="text-align: center;margin: 10px">-->
+            <!--<span class="masterPANK1">1</span>-->
+            <!--<span class="masterPANK1">张三</span>-->
+            <!--<span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">-->
+                <!--<span class="masterPANK2"></span>-->
+            <!--</span>-->
+            <!--<span class="masterPANK1" style="margin-left: 0">单数</span>-->
+        <!--</p>-->
+        <!--<p class="masterPANK" style="text-align: center;margin: 10px">-->
+            <!--<span class="masterPANK1">1</span>-->
+            <!--<span class="masterPANK1">张三</span>-->
+            <!--<span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">-->
+                <!--<span class="masterPANK2"></span>-->
+            <!--</span>-->
+            <!--<span class="masterPANK1" style="margin-left: 0">单数</span>-->
+        <!--</p>-->
+        <!--<p class="masterPANK" style="text-align: center;margin: 10px">-->
+            <!--<span class="masterPANK1">1</span>-->
+            <!--<span class="masterPANK1">张三</span>-->
+            <!--<span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">-->
+                <!--<span class="masterPANK2"></span>-->
+            <!--</span>-->
+            <!--<span class="masterPANK1" style="margin-left: 0">单数</span>-->
+        <!--</p>-->
+        <!--<p class="masterPANK" style="text-align: center;margin: 10px">-->
+            <!--<span class="masterPANK1">1</span>-->
+            <!--<span class="masterPANK1">张三</span>-->
+            <!--<span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">-->
+                <!--<span class="masterPANK2"></span>-->
+            <!--</span>-->
+            <!--<span class="masterPANK1" style="margin-left: 0">单数</span>-->
+        <!--</p>-->
+        <!--<p class="masterPANK" style="text-align: center;margin: 10px">-->
+            <!--<span class="masterPANK1">1</span>-->
+            <!--<span class="masterPANK1">张三</span>-->
+            <!--<span style="width: 800px;height: 30px;background-color: lightgrey;text-align: left;">-->
+                <!--<span class="masterPANK2"></span>-->
+            <!--</span>-->
+            <!--<span class="masterPANK1" style="margin-left: 0">单数</span>-->
+        <!--</p>-->
+
+    </div>
+    <!--<div id="masterRank_F" style="margin: 0 auto">-->
+        <!--<div id="masterRank_FL">-->
+            <!--<img src="../Quote/img/operation/jinpai.png" alt="" class="masterRank_FL_P_Img" style="position: absolute;top: 0;">-->
+            <!--<img src="../Quote/img/operation/yinpai.png" alt="" class="masterRank_FL_P_Img" style="position: absolute;top: 0;">-->
+            <!--<img src="../Quote/img/operation/tongpai.png" alt="" class="masterRank_FL_P_Img" style="position: absolute;top: 0;">-->
+            <!--&lt;!&ndash;<p class="masterRank_FL_P">&ndash;&gt;-->
+                <!--&lt;!&ndash;&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="masterRank_FL_P_Img_Span">张三</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p class="masterRank_FL_P">&ndash;&gt;-->
+                <!--&lt;!&ndash;&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="masterRank_FL_P_Img_Span">李四</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p class="masterRank_FL_P">&ndash;&gt;-->
+                <!--&lt;!&ndash;&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="masterRank_FL_P_Img_Span">李四</span>&ndash;&gt;-->
+            <!--&lt;!&ndash;</p>&ndash;&gt;-->
+            <!--<p class="masterRank_FL_P masterRank_FL_P1">-->
+                <!--<span class="masterRank_FL_P_Span1">1</span>-->
+                <!--<span>张三</span>-->
+                <!--<span style="width: 800px;height: 30px;background-color: lightgrey"></span>-->
+            <!--</p>-->
+            <!--&lt;!&ndash;<p class="masterRank_FL_P masterRank_FL_P1"><span class="masterRank_FL_P_Span1">5</span><span>李四</span></p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p class="masterRank_FL_P masterRank_FL_P1"><span class="masterRank_FL_P_Span1">6</span><span>李四</span></p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p class="masterRank_FL_P masterRank_FL_P1"><span class="masterRank_FL_P_Span1">7</span><span>李四</span></p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p class="masterRank_FL_P masterRank_FL_P1"><span class="masterRank_FL_P_Span1">8</span><span>李四</span></p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p class="masterRank_FL_P masterRank_FL_P1"><span class="masterRank_FL_P_Span1">9</span><span>李四</span></p>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p class="masterRank_FL_P masterRank_FL_P1"><span class="masterRank_FL_P_Span1">10</span><span>李四</span></p>&ndash;&gt;-->
+        <!--</div>-->
+        <!--<div id="masterRank_FR">-->
+
+        <!--</div>-->
+
+    <!--</div>-->
+    <!--<p id="masterRank_FR_P" style="position: relative;top: 265px;"></p>-->
+</div>

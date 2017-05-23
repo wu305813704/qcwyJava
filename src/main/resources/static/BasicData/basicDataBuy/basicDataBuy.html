@@ -1,0 +1,173 @@
+<!--<h1>{{title}}</h1>-->
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">
+            <span class="on span50">单笔录入</span>
+            <span class="span51">批量录入</span>
+        </div>
+    </div>
+
+    <div class="staffListNumber">
+        <table width="1000" id="basicTable">
+            <tbody>
+            <tr>
+                <td width="90" height="60">录入单号:</td>
+                <td colspan="2"><input type="text" value="输入单号" class="basicInput"></td>
+                <td style="text-align: center">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;牌:</td>
+                <td colspan="1"><input type="text" value="振兴" class="basicInput"></td>
+            </tr>
+            <tr>
+                <td width="90" height="60">商品类型:</td>
+                <td colspan="2"><input type="text" value="充电器" class="basicInput"></td>
+                <td style="text-align: center">商品编码:</td>
+                <td colspan="1"><input type="text" value="2017" class="basicInput"></td>
+            </tr>
+            <tr>
+                <td width="90" height="60">供货单位:</td>
+                <td colspan="2">
+                    <input type="text" value="输入单位名" class="basicInput">
+                </td>
+                <td style="text-align: center">收货仓库：</td>
+                <td colspan="1">
+                    <!--<span class="basicInput">正&nbsp;品&nbsp;&nbsp;库</span>-->
+                    <select name="" class="basicInput">
+                        <option value="正品仓">正品库</option>
+                        <option value="员工仓">员工仓</option>
+                        <option value="周转仓">周转仓</option>
+                        <option value="废品仓">废品仓</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="90" height="60">组&nbsp;织&nbsp;&nbsp;人：</td>
+                <td colspan="2"><input type="text" value="张某某" class="basicInput"></td>
+                <td style="text-align: center">订单类型：</td>
+                <td>
+                    <!--<span>正常采购</span>-->
+                    <select name="" id="" class="basicInput">
+                        <option value="正常采购">正常采购</option>
+                        <option value="低价采购">低价采购</option>
+                        <option value="高价采购">高价采购</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="90" height="60">单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;位：</td>
+                <td><input type="text" value="" class="basicInput1">个</td>
+                <td><span style="position: relative;left: -5px;">数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;量：</span></td>
+                <td><input type="text" value="2" class="basicInput1" style="position: relative;left: -26px;"></td>
+                <td width="90"><span>单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价:</span></td>
+                <td><span style="position: relative;left: -165px;"><input type="text" value="25" class="basicInput1">元</span></td>
+                <td><span style="position: relative;left: -120px;">订单总价：</span></td>
+                <td><span style="position: relative;left: -120px;"><input type="text" value="50" class="basicInput1">元</span></td>
+            </tr>
+            </tbody>
+        </table>
+        <p id="basicP">
+            <span id="basicSpan">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述:</span>
+            <textarea style="width: 582px;height: 100px;margin-left: 15px"></textarea>
+        </p>
+        <ul class="ul400 ul408">
+            <li>
+                <span class="span400_1_1 on sapn400queren">确认</span>
+                <span class="span400_1_1 sapn400reset">取消</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!--*********************隐藏添加商品界面*******************-->
+<div class="mark1">
+    <div id="addStaff">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                商品编辑
+            </div>
+            <div class="addStaff_TopR">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom">
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    商品名称：
+                </span>
+                <span class="addStaff_BottomSpan1">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    商品型号：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    商品规格：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    商品价格：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <span style="margin-right: 50px;"><input type="text" value="10.5" style="margin-right: 10px;width: 90px;height: 40px;text-align: center">元</span>
+                    <span>库存量：<input type="text" value="1000" style="width: 90px;height: 40px;margin-right: 10px;text-align: center">个</span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan3">
+                    商品图片：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <div id="addStaff_BottomSpan2F">
+                        <div id="addStaff_BottomSpan2Fl">
+                            <img src="../Quote/img/marketManage/photo_tj.png" alt="" style="width: 90px;height: 90px;position: relative;top: 10px;">
+                            <input type="file" style="width: 90px;height: 90px;position: relative;top: -85px;z-index: 10;opacity: 0">
+                        </div>
+                        <div id="addStaff_BottomSpan2Fr">
+                            <p class="p1">
+                                <span class="cangKu">仓&nbsp;&nbsp;&nbsp;&nbsp;库：</span>
+                                <span class="zhengpinku">正品库</span>
+                                <select name="" id="selectP1" class="selectP1">
+                                    <option value="123">123</option>
+                                     <option value="456">456</option>
+                                </select>
+                            </p>
+                            <p class="p2">
+                                <span class="zhuangtai">状&nbsp;&nbsp;&nbsp;&nbsp;态：</span>
+                                <span class="shangjia">上架</span>
+                                <select name="" id="selectP2" class="selectP1">
+                                    <option value="123">123</option>
+                                     <option value="456">456</option>
+                                </select>
+                            </p>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1 addStaff_Bottom3">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1">
+                    信息备注：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <textarea class="addStaff_BottomSpan2Textarea">请填写备注内容</textarea>
+                </span>
+            </div>
+            <ul class="ul400 ul401">
+                <li id="addStaff_Btom">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+

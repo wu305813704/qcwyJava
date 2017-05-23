@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--添加客户-->
+    <title>骑程无忧</title>
+    <script src="../Quote/js/angular.js"></script>
+    <script src="../Quote/js/angular-ui-router.js"></script>
+    <script src="../Quote/js/jquery.js"></script>
+    <script src="../Quote/js/url.js"></script>
+    <script src="../Quote/js/ichart.1.2.1.min.js"></script>
+    <script src="../Quote/js/PCASClass.js"></script>
+    <link rel="stylesheet" href="../Quote/css/OverallSituation.css">
+    <link type="text/css" rel="stylesheet" href="../Quote/css/lanrenzhijia.css" />
+    <link rel="stylesheet" type="text/css" href="../Quote/css/jquery-ui.css" />
+    <script src="../Quote/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="../Quote/js/jquery.ui.datepicker-zh-CN.js"></script>
+    <script src="../Quote/js/jquery-ui-timepicker-addon.js"></script>
+    <script src="../Quote/js/jquery-ui-timepicker-zh-CN.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=c8pxdqacdLlTFPQwOX6npKvKYsAt1euG"></script>
+    <script src="../Quote/js/easyNotify.js"></script>
+    <style>
+
+
+    </style>
+</head>
+<body ng-app="myApp">
+<!--********************首页***********************-->
+<div id="Home" style="display: block" ng-controller="homeController">
+    <nav ng-click="btn()">
+        <div id="wrap">
+            <div id="wrapFl">
+                <div id="wrapFl_l">
+                    <a href="">
+                        <img src="../Quote/img/home/logo.png" alt="">
+                    </a>
+                </div>
+                <div id="wrapFr_Fl" >
+                    <a ui-sref="First.one" class="wrapFr_Fl_home" id="First">首页</a>
+                    <a class="wrapFr_Fl_home" ng-if="item.parent_id === 0" ng-click="routerTpye(item.id)" id="{{routerId(item.id)}}" ng-repeat="item in itemMenu track by $index">{{item.name}}</a>
+                </div>
+            </div>
+            <div id="wrapFr">
+                <div id="wrapFr_F">
+                    <div id="wrapFr_Fr">
+                        <img src="../Quote/img/home/nav_menu_tc.png" alt="" id="closeImg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!--*******************隐藏的关闭页面的弹窗*******************-->
+
+    <div ui-view="" id="firstView"></div>
+    <div class="mark">
+        <div id="hiddleClose">
+            <div id="hiddleCloseTop">
+                <div id="hiddleCloseTop_L">退出登录</div>
+                <div id="hiddleCloseTop_R">X</div>
+            </div>
+            <div id="hiddleCloseMid">退出后台系统后将无法操作，确认退出？</div>
+            <div id="hiddleCloseBottom">
+                <span class="spanCode">确定</span><span class="spanCode">取消</span>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/*********************************首页************************************/-->
+<script>
+    $(function () {
+        var ulList = $(".ulList");
+        var nav = $("nav");
+        var wrap_MFl_img = $(".wrap_MFl");
+        var height = document.body.clientHeight - 336;
+        $(".warp_MFl_ul_bottom").css("height","height");
+        $(document).on("click",".wrapFr_Fl_home",function () {
+            $(this).addClass("on").siblings().removeClass("on");
+        });
+        $("#closeImg").on("click",function () {
+            $(".mark").css("display","block");
+            $("#hiddleClose").css("display","block");
+        });
+        $("#hiddleCloseTop_R").on("click",function () {
+            $(".mark").css("display","none");
+            $("#hiddleClose").css("display","none");
+        });
+        var spanCode = document.getElementsByClassName("spanCode");
+        spanCode[1].onclick = function () {
+            $(".mark").css("display","none");
+            $("#hiddleClose").css("display","none");
+        };
+        spanCode[0].onclick = function () {
+            sessionStorage.clear();
+            localStorage.clear();
+            $(".mark1").css("display","none");
+            $("#hiddleClose").css("display","none");
+            window.location = "../logIn.html"
+        };
+    });
+
+</script>
+<script src="../Quote/js/url.js"></script>
+<script src="../Quote/js/requestData.js"></script>
+<script src="400Paidan/controllerOne.js"></script>
+<script src="../UserManagement/userManage/controllerUserManage.js"></script>
+<script src="../UserManagement/userList/controllerUserList.js"></script>
+<script src="../OperationStatistics/NewIncreased/controllerNewIncreased.js"></script>
+<script src="../OperationStatistics/Areaaddrate/controllerareaAddrate.js"></script>
+<script src="../OperationStatistics/masterRank/controllerMasterRank.js"></script>
+<script src="../BusinessManagement/controllerStaffList.js"></script>
+<script src="../MarketManagement/partManage/controllerPartList.js"></script>
+<script src="../MarketManagement/advanceOrder/controlleradvanceOrder.js"></script>
+<script src="../MarketManagement/historyOrder/controllerhistoryOrder.js"></script>
+<script src="../MarketManagement/repairOrder/controllerRepairOrder.js"></script>
+<script src="../MarketManagement/confirm/controllerconfirm.js"></script>
+<script src="../MarketManagement/historyApplyfor/controllerhistoryApplyfor.js"></script>
+<script src="../OperationStatistics/masterMap/controllerMasterMap.js"></script>
+<script src="../OperationStatistics/mounthRate/controllerMounthRate.js"></script>
+<script src="../OperationStatistics/manageDaily/controllerManageDaily.js"></script>
+<script src="../OperationStatistics/masterDaily/controllerMasterDaily.js"></script>
+<script src="../OperationStatistics/userDaily/controllerUserDaily.js"></script>
+<script src="../SystemManagement/changePassword/controllerChangePassword.js"></script>
+<script src="../SystemManagement/payManage/controllerPayManage.js"></script>
+<script src="../SystemManagement/roleSet/controllerRoleSet.js"></script>
+<script src="../SystemManagement/systemSet/controllerSystemSet.js"></script>
+<script src="../SystemManagement/systemType/controllerSystemType.js"></script>
+<script src="../SystemManagement/weixinPay/controllerWeixinPay.js"></script>
+<script src="../BasicData/partManage/controllerPartList.js"></script>
+<script src="../BasicData/basicDataBuy/controllerBasicDataBuy.js"></script>
+<script src="../BasicData/basicDataStock/controllerBasicDataStock.js"></script>
+<script src="../CallCenter/allCenter/controllerAllCenter.js"></script>
+<script src="../CallCenter/waitOrder/controllerWaitOrder.js"></script>
+<script src="../CallCenter/overTimeOrder/controllerOverTimeOrder.js"></script>
+<script src="../CallCenter/teacherReassignment/controllerTeacherReassignment.js"></script>
+<script src="../CallCenter/historyOrder/controllerHistoryOrder.js"></script>
+<script src="../CallCenter/serviceOrder/controllerServiceOrder.js"></script>
+<script src="../UserManagement/BlackList/controllerBlackList.js"></script>
+<script src="../CallCenter/returnVisit/controllerReturnVisit.js"></script>
+<script src="../CallCenter/returnVisit1/controllerReturnVisit.js"></script>
+<script src="../deTail/detailCompany/controllerDetailCompany.js"></script>
+<script src="../deTail/detailMaster/controllerDetailMaster.js"></script>
+<script src="../deTail/detailUser/controllerDetailUser.js"></script>
+<script src="../Quote/js/App.js"></script>
+</body>
+</html>

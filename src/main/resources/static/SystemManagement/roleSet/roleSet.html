@@ -1,0 +1,146 @@
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">角色列表</div>
+        <div class="top_PFr">
+            <span class="selectName" id="selectStaffName">姓名</span>
+            <select class="selectName selectName1" style="opacity: 0">
+                <option value="姓名">姓名</option>
+                <option value="工号">工号</option>
+            </select>
+            <input type="text" id="seletNameValue" value="张先生">
+            <span class="addStaff" ng-click="addStaff()">添加角色</span>
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber" style="width: 60px">序号</span>
+        <span class="top_pLoginName" style="width: 300px">角色名称</span>
+        <span class="top_pName" style="width: 550px">获取权限</span>
+        <span class="top_pTel">日期</span>
+        <span class="top_pOperation">操作</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2" style="overflow: hidden;" ng-repeat="item in items track by $index">
+            <span class="top_pNumber" style="width: 60px;float: left;">{{$index+1}}</span>
+            <span class="top_pLoginName" style="width: 300px;float: left;margin-left: 7px">{{item.role_name}}</span>
+            <span class="top_pName" style="width: 550px;text-overflow:ellipsis;overflow: hidden;white-space:nowrap;float: left;margin-left: 7px">{{item.str}}</span>
+            <span class="top_pTel" style="float: left;margin-left: 7px">{{getLocalTime(item.time)}}</span>
+            <span class="top_pOperation" style="float: left;margin-left: -1px">
+                <img src="../Quote/img/business/leftbar_bj.png" alt="" class="top_pOperationImg" ng-click="edit(item.role_name)">
+            </span>
+        </div>
+        <!--<div class="top_P1 top_P2" style="overflow: hidden;">-->
+            <!--<span class="top_pNumber" style="width: 60px;float: left;">1</span>-->
+            <!--<span class="top_pLoginName" style="width: 300px;float: left;margin-left: 7px">管理角色1</span>-->
+            <!--<span class="top_pName" style="width: 550px;text-overflow:ellipsis;overflow: hidden;white-space:nowrap;float: left;margin-left: 7px">基础资料，工程师分布，添加用户...</span>-->
+            <!--<span class="top_pTel" style="float: left;margin-left: 7px">2017-03-04</span>-->
+            <!--<span class="top_pOperation" style="float: left;margin-left: -1px">-->
+                <!--<img src="../Quote/img/business/leftbar_bj.png" alt="" class="top_pOperationImg">-->
+                <!--<img src="../Quote/img/business/leftbar_sc.png" alt="" class="top_pOperationImg">-->
+            <!--</span>-->
+        <!--</div>-->
+    </div>
+</div>
+<div id="pageNumber">
+    <div id="pageLftUp" style="position: absolute;top: 893px;left: 1481px;display: none">下一页</div>
+    <div class="ep-pages" style="position: absolute;top: 868px;right: 130px;"></div>
+    <div id="pageRightDown" style="position: absolute;top: 893px;left: 1180px;display: none">上一页</div>
+</div>
+<!--*********************隐藏添加角色界面*******************-->
+<div class="mark1" ng-if="markFlag" style="display: block;">
+    <div id="addStaff" ng-if="markFlagIn" style="display: block;">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                添加角色
+            </div>
+            <div class="addStaff_TopR" ng-click="hiddle()">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom">
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    角色名称：
+                </span>
+                <span class="addStaff_BottomSpan1">
+                   <!--<select class="addStaff_BottomSpan1_input">-->
+                        <!--<option value="管理角色1">管理角色1</option>-->
+                        <!--<option value="管理角色2">管理角色2</option>-->
+                    <!--</select>-->
+                    <input type="text" value="管理员" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="position: relative;top: -400px;">
+                    权限管理：
+                </span>
+                <span class="addStaff_BottomSpan2 addStaff_Bottom5" style="padding-top: 5px">
+                    <div class="rolesetadd">
+                        <div class="roleSetquanxianFirst" ng-repeat="item in addItems track by $index">
+                            <span class="roleSetquanxianFirstImg1"></span>
+                            <span class="roleSetquanxianFirstImg2">
+                                <img src="../Quote/img/system/glqx_shou.png" alt="">
+                            </span>
+                            <span class="roleSetquanxianFirstText">{{item.name}}</span> <span class="roleSetquanxianFirstTextId" style="opacity: 0">{{item.id}}</span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+
+            <ul class="ul400" style="position: relative;top: 300px;">
+                <li id="addStaff_Btom">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren" ng-click="send()">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset" ng-click="hiddle()">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--***************************隐藏编辑详情窗口***************************-->
+    <div id="addStaff1" ng-if="markFlagIn1" style="display: block;">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                编辑角色
+            </div>
+            <div class="addStaff_TopR" ng-click="hiddle()">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom">
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1">
+                    角色名称：
+                </span>
+                <span class="addStaff_BottomSpan1">
+                   <!--<select class="addStaff_BottomSpan1_input">-->
+                    <!--<option value="管理角色1">管理角色1</option>-->
+                    <!--<option value="管理角色2">管理角色2</option>-->
+                    <!--</select>-->
+                    <input type="text" value="{{role}}" class="addStaff_BottomSpan1_input">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="position: relative;top: -400px;">
+                    权限管理：
+                </span>
+                <span class="addStaff_BottomSpan2 addStaff_Bottom5" style="padding-top: 5px">
+                    <div class="rolesetadd">
+                        <div class="roleSetquanxianFirst" ng-repeat="item in editItems track by $index">
+                            <span class="roleSetquanxianFirstImg1"></span>
+                            <span class="roleSetquanxianFirstImg2">
+                                <img src="../Quote/img/system/glqx_shou.png" alt="">
+                            </span>
+                            <span class="roleSetquanxianFirstText">{{item.name}}</span> <span class="roleSetquanxianFirstTextId" style="opacity: 0">{{item.id}}</span>
+                        </div>
+                    </div>
+                </span>
+            </div>
+
+            <ul class="ul400" style="position: relative;top: 300px;">
+                <li id="addStaff_Btom1">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren" ng-click="send()">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset" ng-click="hiddle()">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+

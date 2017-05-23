@@ -1,0 +1,836 @@
+<div class="bigSquare" id="staffSquare">
+    <div class="top_P" style="overflow: hidden">
+        <div class="top_PFl">
+            <span class="span50 on">四大部件</span>
+            <span class="span51">制动系统</span>
+            <span class="span52">结构部件</span>
+            <span class="span53">电器配件</span>
+            <span class="span54">通用配件</span>
+            <span class="span55">三轮车配件</span>
+            <span class="span56">水电瓶车</span>
+        </div>
+        <div class="top_PFr">
+            <span class="selectName2" id="selectStaffName1">商品名</span>
+            <select class="selectName2 selectName3" style="opacity: 0">
+                <option value="四大部件">四大部件</option>
+                <option value="制动系统">制动系统</option>
+            </select>
+            <input type="text" id="seletNameValue1" value="振兴充电器">
+            <span class="addStaff" id="addStaffAdd" ng-click="addpart()">添加商品</span>
+        </div>
+    </div>
+    <div class="top_P1">
+        <span class="top_pNumber1">序号</span>
+        <span class="top_pLoginName1">商品名</span>
+        <span class="top_pName1">规格</span>
+        <!--<span class="top_pTel1">销量</span>-->
+        <!--<span class="top_pCompany1">库存量</span>-->
+        <span class="top_pCompany1">单位</span>
+        <span class="top_pPermission1">保修</span>
+        <span class="top_pType1">价格</span>
+        <span class="top_pOperation">操作</span>
+    </div>
+    <div class="staffListNumber">
+        <div class="top_P1 top_P2 top_P3" ng-repeat="item in itemData track by $index">
+            <span class="top_pNumber1">{{$index+1}}</span>
+            <span class="top_pLoginName1">
+                <div class="top_pLoginName1_Fl">
+                    <img src="{{baseURL}}{{item.image}}" alt="" style="width: 100%;height: 100%;">
+                </div>
+                <div class="top_pLoginName1_Fr">
+                    <p class="top_pLoginName1_FrTop">{{item.name}}</p>
+                </div>
+                <div class="clear"></div>
+            </span>
+            <span class="top_pName1" style="height: 20px">
+                <p class="top_pName1_span" style="height: 20px">{{item.model}}</p>
+            </span>
+            <!--<span class="top_pTel1">156</span>-->
+            <!--<span class="top_pCompany1">1000</span>-->
+            <span class="top_pCompany1">{{item.unit}}</span>
+            <span class="top_pPermission1">{{item.guarantees_limit}}</span>
+            <span class="top_pType1">{{item.price}}</span>
+            <span class="top_pOperation">
+                <img src="../Quote/img/business/leftbar_bj.png" alt="" class="top_pOperationImg" ng-click="hiddle(item.part_detail_id)">
+                <!--<img src="../Quote/img/business/leftbar_sc.png" alt="" class="top_pOperationImg">-->
+            </span>
+        </div>
+
+    </div>
+</div>
+<div id="pageNumber">
+    <div id="pageLftUp" style="position: absolute;top: 893px;left: 1481px;display: none">下一页</div>
+    <div class="ep-pages" style="position: absolute;top: 868px;right: 130px;"></div>
+    <div id="pageRightDown" style="position: absolute;top: 893px;left: 1180px;display: none">上一页</div>
+</div>
+
+<!--*********************隐藏添加商品界面*******************-->
+<div class="mark1">
+    <div id="addStaff" style="height: 700px;">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                添加商品
+            </div>
+            <div class="addStaff_TopR" ng-click="hiddleImg()">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom" style="padding-top: 10px">
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    商品名称：
+                </span>
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input" id="partName"style="height: 30px">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    商品型号：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                    <input type="text" value="cw154863" class="addStaff_BottomSpan1_input" id="partType" style="height: 30px">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    商品类型：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <select type="text" value="cw154863" class="addStaff_BottomSpan1_input" id="partStandard" style="height: 30px">
+                        <option value="选择零件类型">选择零件类型</option>
+                        <option  ng-repeat="item in itemType track by $index" value="{{item.model_id}}">{{item.model_name}}</option>
+                    </select>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="line-height: 50px">
+                <span class="addStaff_BottomSpan1">
+                    新旧程度：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                    <input type="text"id="degree" style="margin-right: 10px;width: 90px;height: 30px;text-align: center;margin-right: 78px" value="个">
+                    <span style="position: relative;left: -4px;" ng-if="partName">
+                        零件名：
+                        <select type="text" value="" style="width: 90px;height: 30px;margin-right: 10px;text-align: center" id="count">
+                            <option ng-repeat="item in itemPartNameList track by $index" value="{{item.part_id}}">{{item.name}}</option>
+                        </select>
+                    </span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="height: 95px;">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan3" style="line-height: 50px">
+                    商品图片：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <div id="addStaff_BottomSpan2F">
+                        <div id="addStaff_BottomSpan2Fl" style="text-align: center;border: 1px solid #cdcdcd;">
+                            <img src="../Quote/img/marketManage/photo_tj.png" alt="" style="width: 90px;height: 90px;position: relative;" class="img1">
+                             <form enctype="multipart/form-data" id="form" name="form">
+                               <input type="file" style="width: 90px;height: 90px;position: relative;top: -95px;z-index: 10;opacity: 0" id="file" name="file">
+                            </form>
+                            <p style="position: relative;top: -130px;font-size: 14px;color: #ffffff">添加图片...</p>
+                        </div>
+                        <div id="addStaff_BottomSpan2Fr">
+                            <p class="p1">
+                                <span class="cangKu" style="height: 30px;">仓&nbsp;&nbsp;&nbsp;&nbsp;库：</span>
+                                <span class="zhengpinku" style="height: 30px;position: relative;line-height: 30px;
+    background-position: 74px 13px;">正品仓</span>
+                                <select name="" id="selectP1" class="selectP1" style="height: 30px;">
+                                    <option value="正品仓">正品仓</option>
+                                    <option value="周转仓">周转仓</option>
+                                    <option value="废品仓">废品仓</option>
+                                    <option value="员工仓">员工仓</option>
+                                </select>
+                            </p>
+                            <p class="p2">
+                                <span class="zhuangtai" style="height: 30px">价&nbsp;&nbsp;&nbsp;&nbsp;格：</span>
+                                <input class="shangjia" style="background-image: none;height: 30px;text-align: left;padding-left: 10px;box-sizing: border-box" value="10.5">元
+                            </p>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="height: 50px;">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: 0;">
+                    以旧换新：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                    <input type="text" id="degreePrace" value="20" style="width: 80px;height: 30px;padding-left: 10px;">元
+                    <span style="margin-left: 52px">
+                        以旧换旧：<input type="text" id="degreePrace1" value="20" style="width: 80px;height: 30px;padding-left: 10px;">元
+                    </span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1"style="height: 50px;">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: 0;">
+                    是否三包：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px;">
+                    <select name="" id="degreePrace2" style="width: 93px;height: 30px;padding-left: 10px;">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                    <span style="margin-left: 63px">
+                        三包期限：<input type="text" id="degreePrace3" value="20" style="width: 80px;height: 30px;padding-left: 10px;">
+                    </span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1 addStaff_Bottom3" style="height: 145px;margin-top: 10px;position: relative;top: 0px;">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: -100px;">
+                    信息备注：
+                </span>
+                <span class="addStaff_BottomSpan2" style="height: 130px;">
+                    <textarea class="addStaff_BottomSpan2Textarea" id="beizhu" style="position: relative;top: 0;">请填写备注内容</textarea>
+                </span>
+            </div>
+            <ul class="ul400 ul401" style="position: relative;top: -60px;">
+                <li id="addStaff_Btom" style="position: relative;top: 0;">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren addStaff_Bottom_1" ng-click="sendAddImg()">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset addStaff_Btomreset_1">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--*********************************隐藏编辑商品界面************************************************-->
+    <div id="addStaff1" style="height: 700px;">
+        <div class="addStaff_Top">
+            <div class="addStaff_TopL">
+                商品编辑
+            </div>
+            <div class="addStaff_TopR" ng-click="hiddleImg()">
+                X
+            </div>
+        </div>
+        <div class="addStaff_Bottom" style="padding-top: 10px">
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    商品名称：
+                </span>
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    <input type="text" value="{{itemsData.name}}" class="addStaff_BottomSpan1_input" id="partName1" style="height: 30px">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    商品型号：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                    <input type="text" value="{{itemsData.model}}" class="addStaff_BottomSpan1_input" id="partType1" style="height: 30px">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1">
+                <span class="addStaff_BottomSpan1" style="line-height: 50px">
+                    商品编号：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <input type="text" value="{{itemsData.part_detail_id}}" class="addStaff_BottomSpan1_input" id="partStandard1" style="height: 30px">
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="line-height: 50px">
+                <span class="addStaff_BottomSpan1">
+                    商品单位：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                    <input type="text"id="degree1" style="margin-right: 10px;width: 90px;height: 30px;text-align: center;margin-right: 78px" value="{{itemsData.unit}}">
+                    <!--<span>库存量：<input type="text" value="1000" style="width: 90px;height: 30px;margin-right: 10px;text-align: center" id="count1">个</span>-->
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="height: 95px;">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan3" style="line-height: 50px">
+                    商品图片：
+                </span>
+                <span class="addStaff_BottomSpan2">
+                    <div id="addStaff_BottomSpan2F_1">
+                        <div id="addStaff_BottomSpan2Fl_1" style="text-align: center;border: 1px solid #cdcdcd;width: 90px;height: 90px;">
+                            <img src="{{baseURL}}{{itemsData.image}}" alt="" style="width: 90px;height: 90px;position: relative;" class="img1">
+                            <form enctype="multipart/form-data" id="form1" name="form">
+                               <input type="file" style="width: 90px;height: 90px;position: relative;top: -95px;z-index: 10;opacity: 0" id="file1" name="file">
+                            </form>
+                            <p style="position: relative;top: -130px;font-size: 14px;color: #ffffff">添加图片...</p>
+                        </div>
+                        <div id="addStaff_BottomSpan2Fr1" style="position:relative;top: -96px;left: 91px">
+                            <p class="p1">
+                                <span class="cangKu" style="height: 30px;">仓&nbsp;&nbsp;&nbsp;&nbsp;库：</span>
+                                <span class="zhengpinku" id="zhengpinku" style="height: 30px;position: relative;line-height: 30px;
+    background-position: 74px 13px;">正品仓</span>
+                                <select name="" id="selectP1_1" class="selectP1" style="height: 30px;">
+                                    <option value="正品仓">正品仓</option>
+                                    <option value="周转仓">周转仓</option>
+                                    <option value="废品仓">废品仓</option>
+                                    <option value="员工仓">员工仓</option>
+                                </select>
+                            </p>
+                            <p class="p2">
+                                <span class="zhuangtai" style="height: 30px">价&nbsp;&nbsp;&nbsp;&nbsp;格：</span>
+                                <input class="shangjia" id="shangjia" style="background-image: none;height: 30px;text-align: left;padding-left: 10px;box-sizing: border-box" value="{{itemsData.price}}">元
+                            </p>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1" style="height: 50px;">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: 0;">
+                    以旧换新：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px">
+                    <input type="text" id="degreePrace_1" value="{{itemsData.price_new}}" style="width: 80px;height: 30px;padding-left: 10px;">元
+                    <span style="margin-left: 50px">
+                        以旧换旧：<input type="text" id="degreePrace1_1" value="{{itemsData.price_old}}" style="width: 80px;height: 30px;padding-left: 10px;">元
+                    </span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1"style="height: 50px;">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: 0;">
+                    是否三包：
+                </span>
+                <span class="addStaff_BottomSpan2" style="line-height: 50px;">
+                    <select name="" id="degreePrace2_1" style="width: 93px;height: 30px;padding-left: 10px;">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                    <span style="margin-left: 60px">
+                        三包期限：<input type="text" id="degreePrace3_1" value="{{itemsData.guarantees_limit}}" style="width: 80px;height: 30px;padding-left: 10px;">
+                    </span>
+                </span>
+            </div>
+            <div class="addStaff_Bottom1 addStaff_Bottom3" style="height: 145px;margin-top: 10px;position: relative;top: 0px;">
+                <span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: -100px;">
+                    信息备注：
+                </span>
+                <span class="addStaff_BottomSpan2" style="height: 130px;">
+                    <textarea class="addStaff_BottomSpan2Textarea" id="beizhu1" style="position: relative;top: 0;">{{itemsData.remark}}</textarea>
+                </span>
+            </div>
+            <ul class="ul400 ul401" style="position: relative;top: -60px;">
+                <li id="addStaff_Btom_1" style="position: relative;top: 0;left: -175px">
+                    <span class="span400_1_1 on sapn400queren addStaff_Btomqueren" ng-click="editeAffirm()">确认</span>
+                    <span class="span400_1_1 sapn400reset addStaff_Btomreset" ng-click="editeReset()">取消</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!--<h1>{{title}}</h1>-->
+<!--<div class="bigSquare" id="staffSquare">-->
+    <!--<div class="top_P" style="overflow: hidden">-->
+        <!--<div class="top_PFl">-->
+            <!--<span class="on">四大部件</span>-->
+            <!--<span>制动系统</span>-->
+            <!--<span>结构部件</span>-->
+            <!--<span>电器配件</span>-->
+            <!--<span>通用配件</span>-->
+            <!--<span>三轮车配件</span>-->
+            <!--<span>水电瓶车</span>-->
+        <!--</div>-->
+        <!--<div class="top_PFr">-->
+            <!--<span class="selectName2" id="selectStaffName1">商品名</span>-->
+            <!--<select class="selectName2 selectName3" style="opacity: 0">-->
+                <!--<option value="四大部件">四大部件</option>-->
+                <!--<option value="制动系统">制动系统</option>-->
+            <!--</select>-->
+            <!--<input type="text" id="seletNameValue1" value="振兴充电器">-->
+            <!--<span class="addStaff" id="addStaffAdd" ng-click="addpart()">添加商品</span>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="top_P1">-->
+        <!--<span class="top_pNumber1">序号</span>-->
+        <!--<span class="top_pLoginName1">商品名</span>-->
+        <!--<span class="top_pName1">规格</span>-->
+        <!--<span class="top_pTel1">销量</span>-->
+        <!--<span class="top_pCompany1">库存量</span>-->
+        <!--<span class="top_pPermission1">保修</span>-->
+        <!--<span class="top_pType1">价格</span>-->
+        <!--<span class="top_pOperation">操作</span>-->
+    <!--</div>-->
+    <!--<div class="staffListNumber">-->
+        <!--<div class="top_P1 top_P2 top_P3" ng-repeat="item in itemData track by $index">-->
+            <!--<span class="top_pNumber1">{{$index+1}}</span>-->
+            <!--<span class="top_pLoginName1">-->
+                <!--<div class="top_pLoginName1_Fl">-->
+                    <!--<img src="{{baseURL}}{{item.image}}" alt="" style="width: 100%;height: 100%;">-->
+                <!--</div>-->
+                <!--<div class="top_pLoginName1_Fr">-->
+                    <!--<p class="top_pLoginName1_FrTop">{{item.name}}</p>-->
+                <!--</div>-->
+                <!--<div class="clear"></div>-->
+            <!--</span>-->
+            <!--<span class="top_pName1" style="height: 20px">-->
+                <!--<p class="top_pName1_span" style="height: 20px">64v/24A(方扣充电器)123111111111111</p>-->
+            <!--</span>-->
+            <!--<span class="top_pTel1">156</span>-->
+            <!--<span class="top_pCompany1">1000</span>-->
+            <!--<span class="top_pPermission1">1年</span>-->
+            <!--<span class="top_pType1">10.5元</span>-->
+            <!--<span class="top_pOperation">-->
+                <!--<img src="../Quote/img/business/leftbar_bj.png" alt="" class="top_pOperationImg" ng-click="hiddle(item.part_detail_id)">-->
+                <!--&lt;!&ndash;<img src="../Quote/img/business/leftbar_sc.png" alt="" class="top_pOperationImg">&ndash;&gt;-->
+            <!--</span>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+<!--&lt;!&ndash;页码分页部分&ndash;&gt;-->
+<!--<div id="pageNumber">-->
+    <!--<div id="pageLftUp" style="position: absolute;top: 893px;left: 1481px;display: none">下一页</div>-->
+    <!--<div class="ep-pages" style="position: absolute;top: 868px;right: 130px;"></div>-->
+    <!--<div id="pageRightDown" style="position: absolute;top: 893px;left: 1180px;display: none">上一页</div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash;*********************隐藏添加商品界面*******************&ndash;&gt;-->
+<!--<div class="mark1">-->
+    <!--<div id="addStaff" style="height: 700px">-->
+        <!--<div class="addStaff_Top">-->
+            <!--<div class="addStaff_TopL">-->
+                <!--添加商品-->
+            <!--</div>-->
+            <!--<div class="addStaff_TopR">-->
+                <!--X-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="addStaff_Bottom" style="padding-top: 10px">-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1" style="line-height: 50px">-->
+                    <!--商品名称：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan1" style="line-height: 50px">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input" id="partName"style="height: 30px">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1" style="line-height: 50px">-->
+                    <!--商品型号：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="line-height: 50px">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input" id="partType" style="height: 30px">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1" style="line-height: 50px">-->
+                    <!--零件类型：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<select type="text" value="cw154863" class="addStaff_BottomSpan1_input" id="partStandard" style="height: 30px">-->
+                         <!--<option value="选择零件类型">选择零件类型</option>-->
+                         <!--<option  ng-repeat="item in itemType track by $index" value="{{item.model_id}}">{{item.model_name}}</option>-->
+                    <!--</select>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1" style="line-height: 50px">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--新旧程度：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="line-height: 50px">-->
+                    <!--<input type="text"id="degree" style="margin-right: 10px;width: 90px;height: 30px;text-align: center;margin-right: 78px" value="个">-->
+                    <!--<span style="position: relative;left: -4px;" ng-if="partName">-->
+                        <!--零件名：-->
+                        <!--<select type="text" value="1000" style="width: 90px;height: 30px;margin-right: 10px;text-align: center" id="count">-->
+                            <!--<option ng-repeat="item in itemPartNameList track by $index" value="{{item.part_id}}">{{item.name}}</option>-->
+                        <!--</select>-->
+                    <!--</span>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1" style="height: 95px;">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan3" style="line-height: 50px">-->
+                    <!--商品图片：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<div id="addStaff_BottomSpan2F">-->
+                        <!--<div id="addStaff_BottomSpan2Fl" style="text-align: center;border: 1px solid #cdcdcd;">-->
+                            <!--<img src="../Quote/img/marketManage/photo_tj.png" alt="" style="width: 90px;height: 90px;position: relative;" class="img1">-->
+                            <!--<form enctype="multipart/form-data" id="form" name="form">-->
+                               <!--<input type="file" style="width: 90px;height: 90px;position: relative;top: -95px;z-index: 10;opacity: 0" id="file" name="file">-->
+                            <!--</form>-->
+                            <!--<p style="position: relative;top: -130px;font-size: 14px;color: #ffffff">添加图片...</p>-->
+                        <!--</div>-->
+                        <!--<div id="addStaff_BottomSpan2Fr">-->
+                            <!--<p class="p1">-->
+                                <!--<span class="cangKu" style="height: 30px;">仓&nbsp;&nbsp;&nbsp;&nbsp;库：</span>-->
+                                <!--<span class="zhengpinku" style="height: 30px;position: relative;line-height: 30px;-->
+    <!--background-position: 74px 13px;">正品仓</span>-->
+                                <!--<select name="" id="selectP1" class="selectP1" style="height: 30px;">-->
+                                    <!--<option value="正品仓">正品仓</option>-->
+                                    <!--<option value="周转仓">周转仓</option>-->
+                                    <!--<option value="废品仓">废品仓</option>-->
+                                    <!--<option value="员工仓">员工仓</option>-->
+                                <!--</select>-->
+                            <!--</p>-->
+                            <!--<p class="p2">-->
+                                <!--<span class="zhuangtai" style="height: 30px">价&nbsp;&nbsp;&nbsp;&nbsp;格：</span>-->
+                                <!--<input class="shangjia" style="background-image: none;height: 30px;text-align: left;padding-left: 10px;box-sizing: border-box" value="10.5">元-->
+                            <!--</p>-->
+                        <!--</div>-->
+                        <!--<div class="clear"></div>-->
+                    <!--</div>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1" style="height: 50px;">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: 0;">-->
+                    <!--以旧换新：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="line-height: 50px">-->
+                    <!--<input type="text" id="degreePrace" value="20" style="width: 80px;height: 30px;padding-left: 10px;">元-->
+                    <!--<span style="margin-left: 45px">-->
+                        <!--以旧换旧：<input type="text" id="degreePrace1" value="20" style="width: 80px;height: 30px;padding-left: 10px;">元-->
+                    <!--</span>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1"style="height: 50px;">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: 0;">-->
+                    <!--是否三包：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="line-height: 50px;">-->
+                    <!--<select name="" id="degreePrace2" style="width: 93px;height: 30px;padding-left: 10px;">-->
+                        <!--<option value="1">是</option>-->
+                        <!--<option value="0">否</option>-->
+                    <!--</select>-->
+                    <!--<span style="margin-left: 63px">-->
+                        <!--三包期限：<input type="text" id="degreePrace3" value="20" style="width: 80px;height: 30px;padding-left: 10px;">-->
+                    <!--</span>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1 addStaff_Bottom3" style="height: 145px;margin-top: 10px;position: relative;top: 0px;">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: -100px;">-->
+                    <!--信息备注：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="height: 130px;">-->
+                    <!--<textarea class="addStaff_BottomSpan2Textarea" id="beizhu" style="position: relative;top: 0;">请填写备注内容</textarea>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<ul class="ul400 ul401" style="position: relative;top: -60px;">-->
+                <!--<li id="addStaff_Btom" style="position: relative;top: 0;">-->
+                    <!--<span class="span400_1_1 on sapn400queren addStaff_Btomqueren">确认</span>-->
+                    <!--<span class="span400_1_1 sapn400reset addStaff_Btomreset">取消</span>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;*********************************隐藏编辑商品界面************************************************&ndash;&gt;-->
+    <!--<div id="addStaff1" style="height: 700px;display: none">-->
+        <!--<div class="addStaff_Top">-->
+            <!--<div class="addStaff_TopL">-->
+                <!--商品编辑-->
+            <!--</div>-->
+            <!--<div class="addStaff_TopR">-->
+                <!--X-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="addStaff_Bottom" style="padding-top: 10px">-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1" style="line-height: 50px">-->
+                    <!--商品名称：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan1" style="line-height: 50px">-->
+                    <!--<input type="text" value="{{itemsData.name}}" class="addStaff_BottomSpan1_input" id="partName1" style="height: 30px">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1" style="line-height: 50px">-->
+                    <!--商品型号：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="line-height: 50px">-->
+                    <!--<input type="text" value="{{itemsData.model}}" class="addStaff_BottomSpan1_input" id="partType1" style="height: 30px">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1" style="line-height: 50px">-->
+                    <!--商品规格：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                   <!--<input type="text" value="{{itemsData.part_detail_id}}" class="addStaff_BottomSpan1_input" id="partStandard1" style="height: 30px">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1" style="line-height: 50px">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--新旧程度：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="line-height: 50px">-->
+                     <!--<input type="text"id="degree1" style="margin-right: 10px;width: 90px;height: 30px;text-align: center;margin-right: 78px" value="{{itemsData.unit}}">-->
+                    <!--&lt;!&ndash;<span>库存量：<input type="text" value="1000" style="width: 90px;height: 30px;margin-right: 10px;text-align: center" id="count1">个</span>&ndash;&gt;-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1" style="height: 95px;">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan3" style="line-height: 50px">-->
+                    <!--商品图片：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<div id="addStaff_BottomSpan2F_1">-->
+                        <!--<div id="addStaff_BottomSpan2Fl_1" style="text-align: center;border: 1px solid #cdcdcd;width: 90px;height: 90px;">-->
+                           <!--<img src="{{baseURL}}{{itemsData.image}}" alt="" style="width: 90px;height: 90px;position: relative;" class="img1">-->
+                            <!--<form enctype="multipart/form-data" id="form1" name="form">-->
+                               <!--<input type="file" style="width: 90px;height: 90px;position: relative;top: -95px;z-index: 10;opacity: 0" id="file1" name="file">-->
+                            <!--</form>-->
+                            <!--<p style="position: relative;top: -130px;font-size: 14px;color: #ffffff">添加图片...</p>-->
+                        <!--</div>-->
+                        <!--<div id="addStaff_BottomSpan2Fr1" style="position:relative;top: -96px;left: 91px">-->
+                            <!--<p class="p1">-->
+                                <!--<span class="cangKu" style="height: 30px;">仓&nbsp;&nbsp;&nbsp;&nbsp;库：</span>-->
+                                <!--<span class="zhengpinku" style="height: 30px;position: relative;line-height: 30px;-->
+    <!--background-position: 74px 13px;">正品仓</span>-->
+                                <!--<select name="" id="selectP1_1" class="selectP1" style="height: 30px;">-->
+                                    <!--<option value="正品仓">正品仓</option>-->
+                                    <!--<option value="周转仓">周转仓</option>-->
+                                    <!--<option value="废品仓">废品仓</option>-->
+                                    <!--<option value="员工仓">员工仓</option>-->
+                                <!--</select>-->
+                            <!--</p>-->
+                            <!--<p class="p2">-->
+                                <!--<span class="zhuangtai" style="height: 30px">价&nbsp;&nbsp;&nbsp;&nbsp;格：</span>-->
+                                <!--<input class="shangjia" id="shangjia" style="background-image: none;height: 30px;text-align: left;padding-left: 10px;box-sizing: border-box" value="{{itemsData.price}}">元-->
+                            <!--</p>-->
+                        <!--</div>-->
+                        <!--<div class="clear"></div>-->
+                    <!--</div>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1" style="height: 50px;">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: 0;">-->
+                    <!--以旧换新：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="line-height: 50px">-->
+                    <!--<input type="text" id="degreePrace_1" value="{{itemsData.price_new}}" style="width: 80px;height: 30px;padding-left: 10px;">元-->
+                    <!--<span style="margin-left: 45px">-->
+                       <!--以旧换旧：<input type="text" id="degreePrace1_1" value="{{itemsData.price_old}}" style="width: 80px;height: 30px;padding-left: 10px;">元-->
+                    <!--</span>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1"style="height: 50px;">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: 0;">-->
+                    <!--是否三包：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="line-height: 50px;">-->
+                    <!--<select name="" id="degreePrace2_1" style="width: 93px;height: 30px;padding-left: 10px;">-->
+                        <!--<option value="1">是</option>-->
+                        <!--<option value="0">否</option>-->
+                    <!--</select>-->
+                    <!--<span style="margin-left: 60px">-->
+                        <!--三包期限：<input type="text" id="degreePrace3_1" value="{{itemsData.guarantees_limit}}" style="width: 80px;height: 30px;padding-left: 10px;">-->
+                    <!--</span>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1 addStaff_Bottom3" style="height: 145px;margin-top: 10px;position: relative;top: 0px;">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1" style="line-height: 50px;position: relative;top: -100px;">-->
+                    <!--信息备注：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="height: 130px;">-->
+                    <!--<textarea class="addStaff_BottomSpan2Textarea" id="beizhu1" style="position: relative;top: 0;">{{itemsData.remark}}</textarea>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<ul class="ul400 ul401" style="position: relative;top: -60px;">-->
+                <!--<li id="addStaff_Btom_1" style="position: relative;top: 0;left: -175px">-->
+                    <!--<span class="span400_1_1 on sapn400queren addStaff_Btomqueren" ng-click="editeAffirm()">确认</span>-->
+                    <!--<span class="span400_1_1 sapn400reset addStaff_Btomreset" ng-click="editeReset()">取消</span>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+
+
+
+
+
+
+<!--*********************隐藏添加商品界面*******************-->
+<!--<div class="mark1" style="display: none">-->
+    <!--<div id="addStaff">-->
+        <!--<div class="addStaff_Top">-->
+            <!--<div class="addStaff_TopL">-->
+                <!--商品添加-->
+            <!--</div>-->
+            <!--<div class="addStaff_TopR">-->
+                <!--X-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="addStaff_Bottom">-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--商品名称：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--商品型号：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--商品规格：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--商品价格：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<span style="margin-right: 50px;"><input type="text" value="10.5" style="margin-right: 10px;width: 90px;height: 40px;text-align: center">元</span>-->
+                    <!--<span>库存量：<input type="text" value="1000" style="width: 90px;height: 40px;margin-right: 10px;text-align: center">个</span>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan3">-->
+                    <!--商品图片：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<div id="addStaff_BottomSpan2F">-->
+                        <!--<div id="addStaff_BottomSpan2Fl">-->
+                            <!--<img src="../Quote/img/marketManage/photo_tj.png" alt="" style="width: 90px;height: 90px;position: relative;top: 10px;" class="img1">-->
+                            <!--<input type="file" style="width: 90px;height: 90px;position: relative;top: -85px;z-index: 10;opacity: 0" class="filepath" id="file">-->
+                        <!--</div>-->
+                        <!--<div id="addStaff_BottomSpan2Fr">-->
+                            <!--<p class="p1" style="position: relative;left: 2px;">-->
+                                <!--<span class="cangKu">仓&nbsp;&nbsp;&nbsp;&nbsp;库：</span>-->
+                                <!--<span class="zhengpinku">正品库</span>-->
+                                <!--<select name="" id="selectP1" class="selectP1">-->
+                                    <!--<option value="正品库">正品库</option>-->
+                                     <!--<option value="水货">水货</option>-->
+                                <!--</select>-->
+                            <!--</p>-->
+                            <!--<p class="p2">-->
+                                <!--<span class="zhuangtai">状&nbsp;&nbsp;&nbsp;&nbsp;态：</span>-->
+                                <!--<span class="shangjia">上架</span>-->
+                                <!--<select name="" id="selectP2" class="selectP1">-->
+                                    <!--<option value="上架">上架</option>-->
+                                     <!--<option value="下架">下架</option>-->
+                                <!--</select>-->
+                            <!--</p>-->
+                        <!--</div>-->
+                        <!--<div class="clear"></div>-->
+                    <!--</div>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1 addStaff_Bottom3">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1">-->
+                    <!--信息备注：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<textarea class="addStaff_BottomSpan2Textarea">请填写备注内容</textarea>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<ul class="ul400 ul401">-->
+                <!--<li id="addStaff_Btom">-->
+                    <!--<span class="span400_1_1 on sapn400queren addStaff_Btomqueren">确认</span>-->
+                    <!--<span class="span400_1_1 sapn400reset addStaff_Btomreset">取消</span>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;************************************编辑商品弹框********************************&ndash;&gt;-->
+    <!--<div id="addStaff1" style="display: none">-->
+        <!--<div class="addStaff_Top">-->
+            <!--<div class="addStaff_TopL">-->
+                <!--商品编辑-->
+            <!--</div>-->
+            <!--<div class="addStaff_TopR">-->
+                <!--X-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="addStaff_Bottom">-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--商品名称：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--商品型号：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--商品规格：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<input type="text" value="cw154863" class="addStaff_BottomSpan1_input">-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1">-->
+                    <!--商品价格：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<span style="margin-right: 50px;height: 30px;line-height: 30px"><input type="text" value="10.5" style="margin-right: 10px;width: 90px;height: 30px;text-align: center">元</span>-->
+                    <!--<span style="height: 30px;line-height: 30px">库存量：<input type="text" value="1000" style="width: 90px;height: 30px;margin-right: 10px;text-align: center">个</span>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan3">-->
+                    <!--商品图片：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2">-->
+                    <!--<div id="addStaff_BottomSpan2F1">-->
+                        <!--<div id="addStaff_BottomSpan2Fl1">-->
+                            <!--<img src="../Quote/img/marketManage/photo_tj.png" alt="" style="width: 90px;height: 90px;position: relative;top: 10px;" class="img1">-->
+                            <!--<input type="file" style="width: 90px;height: 90px;position: relative;top: -85px;z-index: 10;opacity: 0" class="filepath" id="file1">-->
+                        <!--</div>-->
+                        <!--<div id="addStaff_BottomSpan2Fr1">-->
+                            <!--<p class="p1" style="position: relative;top: 0;">-->
+                                <!--<span class="cangKu" style="height: 30px;line-height: 30px">仓&nbsp;&nbsp;&nbsp;&nbsp;库：</span>-->
+                                <!--<span class="zhengpinku" style="height: 30px;line-height: 30px">正品库</span>-->
+                                <!--<select name="" id="selectP3" class="selectP1" style="height: 30px;line-height: 30px">-->
+                                    <!--<option value="123">123</option>-->
+                                     <!--<option value="456">456</option>-->
+                                <!--</select>-->
+                            <!--</p>-->
+                            <!--<p class="p2" style="position: relative;top: 0;">-->
+                                <!--<span class="zhuangtai" style="height: 30px;line-height: 30px">状&nbsp;&nbsp;&nbsp;&nbsp;态：</span>-->
+                                <!--<span class="shangjia" style="height: 30px;line-height: 30px">上架</span>-->
+                                <!--<select name="" id="selectP4" class="selectP1" style="height: 30px;line-height: 30px">-->
+                                    <!--<option value="123">123</option>-->
+                                     <!--<option value="456">456</option>-->
+                                <!--</select>-->
+                            <!--</p>-->
+                            <!--<p class="p2" style="position: relative;left: 2px;top: 0;">-->
+                                <!--<span class="zhuangtai" style="height: 30px;line-height: 30px">新旧度：</span>-->
+                                <!--<span class="shangjia" style="height: 30px;line-height: 30px">全新</span>-->
+                                <!--<select name="" id="selectP5" class="selectP1" style="height: 30px;line-height: 30px" >-->
+                                    <!--<option value="123">123</option>-->
+                                     <!--<option value="456">456</option>-->
+                                <!--</select>-->
+                            <!--</p>-->
+                        <!--</div>-->
+                        <!--<div class="clear"></div>-->
+                    <!--</div>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<div class="addStaff_Bottom1 addStaff_Bottom3">-->
+                <!--<span class="addStaff_BottomSpan1 addStaff_BottomSpan1_1">-->
+                    <!--信息备注：-->
+                <!--</span>-->
+                <!--<span class="addStaff_BottomSpan2" style="position: relative;top: 13px">-->
+                    <!--<textarea class="addStaff_BottomSpan2Textarea">请填写备注内容</textarea>-->
+                <!--</span>-->
+            <!--</div>-->
+            <!--<ul class="ul400 ul401">-->
+                <!--<li id="addStaff_Btom2">-->
+                    <!--<span class="span400_1_1 on sapn400queren addStaff_Btomqueren">确认</span>-->
+                    <!--<span class="span400_1_1 sapn400reset addStaff_Btomreset">取消</span>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
