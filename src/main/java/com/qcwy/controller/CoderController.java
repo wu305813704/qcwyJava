@@ -28,7 +28,7 @@ public class CoderController {
     private int width = 90;//定义图片的width
     private int height = 20;//定义图片的height
     private int codeCount = 4;//定义图片上显示验证码的个数
-    private int lineCount = 50;//干扰线的条数
+    private int lineCount = 30;//干扰线的条数
     private int space = 15;//每个验证码之间的间距
     private int fontHeight = 18;//字体高度
     private int codeY = 16;//验证码Y坐标

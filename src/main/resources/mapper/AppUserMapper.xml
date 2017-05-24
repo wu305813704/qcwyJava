@@ -84,4 +84,45 @@
         SELECT * FROM t_app_user
     </select>
 
+    <update id="update">
+        UPDATE t_app_user
+        <set>
+            <if test="appUser.job_no != null">
+                job_no = #{appUser.jobNo},
+            </if>
+            <if test="appUser.pwd != null">
+                pwd = #{appUser.pwd},
+            </if>
+            <if test="appUser.name != null">
+                name = #{appUser.name},
+            </if>
+            <if test="appUser.tel != null">
+                tel = #{appUser.tel},
+            </if>
+            <if test="appUser.sex != null">
+                sex = #{appUser.sex},
+            </if>
+            <if test="appUser.id_card != null">
+                id_card = #{appUser.id_card},
+            </if>
+        </set>
+        WHERE id = #{appUser.id}
+    </update>
+
+    <select id="getCanPushUsers" resultMap="user">
+        SELECT *,count(order_no) AS order_count
+        FROM
+        (
+        SELECT a.*,o.order_no
+        FROM t_app_user a
+        LEFT JOIN t_xt_order o
+        ON a.job_no = o.job_no
+        AND o.state IN (1,2,3,6,7,8,9)
+        OR (o.state = 4 AND date_format(o.appointment_time,'%Y%m%d') = date_format(now(),'%Y%m%d'))
+        WHERE a.online = 1
+        ) AS obj
+        GROUP BY obj.job_no
+        HAVING count(order_no)  &lt;= 5
+    </select>
+
 </mapper>

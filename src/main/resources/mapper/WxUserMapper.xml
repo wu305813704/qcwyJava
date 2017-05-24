@@ -3,9 +3,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qcwy.dao.WxUserDao">
     <insert id="register" useGeneratedKeys="true" keyProperty="wxUser.id">
-        insert into t_wx_user (openid, nickname, sex,province,city,country,headimgurl,unionid,regist_time)
+        insert into t_wx_user (openid, nickname, sex,province,city,country,headimgurl,unionid,regist_time,type,tel)
         values (#{wxUser.openid},#{wxUser.nickname},#{wxUser.sex},#{wxUser.province},#{wxUser.city},
-        #{wxUser.country},#{wxUser.headimgurl},#{wxUser.unionid},now())
+        #{wxUser.country},#{wxUser.headimgurl},#{wxUser.unionid},now(),#{wxUser.type},#{wxUser.tel})
     </insert>
 
     <select id="selectUserByOpenId" resultType="com.qcwy.entity.WxUser">

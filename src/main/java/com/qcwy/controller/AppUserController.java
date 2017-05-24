@@ -115,6 +115,9 @@ public class AppUserController {
     public JsonResult<?> rushOrder(@ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo,
                                    @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
         try {
+            if (orderService.getOrder(orderNo).getState() == 5) {
+                throw new Exception("该订单已取消");
+            }
             orderService.rushOrder(jobNo, orderNo);
             LogForApp log = new LogForApp();
             log.setJob_no(jobNo);
@@ -164,6 +167,9 @@ public class AppUserController {
     public JsonResult<?> startOrder(@ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo,
                                     @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
         try {
+            if (orderService.getOrder(orderNo).getState() == 5) {
+                throw new Exception("该订单已取消");
+            }
             orderService.startOrder(jobNo, orderNo);
             LogForApp log = new LogForApp();
             log.setJob_no(jobNo);
@@ -182,6 +188,9 @@ public class AppUserController {
     public JsonResult<?> stopOrder(@ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo,
                                    @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
         try {
+            if (orderService.getOrder(orderNo).getState() == 5) {
+                throw new Exception("该订单已取消");
+            }
             orderService.stopOrder(jobNo, orderNo);
             LogForApp log = new LogForApp();
             log.setJob_no(jobNo);
@@ -227,6 +236,9 @@ public class AppUserController {
         reassignment.setNew_no(newNo);
         reassignment.setCause(cause);
         try {
+            if (orderService.getOrder(orderNo).getState() == 5) {
+                throw new Exception("该订单已取消");
+            }
             orderService.reassignmentOrder(reassignment);
             LogForApp log = new LogForApp();
             log.setJob_no(oldNo);
@@ -271,6 +283,9 @@ public class AppUserController {
         bgOrder.setCause(StringUtils.isEmpty(cause) ? "" : cause);
         bgOrder.setHandle_time(new Timestamp(0));
         try {
+            if (orderService.getOrder(orderNo).getState() == 5) {
+                throw new Exception("该订单已取消");
+            }
             orderService.saveBgOrder(bgOrder);
             orderService.updateOrderState(orderNo, 6);//6-改派中
             LogForApp log = new LogForApp();
@@ -357,6 +372,9 @@ public class AppUserController {
         orderAppointment.setLoc(loc);
         OrderDetail orderDetail = orderService.getOrderDetail(orderNo);
         try {
+            if (orderService.getOrder(orderNo).getState() == 5) {
+                throw new Exception("该订单已取消");
+            }
             orderService.updateInfo(orderAppointment);
             orderService.updateOrderState(orderNo, 4);//4-预约
             orderService.updateAppointmentTime(new Timestamp(time), orderNo);
@@ -454,20 +472,24 @@ public class AppUserController {
             return new JsonResult<>("未选择故障");
         }
         try {
+            if (orderService.getOrder(orderNo).getState() == 5) {
+                throw new Exception("该订单已取消");
+            }
             orderService.confirmTroubleApp(orderNo, faultId, faultDescription, files, parts);
             WxUser wxUser = wxUserService.selectUserByOpenId(orderService.getOpenIdByOrderNo(orderNo));
-            if (wxUser.getType() == 1) {//来自客服录入的用户
-                orderService.updateOrderState(orderNo, 8);//修改订单状态为8--自动替用户确认故障
-            }
             LogForApp log = new LogForApp();
             log.setJob_no(jobNo);
             log.setOrder_no(orderNo);
             log.setType(8);
             logService.saveLogApp(log);
+            if (wxUser.getType() == 1) {//来自客服录入的用户
+                orderService.updateOrderState(orderNo, 10);//修改订单状态为8--自动替用户确认故障
+                return new JsonResult<>(1);
+            }
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
-        return new JsonResult<>(true);
+        return new JsonResult<>(0);
     }
 
     //维修完成
@@ -483,6 +505,9 @@ public class AppUserController {
             return new JsonResult<>("工号与订单号不匹配");
         }
         try {
+            if (orderService.getOrder(orderNo).getState() == 5) {
+                throw new Exception("该订单已取消");
+            }
             orderService.complete(orderNo);
             WxUser wxUser = wxUserService.selectUserByOpenId(orderService.getOpenIdByOrderNo(orderNo));
             if (wxUser.getType() == 1) {//来自客服录入的用户
@@ -623,6 +648,9 @@ public class AppUserController {
     public JsonResult<?> offlinePay(@ApiParam(required = true, name = "jobNo", value = "jobNo") @RequestParam(value = "jobNo") String jobNo,
                                     @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") int orderNo) {
         try {
+            if (orderService.getOrder(orderNo).getState() == 5) {
+                throw new Exception("该订单已取消");
+            }
             if (!jobNo.equals(orderService.getJobNoByOrderNo(orderNo))) {
                 return new JsonResult<>("订单数据异常");
             }

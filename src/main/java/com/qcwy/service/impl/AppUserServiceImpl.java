@@ -150,4 +150,9 @@ public class AppUserServiceImpl implements AppUserService {
     public int getOrderCount(String jobNo) {
         return orderDao.getOrderCount(jobNo);
     }
+
+    @Override
+    public void update(AppUser appUser) {
+        appUserDao.update(appUser);
+    }
 }

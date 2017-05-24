@@ -55,4 +55,7 @@ public interface AppUserService {
 
     //获取订单数量
     int getOrderCount(String jobNo);
+
+    //修改工程师
+    void update(AppUser appUser);
 }

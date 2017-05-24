@@ -92,7 +92,7 @@ public class WxUserServiceImpl implements WxUserService {
         //工程师端数据添加消息
         AppOrderMessage msg = new AppOrderMessage();
         msg.setJob_no(orderDao.getJobNoByOrderNo(orderCancel.getOrder_no()));
-        msg.setType(1);
+        msg.setType(4);//取消订单
         msg.setOrder_no(orderCancel.getOrder_no());
         appOrderMessageDao.save(msg);
     }

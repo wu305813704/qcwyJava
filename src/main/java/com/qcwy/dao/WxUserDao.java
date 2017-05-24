@@ -37,4 +37,7 @@ public interface WxUserDao {
 
     //黑名单列表
     List<WxUser> getBlacklist();
+
+    //根据单号获取用户信息
+    WxUser getWxUserByOrderNo(@Param("orderNo") Integer orderNo);
 }

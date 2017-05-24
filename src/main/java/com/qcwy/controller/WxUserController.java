@@ -514,7 +514,6 @@ public class WxUserController {
         Order order;
         try {
             order = orderService.getOrder(orderNo);
-            WxWebSocket.sendInfo("123");
         } catch (Exception e) {
             return new JsonResult<>(e);
         }

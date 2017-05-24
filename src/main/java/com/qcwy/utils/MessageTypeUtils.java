@@ -28,7 +28,7 @@ public class MessageTypeUtils {
     //订单维修完成
     public static final int ORDER_COMPLETE = 6;
 
-    //订单维修完成
+    //确定线下支付
     public static final int OFFLINE_PAY = 7;
 
     //售后订单驳回

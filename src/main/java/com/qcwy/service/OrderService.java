@@ -180,4 +180,19 @@ public interface OrderService {
 
     //查询回访详情
     OrderVisit getReturnVisitInfo(Integer orderNo);
+
+    //根据日期查询订单
+    List<Order> getOrderByDate(String date);
+
+    //根据工号查询订单
+    List<Order> getOrderByJobNo(String jobNo);
+
+    //根据来源(微信)获取订单
+    List<Order> getOrderByWx();
+
+    //根据来源(后台)获取订单
+    List<Order> getOrderByBg();
+
+    //根据微信电话获取订单
+    List<Order> getOrderByWxTel(String tel);
 }

@@ -3,11 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qcwy.dao.VisitTimePriceDao">
     <select id="getAllTimePrice" resultType="com.qcwy.entity.VisitTimePrice">
-        SELECT * FROM t_xt_time_price
+        SELECT * FROM t_xt_visit_time_price
     </select>
 
     <update id="setTimePrice">
-        UPDATE t_xt_time_price
+        UPDATE t_xt_visit_time_price
         SET time = #{timePrice.time},price = #{timePrice.price}
         WHERE id = #{timePrice.id}
     </update>

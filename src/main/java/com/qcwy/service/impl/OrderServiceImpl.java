@@ -253,18 +253,10 @@ public class OrderServiceImpl implements OrderService {
         orderDetailDao.saveOrderDetail(order.getOrder_no(), order.getOrderDetail());
         order.setOrderDetail(orderDetailDao.getOrderDetail(order.getOrder_no()));
         orderRecordDao.save(order.getOrder_no());
-        //获取所有在线工程师列表
-        List<AppUser> appUsers = appUserDao.findAllOnline();
-
+        //获取所有5单以下的工程师
+        List<AppUser> appUsers = appUserDao.getCanPushUsers();
         //添加订单超时监听
         OrderOverTimeUtils.addOrderListener(order.getOrder_no(), orderDao, bgOrderDao);
-        for (AppUser appUser : appUsers) {
-            //所持订单数量大于等于5时，不推送
-            int count = orderDao.getCountHoldOrders(appUser.getJob_no());
-            if (count >= 5) {
-                appUsers.remove(appUser);
-            }
-        }
         //推送给工程师
         model.pushOrderToEngineer(order, appUsers);
     }
@@ -373,6 +365,31 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderVisit getReturnVisitInfo(Integer orderNo) {
         return orderVisitDao.getReturnVisitInfo(orderNo);
+    }
+
+    @Override
+    public List<Order> getOrderByDate(String date) {
+        return orderDao.getOrderByDate(date);
+    }
+
+    @Override
+    public List<Order> getOrderByJobNo(String jobNo) {
+        return orderDao.getOrderByJobNo(jobNo);
+    }
+
+    @Override
+    public List<Order> getOrderByWx() {
+        return orderDao.getOrderByWx();
+    }
+
+    @Override
+    public List<Order> getOrderByBg() {
+        return orderDao.getOrderByBg();
+    }
+
+    @Override
+    public List<Order> getOrderByWxTel(String tel) {
+        return orderDao.getOrderByWxTel();
     }
 
     //加价
@@ -603,6 +620,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void saveOrderAppointment(OrderAppointment orderAppointment) {
         orderAppointmentDao.save(orderAppointment);
+        orderDao.updateState(1, orderAppointment.getOrder_no());
+        orderDao.setJobNo(orderAppointment.getOrder_no(), null);
+        orderDao.updateType(orderAppointment.getOrder_no(), 1);
     }
 
     @Override

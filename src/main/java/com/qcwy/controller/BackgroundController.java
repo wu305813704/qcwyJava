@@ -1061,6 +1061,7 @@ public class BackgroundController {
             wxUser.setOpenid(openId);
             wxUser.setNickname(nickname);
             wxUser.setSex(sex);
+            wxUser.setType(1);
             wxUser.setTel(tel);
             order.setWxUser(wxUser);
             orderService.telPlaceOrder(order);
@@ -1226,7 +1227,7 @@ public class BackgroundController {
         }
         try {
             Order order = orderService.getOrder(orderNo);
-            if (order.getState() != 0 && order.getState() != 4) {
+            if (order.getState() != 0 && order.getState() != 4 && order.getState() != 6) {
                 return new JsonResult<>("该订单已派发，请勿重复派发");
             }
             orderService.distributeOrder(orderNo, jobNo);
@@ -1345,7 +1346,7 @@ public class BackgroundController {
     @GetMapping("/getReturnVisitInfo")
     @ApiOperation("查询回访详情")
     public JsonResult<?> getReturnVisitInfo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
-                                     @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") Integer orderNo) {
+                                            @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") Integer orderNo) {
         String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
@@ -1359,4 +1360,145 @@ public class BackgroundController {
         redis.expire(token, validity);
         return new JsonResult<>(orderVisit);
     }
+
+    //修改工程师
+    @GetMapping("/updateAppUser")
+    @ApiOperation("修改工程师")
+    public JsonResult<?> getReturnVisitInfo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                            @ApiParam(required = true, name = "id", value = "ID") @RequestParam(value = "id") Integer id,
+                                            @ApiParam(name = "jobNo", value = "工号") @RequestParam(required = false, value = "jobNo") String jobNo,
+                                            @ApiParam(name = "pwd", value = "密码") @RequestParam(required = false, value = "pwd") String pwd,
+                                            @ApiParam(name = "name", value = "姓名") @RequestParam(required = false, value = "name") String name,
+                                            @ApiParam(name = "sex", value = "性别") @RequestParam(required = false, value = "sex") String sex,
+                                            @ApiParam(name = "tel", value = "电话") @RequestParam(required = false, value = "tel") String tel,
+                                            @ApiParam(name = "idcard", value = "身份证") @RequestParam(required = false, value = "idcard") String idcard) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        AppUser appUser = new AppUser();
+        appUser.setId(id);
+        appUser.setJob_no(jobNo);
+        appUser.setPwd(pwd);
+        appUser.setName(name);
+        appUser.setSex(sex);
+        appUser.setTel(tel);
+        appUser.setId_card(idcard);
+        try {
+            appUserService.update(appUser);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //根据日期查询订单
+    @GetMapping("/getOrderByDate")
+    @ApiOperation("根据日期查询订单")
+    public JsonResult<?> getOrderByDate(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                        @ApiParam(required = true, name = "date", value = "日期") @RequestParam(value = "date") String date,
+                                        @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                        @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orders;
+        try {
+            orders = orderService.getOrderByDate(date);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(orders));
+    }
+
+    //根据工号获取订单
+    @GetMapping("/getOrderByJobNo")
+    @ApiOperation("根据日期查询订单")
+    public JsonResult<?> getOrderByJobNo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                         @ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo,
+                                         @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                         @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orders;
+        try {
+            orders = orderService.getOrderByJobNo(jobNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(orders));
+    }
+
+    //根据来源(微信)获取订单
+    @GetMapping("/getOrderByWx")
+    @ApiOperation("根据来源(微信)获取订单")
+    public JsonResult<?> getOrderByWx(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                         @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                         @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orders;
+        try {
+            orders = orderService.getOrderByWx();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(orders));
+    }
+
+    //根据来源(后台)获取订单
+    @GetMapping("/getOrderByBg")
+    @ApiOperation("根据来源(后台)获取订单")
+    public JsonResult<?> getOrderByBg(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                         @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                         @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orders;
+        try {
+            orders = orderService.getOrderByBg();
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(orders));
+    }
+
+    //根据客户电话获取订单
+    @GetMapping("/getOrderByWxTel")
+    @ApiOperation("根据客户电话获取订单")
+    public JsonResult<?> getOrderByWxTel(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                         @ApiParam(required = true, name = "tel", value = "电话") @RequestParam(value = "tel") String tel,
+                                         @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                         @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orders;
+        try {
+            orders = orderService.getOrderByWxTel(tel);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(new PageInfo<>(orders));
+    }
+
 }

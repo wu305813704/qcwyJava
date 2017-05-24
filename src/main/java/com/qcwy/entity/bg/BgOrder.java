@@ -43,6 +43,13 @@ public class BgOrder implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String app_name;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String nickname;//微信用户昵称
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String tel;//微信用户电话
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer wx_type;//来源
+
     public int getId() {
         return id;
     }
@@ -161,5 +168,29 @@ public class BgOrder implements Serializable {
 
     public void setApp_name(String app_name) {
         this.app_name = app_name;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public Integer getWx_type() {
+        return wx_type;
+    }
+
+    public void setWx_type(Integer wx_type) {
+        this.wx_type = wx_type;
     }
 }

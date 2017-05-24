@@ -38,4 +38,10 @@ public interface AppUserDao {
 
     //获取所有工程师列表
     List<AppUser> getAllUser();
+
+    //修改工程师
+    void update(@Param("appUser") AppUser appUser);
+
+    //获取5单以下的工程师
+    List<AppUser> getCanPushUsers();
 }

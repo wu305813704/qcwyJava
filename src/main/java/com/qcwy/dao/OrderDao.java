@@ -110,11 +110,29 @@ public interface OrderDao {
     List<Order> getReturnVisitList();
 
     //派发订单给工程师
-    void setJobNo(@Param("orderNo")Integer orderNo,@Param("jobNo") String jobNo);
+    void setJobNo(@Param("orderNo") Integer orderNo, @Param("jobNo") String jobNo);
 
     //修改回访状态未已回访
     void updateReturnState(@Param("orderNo") int orderNo);
 
     //查询历史售后订单
     List<Order> getHistoryAfterSale();
+
+    //设置订单类型
+    void updateType(@Param("orderNo") Integer orderNo, @Param("type") Integer type);
+
+    //根据日期查询订单
+    List<Order> getOrderByDate(@Param("date") String date);
+
+    //根据工号查询订单
+    List<Order> getOrderByJobNo(@Param("jobNo") String jobNo);
+
+    //根据来源(微信)获取订单
+    List<Order> getOrderByWx();
+
+    //根据来源(后台)获取订单
+    List<Order> getOrderByBg();
+
+    //根据客户电话获取订单
+    List<Order> getOrderByWxTel();
 }

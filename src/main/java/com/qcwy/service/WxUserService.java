@@ -58,4 +58,5 @@ public interface WxUserService {
 
     //黑名单列表
     List<WxUser> getBlacklist();
+
 }
