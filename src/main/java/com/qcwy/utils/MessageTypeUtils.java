@@ -34,6 +34,9 @@ public class MessageTypeUtils {
     //售后订单驳回
     public static final int REJECT_ORDER = 8;
 
+    //后台派发订单
+    public static final int BG_DISTRIBUTE = 9;
+
     /**
      * 后台
      */

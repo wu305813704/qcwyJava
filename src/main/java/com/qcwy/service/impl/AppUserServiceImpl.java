@@ -2,10 +2,7 @@ package com.qcwy.service.impl;
 
 import com.qcwy.dao.*;
 import com.qcwy.dao.bg.BgOrderDao;
-import com.qcwy.entity.AppOrderMessage;
-import com.qcwy.entity.AppUser;
-import com.qcwy.entity.OrderReassignment;
-import com.qcwy.entity.WebSocketMessage;
+import com.qcwy.entity.*;
 import com.qcwy.model.Model;
 import com.qcwy.service.AppUserService;
 import com.qcwy.utils.MessageTypeUtils;
@@ -152,7 +149,12 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public void update(AppUser appUser) {
-        appUserDao.update(appUser);
+    public void updateUser(AppUser appUser) {
+        appUserDao.updateUser(appUser);
+    }
+
+    @Override
+    public void delete(String jobNo) {
+        appUserDao.delete(jobNo);
     }
 }

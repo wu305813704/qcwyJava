@@ -2,6 +2,7 @@ package com.qcwy.service.impl;
 
 import com.qcwy.dao.*;
 import com.qcwy.entity.*;
+import com.qcwy.model.Model;
 import com.qcwy.service.WxUserService;
 import com.qcwy.utils.StringUtils;
 import com.qcwy.utils.wx.WxUtils;
@@ -28,7 +29,9 @@ public class WxUserServiceImpl implements WxUserService {
     private OrderCancelDao orderCancelDao;
     @Autowired
     private AppOrderMessageDao appOrderMessageDao;
-
+    @Autowired
+    private WxOrderMessageDao wxOrderMessageDao;
+    private Model model = new Model();
     @Override
     public WxAccessToken getAccessToken(String code) throws IOException {
         WxInfo wxInfo = wxInfoDao.getInfo();
@@ -89,12 +92,16 @@ public class WxUserServiceImpl implements WxUserService {
     @Override
     public void cancelOrder(OrderCancel orderCancel) {
         orderCancelDao.save(orderCancel);
-        //工程师端数据添加消息
-        AppOrderMessage msg = new AppOrderMessage();
-        msg.setJob_no(orderDao.getJobNoByOrderNo(orderCancel.getOrder_no()));
-        msg.setType(4);//取消订单
-        msg.setOrder_no(orderCancel.getOrder_no());
-        appOrderMessageDao.save(msg);
+        if (orderDao.getJobNoByOrderNo(orderCancel.getOrder_no()) != null) {
+            //工程师端数据添加消息
+            AppOrderMessage msg = new AppOrderMessage();
+            msg.setJob_no(orderDao.getJobNoByOrderNo(orderCancel.getOrder_no()));
+            msg.setType(4);//取消订单
+            msg.setOrder_no(orderCancel.getOrder_no());
+            appOrderMessageDao.save(msg);
+            //推送给工程师
+            model.pushCancel(orderDao.getJobNoByOrderNo(orderCancel.getOrder_no()), orderCancel.getOrder_no());
+        }
     }
 
     @Override
@@ -125,6 +132,11 @@ public class WxUserServiceImpl implements WxUserService {
     @Override
     public List<WxUser> getBlacklist() {
         return wxUserDao.getBlacklist();
+    }
+
+    @Override
+    public List<WxOrderMessage> getOrderMsgByOpenid(String openid) {
+        return wxOrderMessageDao.getMsgByOpenid(openid);
     }
 
 }

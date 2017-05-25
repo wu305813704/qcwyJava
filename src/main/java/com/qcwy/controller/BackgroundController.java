@@ -140,16 +140,27 @@ public class BackgroundController {
                                     @ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo,
                                     @ApiParam(required = true, name = "name", value = "姓名") @RequestParam(value = "name") String name,
                                     @ApiParam(required = true, name = "idCard", value = "身份证") @RequestParam(value = "idCard") String idCard,
-                                    @ApiParam(required = true, name = "birthday", value = "生日") @RequestParam(value = "birthday") String birthday) {
+                                    @ApiParam(required = true, name = "sex", value = "性别(1-男2-女0-未知)") @RequestParam(value = "sex") String sex,
+                                    @ApiParam(required = true, name = "birthday", value = "生日") @RequestParam(value = "birthday") String birthday,
+                                    @ApiParam(required = true, name = "useTel", value = "常用电话") @RequestParam(value = "useTel") String useTel,
+                                    @ApiParam(required = true, name = "tel", value = "电话") @RequestParam(value = "tel") String tel,
+                                    @ApiParam(required = true, name = "address", value = "联系地址") @RequestParam(value = "address") String address) {
         String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
+        }
+        if (appUserService.getUserByJobNo(jobNo).getJob_no() != null) {
+            return new JsonResult<>("该工号已被使用");
         }
         AppUser appUser = new AppUser();
         appUser.setJob_no(jobNo);
         appUser.setName(name);
         appUser.setId_card(idCard);
         appUser.setBirthday(birthday);
+        appUser.setSex(sex);
+        appUser.setUse_tel(useTel);
+        appUser.setTel(tel);
+        appUser.setAddress(address);
         try {
             appUserService.save(appUser);
         } catch (Exception e) {
@@ -1364,28 +1375,32 @@ public class BackgroundController {
     //修改工程师
     @GetMapping("/updateAppUser")
     @ApiOperation("修改工程师")
-    public JsonResult<?> getReturnVisitInfo(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
-                                            @ApiParam(required = true, name = "id", value = "ID") @RequestParam(value = "id") Integer id,
-                                            @ApiParam(name = "jobNo", value = "工号") @RequestParam(required = false, value = "jobNo") String jobNo,
-                                            @ApiParam(name = "pwd", value = "密码") @RequestParam(required = false, value = "pwd") String pwd,
-                                            @ApiParam(name = "name", value = "姓名") @RequestParam(required = false, value = "name") String name,
-                                            @ApiParam(name = "sex", value = "性别") @RequestParam(required = false, value = "sex") String sex,
-                                            @ApiParam(name = "tel", value = "电话") @RequestParam(required = false, value = "tel") String tel,
-                                            @ApiParam(name = "idcard", value = "身份证") @RequestParam(required = false, value = "idcard") String idcard) {
+    public JsonResult<?> updateAppUser(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                       @ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo,
+                                       @ApiParam(name = "pwd", value = "密码") @RequestParam(required = false, value = "pwd") String pwd,
+                                       @ApiParam(name = "name", value = "姓名") @RequestParam(required = false, value = "name") String name,
+                                       @ApiParam(name = "sex", value = "性别") @RequestParam(required = false, value = "sex") String sex,
+                                       @ApiParam(name = "useTel", value = "常用电话") @RequestParam(required = false, value = "useTel") String useTel,
+                                       @ApiParam(name = "tel", value = "电话") @RequestParam(required = false, value = "tel") String tel,
+                                       @ApiParam(name = "idcard", value = "身份证") @RequestParam(required = false, value = "idcard") String idcard,
+                                       @ApiParam(name = "birthday", value = "生日") @RequestParam(required = false, value = "birthday") String birthday,
+                                       @ApiParam(name = "address", value = "联系地址") @RequestParam(required = false, value = "address") String address) {
         String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
         }
         AppUser appUser = new AppUser();
-        appUser.setId(id);
         appUser.setJob_no(jobNo);
         appUser.setPwd(pwd);
         appUser.setName(name);
         appUser.setSex(sex);
         appUser.setTel(tel);
         appUser.setId_card(idcard);
+        appUser.setUse_tel(useTel);
+        appUser.setBirthday(birthday);
+        appUser.setAddress(address);
         try {
-            appUserService.update(appUser);
+            appUserService.updateUser(appUser);
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -1441,8 +1456,8 @@ public class BackgroundController {
     @GetMapping("/getOrderByWx")
     @ApiOperation("根据来源(微信)获取订单")
     public JsonResult<?> getOrderByWx(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
-                                         @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
-                                         @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+                                      @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                      @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
         String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
@@ -1462,8 +1477,8 @@ public class BackgroundController {
     @GetMapping("/getOrderByBg")
     @ApiOperation("根据来源(后台)获取订单")
     public JsonResult<?> getOrderByBg(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
-                                         @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
-                                         @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+                                      @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                      @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
         String tokenValue = redis.get(token);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
             return new JsonResult<>("无效的token");
@@ -1499,6 +1514,65 @@ public class BackgroundController {
         }
         redis.expire(token, validity);
         return new JsonResult<>(new PageInfo<>(orders));
+    }
+
+    //删除工程师
+    @GetMapping("/deleteAppUser")
+    @ApiOperation("删除工程师")
+    public JsonResult<?> deleteAppUser(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                       @ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        try {
+            appUserService.delete(jobNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(true);
+    }
+
+    //获取员工仓所有零件
+    @GetMapping("/getAppUserParts")
+    @ApiOperation("获取员工仓所有零件")
+    public JsonResult<?> getAppUserParts(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                         @ApiParam(required = true, name = "jobNo", value = "工号") @RequestParam(value = "jobNo") String jobNo,
+                                         @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                         @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<WarehouseEmployee> warehouseEmployees;
+        try {
+            warehouseEmployees = warehouseEmployeeService.getParts(jobNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(warehouseEmployees);
+    }
+
+    //获取订单取消原因
+    @GetMapping("/getOrderCancel")
+    @ApiOperation("获取工程师信息")
+    public JsonResult<?> getOrderCancel(@ApiParam(required = true, name = "token", value = "token") @RequestParam(value = "token") String token,
+                                        @ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") Integer orderNo) {
+        String tokenValue = redis.get(token);
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(tokenValue) || !bgUserService.hasUsername(tokenValue)) {
+            return new JsonResult<>("无效的token");
+        }
+        OrderCancel orderCancel;
+        try {
+            orderCancel = orderService.getOrderCancel(orderNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        redis.expire(token, validity);
+        return new JsonResult<>(orderCancel);
     }
 
 }

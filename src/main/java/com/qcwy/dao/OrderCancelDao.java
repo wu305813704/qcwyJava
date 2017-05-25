@@ -10,4 +10,6 @@ import org.apache.ibatis.annotations.Param;
 public interface OrderCancelDao {
 
     void save(@Param("orderCancel") OrderCancel orderCancel);
+
+    OrderCancel getCancelCause(@Param("orderNo") Integer orderNo);
 }

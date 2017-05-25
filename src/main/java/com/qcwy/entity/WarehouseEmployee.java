@@ -23,6 +23,9 @@ public class WarehouseEmployee implements Serializable {
     private String modle;//型号
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String brand;//品牌
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private PartDetail partDetail;
+
 
     public int getId() {
         return id;
@@ -78,5 +81,13 @@ public class WarehouseEmployee implements Serializable {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public PartDetail getPartDetail() {
+        return partDetail;
+    }
+
+    public void setPartDetail(PartDetail partDetail) {
+        this.partDetail = partDetail;
     }
 }

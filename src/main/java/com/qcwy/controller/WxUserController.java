@@ -1,10 +1,9 @@
 package com.qcwy.controller;
 
 import com.github.pagehelper.PageHelper;
-import com.qcwy.dao.bg.LogForWxDao;
+import com.github.pagehelper.PageInfo;
 import com.qcwy.entity.*;
 import com.qcwy.entity.bg.LogForWx;
-import com.qcwy.service.AppUserService;
 import com.qcwy.service.LogService;
 import com.qcwy.service.OrderService;
 import com.qcwy.service.WxUserService;
@@ -14,7 +13,6 @@ import com.qcwy.utils.wx.WeixinConstant;
 import com.qcwy.utils.wx.WeixinPayConfig;
 import com.qcwy.utils.wx.WxUtils;
 import com.qcwy.websocket.BgWebSocket;
-import com.qcwy.websocket.WxWebSocket;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -223,7 +221,7 @@ public class WxUserController {
         return new JsonResult<>(order.getOrder_no());
     }
 
-    //预约单
+    //下预约单
     @PostMapping("/appointmentOrder")
     @ApiOperation("下预约单")
     public JsonResult<?> appointmentOrder(@ApiParam(required = true, name = "openId", value = "openId") @RequestParam(value = "openId") String openId,
@@ -447,6 +445,9 @@ public class WxUserController {
                                        @ApiParam(required = true, name = "visitSpeed", value = "上门速度") @RequestParam(value = "visitSpeed") int visitSpeed,
                                        @ApiParam(required = true, name = "technicalAbility", value = "技术能力") @RequestParam(value = "technicalAbility") int technicalAbility,
                                        @ApiParam(name = "remark", value = "备注") @RequestParam(value = "remark") String remark) {
+        if (orderService.getOrder(orderNo).getState() != 11) {
+            return new JsonResult<>("该订单未付款，不可评价");
+        }
         if (orderService.getOrderEvaluate(orderNo) != null) {
             return new JsonResult<>("此订单已评价,不要重复评价");
         }
@@ -632,4 +633,32 @@ public class WxUserController {
         return new JsonResult<>(true);
     }
 
+    //查询微信订单消息
+    @GetMapping("/getOrderMessage")
+    @ApiOperation("查询工程师订单消息")
+    public JsonResult<?> getOrderMessage(@ApiParam(required = true, name = "openid", value = "openid") @RequestParam(value = "openid") String openid,
+                                         @ApiParam(required = true, name = "pageNum", value = "页码") @RequestParam(value = "pageNum") int pageNum,
+                                         @ApiParam(required = true, name = "pageSize", value = "每页大小") @RequestParam(value = "pageSize") int pageSize) {
+        List<WxOrderMessage> messages;
+        PageHelper.startPage(pageNum, pageSize);
+        try {
+            messages = wxUserService.getOrderMsgByOpenid(openid);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        return new JsonResult<>(new PageInfo<>(messages));
+    }
+
+    //获取订单取消原因
+    @GetMapping("/getOrderCancel")
+    @ApiOperation("获取工程师信息")
+    public JsonResult<?> getOrderCancel(@ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") Integer orderNo) {
+        OrderCancel orderCancel;
+        try {
+            orderCancel = orderService.getOrderCancel(orderNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        return new JsonResult<>(orderCancel);
+    }
 }

@@ -2,6 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qcwy.dao.WarehouseEmployeeDao">
+    <resultMap id="warehouse" type="com.qcwy.entity.WarehouseEmployee">
+        <id column="id" property="id"/>
+        <result column="job_no" property="job_no"/>
+        <result column="part_detail_id" property="part_detail_id"/>
+        <result column="count" property="count"/>
+        <result column="w_name" property="name"/>
+        <result column="w_model" property="modle"/>
+        <association property="partDetail" javaType="com.qcwy.entity.PartDetail">
+            <id column="part_detail_id" property="part_detail_id"/>
+            <result column="part_no" property="part_no"/>
+            <result column="model" property="model"/>
+            <result column="unit" property="unit"/>
+            <result column="price" property="price"/>
+            <result column="price_old" property="price_old"/>
+            <result column="price_new" property="price_new"/>
+            <result column="is_guarantees" property="is_guarantees"/>
+            <result column="guarantees_limit" property="guarantees_limit"/>
+            <result column="remark" property="remark"/>
+            <result column="image" property="image"/>
+        </association>
+    </resultMap>
 
     <select id="getPartByJobNoAndPartId" resultType="INTEGER">
         SELECT id from t_xt_warehouse_employee
@@ -19,8 +40,12 @@
         WHERE job_no = #{wE.job_no} AND part_detail_id = #{wE.part_detail_id}
     </update>
 
-    <select id="getParts" resultType="com.qcwy.entity.WarehouseEmployee">
-        SELECT * FROM t_xt_warehouse_employee
+    <select id="getParts" resultMap="warehouse">
+        SELECT *,d.model AS w_model,p.name AS w_name FROM t_xt_warehouse_employee w
+        LEFT JOIN t_xt_part_detail d
+        ON w.part_detail_id = d.part_detail_id
+        LEFT JOIN t_xt_part p
+        ON d.part_no = p.part_id
         WHERE job_no = #{jobNo}
     </select>
 

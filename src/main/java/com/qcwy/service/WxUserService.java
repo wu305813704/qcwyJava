@@ -1,9 +1,6 @@
 package com.qcwy.service;
 
-import com.qcwy.entity.Order;
-import com.qcwy.entity.OrderCancel;
-import com.qcwy.entity.WxAccessToken;
-import com.qcwy.entity.WxUser;
+import com.qcwy.entity.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -59,4 +56,6 @@ public interface WxUserService {
     //黑名单列表
     List<WxUser> getBlacklist();
 
+    //获取微信订单消息
+    List<WxOrderMessage> getOrderMsgByOpenid(String openid);
 }

@@ -69,16 +69,15 @@ public class Model {
      * 改派订单推送给指定工程师
      *
      * @param name  提交改派单工程师姓名
-     * @param cause 改派原因
      * @param msg   订单消息
      */
-    public void pushReassignmentToEngineer(String name, String cause, AppOrderMessage msg) {
+    public void pushReassignmentToEngineer(String name, AppOrderMessage msg) {
         threadPool.execute(() -> {
             //推送给指定工程师
             PushPayload pushPayload = null;
             try {
-                pushPayload = JpushUtils.buildPushObject_all_alert_messageWithAlias(msg.getJob_no(), "您收到一个改派订单",
-                        "改派人:" + name + "。改派原因:" + cause, "orderMsg", ObjectMapperUtils.getInstence().writeValueAsString(msg));
+                pushPayload = JpushUtils.buildPushObject_all_alert_messageWithAlias(msg.getJob_no(), "订单消息",
+                        "收到" + name + "的改派订单", "orderMsg", ObjectMapperUtils.getInstence().writeValueAsString(msg));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -126,6 +125,19 @@ public class Model {
      */
     public void pushCheckAndAccept(String jobNo, int orderNo) {
         String msg = "订单编号:" + orderNo + "用户已验收";
+        PushPayload pushPayload = JpushUtils.buildPushObject_all_alert_messageWithAlias(jobNo, "订单消息",
+                msg, "orderMsg", msg);
+        push(pushPayload);
+    }
+
+    /**
+     * 用户取消后推送
+     *
+     * @param jobNo   工号
+     * @param orderNo 订单号
+     */
+    public void pushCancel(String jobNo, int orderNo) {
+        String msg = "订单编号:" + orderNo + "用户已取消";
         PushPayload pushPayload = JpushUtils.buildPushObject_all_alert_messageWithAlias(jobNo, "订单消息",
                 msg, "orderMsg", msg);
         push(pushPayload);

@@ -19,13 +19,15 @@
         <result property="update_time" column="update_time"/>
         <result property="regist_time" column="regist_time"/>
         <result property="order_count" column="order_count"/>
+        <result property="use_tel" column="use_tel"/>
+        <result property="address" column="address"/>
     </resultMap>
 
     <!-- useGeneratedKeys="true" keyProperty="id" 自动赋值自增长的值给实体类 -->
     <insert id="save" parameterType="com.qcwy.entity.AppUser" useGeneratedKeys="true" keyProperty="id">
         insert into
-        t_app_user (job_no, name, id_card, birthday,regist_time)
-        values (#{job_no},#{name},#{id_card},#{birthday},now())
+        t_app_user (job_no, name, sex,use_tel,tel,id_card, birthday,regist_time,address)
+        values (#{job_no},#{name},#{sex},#{use_tel},#{tel},#{id_card},#{birthday},now(),#{address})
     </insert>
 
     <select id="getUserByJobNo" resultMap="user">
@@ -84,29 +86,32 @@
         SELECT * FROM t_app_user
     </select>
 
-    <update id="update">
+    <update id="updateUser">
         UPDATE t_app_user
         <set>
-            <if test="appUser.job_no != null">
-                job_no = #{appUser.jobNo},
-            </if>
             <if test="appUser.pwd != null">
                 pwd = #{appUser.pwd},
             </if>
             <if test="appUser.name != null">
                 name = #{appUser.name},
             </if>
-            <if test="appUser.tel != null">
-                tel = #{appUser.tel},
-            </if>
             <if test="appUser.sex != null">
                 sex = #{appUser.sex},
+            </if>
+            <if test="appUser.use_tel != null">
+                use_tel = #{appUser.use_tel},
+            </if>
+            <if test="appUser.tel != null">
+                tel = #{appUser.tel},
             </if>
             <if test="appUser.id_card != null">
                 id_card = #{appUser.id_card},
             </if>
+            <if test="appUser.address != null">
+                address = #{appUser.address},
+            </if>
         </set>
-        WHERE id = #{appUser.id}
+        WHERE job_no = #{appUser.job_no}
     </update>
 
     <select id="getCanPushUsers" resultMap="user">
@@ -124,5 +129,10 @@
         GROUP BY obj.job_no
         HAVING count(order_no)  &lt;= 5
     </select>
+
+    <delete id="delete">
+        DELETE FROM t_app_user
+        WHERE job_no = #{jobNo}
+    </delete>
 
 </mapper>

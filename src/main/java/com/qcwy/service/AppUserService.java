@@ -57,5 +57,8 @@ public interface AppUserService {
     int getOrderCount(String jobNo);
 
     //修改工程师
-    void update(AppUser appUser);
+    void updateUser(AppUser appUser);
+
+    //删除工程师
+    void delete(String jobNo);
 }

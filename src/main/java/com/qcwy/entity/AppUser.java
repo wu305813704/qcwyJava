@@ -39,6 +39,10 @@ public class AppUser implements Serializable {
     private Timestamp regist_time;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer order_count;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String use_tel;//常用电话
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String address;//联系地址
 
     public int getId() {
         return id;
@@ -158,5 +162,21 @@ public class AppUser implements Serializable {
 
     public void setOrder_count(Integer order_count) {
         this.order_count = order_count;
+    }
+
+    public String getUse_tel() {
+        return use_tel;
+    }
+
+    public void setUse_tel(String use_tel) {
+        this.use_tel = use_tel;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

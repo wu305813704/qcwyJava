@@ -89,7 +89,7 @@ public interface OrderService {
     void saveBgOrder(BgOrder bgOrder);
 
     //保存申请的预约单
-    void saveOrderAppointment(OrderAppointment orderAppointment);
+    void saveOrderAppointment(OrderAppointment orderAppointment) throws IOException;
 
     //修改预约时间
     void updateAppointmentTime(Timestamp appointmentTime, int orderNo);
@@ -170,7 +170,7 @@ public interface OrderService {
     void telPlaceOrder(Order order) throws IOException;
 
     //客服派单
-    void distributeOrder(Integer orderNo, String jobNo);
+    void distributeOrder(Integer orderNo, String jobNo) throws IOException;
 
     //查询工程师所持订单数
     Integer getCountHoldOrders(String jobNo);
@@ -195,4 +195,7 @@ public interface OrderService {
 
     //根据微信电话获取订单
     List<Order> getOrderByWxTel(String tel);
+
+    //获取订单取消原因
+    OrderCancel getOrderCancel(Integer orderNo);
 }

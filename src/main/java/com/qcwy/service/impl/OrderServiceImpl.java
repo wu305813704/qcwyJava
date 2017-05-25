@@ -11,7 +11,6 @@ import com.qcwy.service.OrderService;
 import com.qcwy.utils.*;
 import com.qcwy.websocket.BgWebSocket;
 import com.qcwy.websocket.WxWebSocket;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,6 +72,10 @@ public class OrderServiceImpl implements OrderService {
     private OrderAfterSaleDao orderAfterSaleDao;
     @Autowired
     private OrderVisitDao orderVisitDao;
+    @Autowired
+    private WxOrderMessageDao wxOrderMessageDao;
+    @Autowired
+    private OrderCancelDao orderCancelDao;
 
     @Override
     public String getOpenIdByOrderNo(int orderNo) {
@@ -164,6 +167,11 @@ public class OrderServiceImpl implements OrderService {
                 WxWebSocket.sendMsgByOpenId(orderDao.getOpenIdByOrderNo(orderNo), ObjectMapperUtils.getInstence().writeValueAsString(
                         new WebSocketMessage<>(MessageTypeUtils.START_ORDER, true)
                 ));
+                WxOrderMessage wxOrderMessage = new WxOrderMessage();
+                wxOrderMessage.setType(1);//开始订单
+                wxOrderMessage.setOrder_no(orderNo);
+                wxOrderMessage.setOpenid(orderDao.getOpenIdByOrderNo(orderNo));
+                wxOrderMessageDao.save(wxOrderMessage);
                 break;
             case 2:
                 throw new Exception("订单已在进行中");
@@ -196,6 +204,11 @@ public class OrderServiceImpl implements OrderService {
                 WxWebSocket.sendMsgByOpenId(orderDao.getOpenIdByOrderNo(orderNo), ObjectMapperUtils.getInstence().writeValueAsString(
                         new WebSocketMessage<>(MessageTypeUtils.PAUSE_ORDER, true)
                 ));
+                WxOrderMessage wxOrderMessage = new WxOrderMessage();
+                wxOrderMessage.setType(2);//暂停订单
+                wxOrderMessage.setOrder_no(orderNo);
+                wxOrderMessage.setOpenid(orderDao.getOpenIdByOrderNo(orderNo));
+                wxOrderMessageDao.save(wxOrderMessage);
                 break;
             case 3:
                 throw new Exception("订单已是暂停状态");
@@ -230,7 +243,7 @@ public class OrderServiceImpl implements OrderService {
         msgTo.setSend_time(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss.0"));
         //推送给指定改派工程师
         String name = appUserDao.getUserName(reassignment.getOld_no());//发起人姓名
-        model.pushReassignmentToEngineer(name, reassignment.getCause(), msgTo);
+        model.pushReassignmentToEngineer(name, msgTo);
 
         //2--发起的改派消息
         AppOrderMessage msgFrom = new AppOrderMessage();
@@ -244,6 +257,11 @@ public class OrderServiceImpl implements OrderService {
         WxWebSocket.sendMsgByOpenId(orderDao.getOpenIdByOrderNo(reassignment.getOrder_no()), ObjectMapperUtils.getInstence().writeValueAsString(
                 new WebSocketMessage<>(MessageTypeUtils.REASSIGNMENT_ORDER, true)
         ));
+        WxOrderMessage wxOrderMessage = new WxOrderMessage();
+        wxOrderMessage.setType(3);//改派订单
+        wxOrderMessage.setOrder_no(reassignment.getOrder_no());
+        wxOrderMessage.setOpenid(orderDao.getOpenIdByOrderNo(reassignment.getOrder_no()));
+        wxOrderMessageDao.save(wxOrderMessage);
     }
 
     //下普通订单
@@ -340,7 +358,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void distributeOrder(Integer orderNo, String jobNo) {
+    public void distributeOrder(Integer orderNo, String jobNo) throws IOException {
         orderDao.setJobNo(orderNo, jobNo);
         AppOrderMessage msg = new AppOrderMessage();
         msg.setOrder_no(orderNo);
@@ -350,6 +368,8 @@ public class OrderServiceImpl implements OrderService {
         //修改bgOrder的state为1
         bgOrderDao.updateState(orderNo, 1);
         model.distributeToEngineer(jobNo, orderNo);
+        WxWebSocket.sendMsgByOpenId(orderDao.getOpenIdByOrderNo(orderNo), ObjectMapperUtils.getInstence().writeValueAsString(
+                new WebSocketMessage<>(MessageTypeUtils.BG_DISTRIBUTE, appUserDao.getUserByJobNo(jobNo))));
     }
 
     @Override
@@ -392,6 +412,11 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.getOrderByWxTel();
     }
 
+    @Override
+    public OrderCancel getOrderCancel(Integer orderNo) {
+        return orderCancelDao.getCancelCause(orderNo);
+    }
+
     //加价
     @Override
     public void addPrice(int addPrice, int orderNo) {
@@ -425,6 +450,11 @@ public class OrderServiceImpl implements OrderService {
             WxWebSocket.sendMsgByOpenId(openId, ObjectMapperUtils.getInstence().writeValueAsString(
                     new WebSocketMessage<>(MessageTypeUtils.RUSH_ORDER, appUser)
             ));
+            WxOrderMessage wxOrderMessage = new WxOrderMessage();
+            wxOrderMessage.setOpenid(orderDao.getOpenIdByOrderNo(orderNo));
+            wxOrderMessage.setType(0);//订单被抢
+            wxOrderMessage.setOrder_no(orderNo);
+            wxOrderMessageDao.save(wxOrderMessage);
         } else {
             throw new Exception("订单已被抢");
         }
@@ -484,6 +514,11 @@ public class OrderServiceImpl implements OrderService {
         WxWebSocket.sendMsgByOpenId(openId, ObjectMapperUtils.getInstence().writeValueAsString(
                 new WebSocketMessage<>(MessageTypeUtils.CONFIRM_TROUBLE, true)
         ));
+        WxOrderMessage wxOrderMessage = new WxOrderMessage();
+        wxOrderMessage.setType(4);//确认故障
+        wxOrderMessage.setOrder_no(orderNo);
+        wxOrderMessage.setOpenid(orderDao.getOpenIdByOrderNo(orderNo));
+        wxOrderMessageDao.save(wxOrderMessage);
     }
 
     //用户确认故障
@@ -492,6 +527,12 @@ public class OrderServiceImpl implements OrderService {
         if (openId.equals(orderDao.getOpenIdByOrderNo(orderNo))) {
             orderDao.updateState(8, orderNo);
             orderRecordDao.updateConfirmRealTroubleTime(orderNo);
+            //工程师端数据添加消息
+            AppOrderMessage msg = new AppOrderMessage();
+            msg.setJob_no(orderDao.getJobNoByOrderNo(orderNo));
+            msg.setType(5);//确认故障
+            msg.setOrder_no(orderNo);
+            appOrderMessageDao.save(msg);
             //推送给工程师
             model.pushConfirmTroubleToEnginner(orderDao.getJobNoByOrderNo(orderNo), orderNo);
         } else {
@@ -524,6 +565,11 @@ public class OrderServiceImpl implements OrderService {
         WxWebSocket.sendMsgByOpenId(openId, ObjectMapperUtils.getInstence().writeValueAsString(
                 new WebSocketMessage<>(MessageTypeUtils.ORDER_COMPLETE, true)
         ));
+        WxOrderMessage wxOrderMessage = new WxOrderMessage();
+        wxOrderMessage.setType(5);//维修完成
+        wxOrderMessage.setOrder_no(orderNo);
+        wxOrderMessage.setOpenid(orderDao.getOpenIdByOrderNo(orderNo));
+        wxOrderMessageDao.save(wxOrderMessage);
     }
 
     //验收(计算总价)
@@ -618,11 +664,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void saveOrderAppointment(OrderAppointment orderAppointment) {
+    public void saveOrderAppointment(OrderAppointment orderAppointment) throws IOException {
         orderAppointmentDao.save(orderAppointment);
-        orderDao.updateState(1, orderAppointment.getOrder_no());
         orderDao.setJobNo(orderAppointment.getOrder_no(), null);
-        orderDao.updateType(orderAppointment.getOrder_no(), 1);
+        orderDao.updateType(orderAppointment.getOrder_no(), 1);//类型改为预约
+        orderDao.updateState(4, orderAppointment.getOrder_no());//状态改为预约
+        WxOrderMessage wxOrderMessage = new WxOrderMessage();
+        wxOrderMessage.setType(3);//改预约单
+        wxOrderMessage.setOrder_no(orderAppointment.getOrder_no());
+        wxOrderMessage.setOpenid(orderDao.getOpenIdByOrderNo(orderAppointment.getOrder_no()));
+        wxOrderMessageDao.save(wxOrderMessage);
     }
 
     @Override

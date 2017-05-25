@@ -40,8 +40,11 @@ public interface AppUserDao {
     List<AppUser> getAllUser();
 
     //修改工程师
-    void update(@Param("appUser") AppUser appUser);
+    void updateUser(@Param("appUser") AppUser appUser);
 
     //获取5单以下的工程师
     List<AppUser> getCanPushUsers();
+
+    //删除工程师
+    void delete(@Param("jobNo") String jobNo);
 }

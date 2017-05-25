@@ -9,6 +9,9 @@
         VALUES (#{orderCancel.order_no},#{orderCancel.cause},now())
     </insert>
 
-    <!--<select id="getCancel" resultType="com.qcwy.entity."-->
+    <select id="getCancelCause" resultType="com.qcwy.entity.OrderCancel">
+        SELECT * FROM t_xt_order_cancel
+        WHERE order_no = #{orderNo}
+    </select>
 
 </mapper>

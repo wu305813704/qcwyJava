@@ -1,6 +1,7 @@
 package com.qcwy.controller;
 
 import com.github.pagehelper.PageHelper;
+import com.qcwy.dao.WxOrderMessageDao;
 import com.qcwy.entity.*;
 import com.qcwy.entity.bg.BgOrder;
 import com.qcwy.entity.bg.LogForApp;
@@ -376,7 +377,6 @@ public class AppUserController {
                 throw new Exception("该订单已取消");
             }
             orderService.updateInfo(orderAppointment);
-            orderService.updateOrderState(orderNo, 4);//4-预约
             orderService.updateAppointmentTime(new Timestamp(time), orderNo);
             orderAppointment.setLon(Double.valueOf(orderDetail.getLon()));
             orderAppointment.setLati(Double.valueOf(orderDetail.getLati()));
@@ -387,6 +387,10 @@ public class AppUserController {
             log.setOrder_no(orderNo);
             log.setType(5);
             logService.saveLogApp(log);
+            //推送给后台
+            BgWebSocket.sendInfo(ObjectMapperUtils.getInstence().writeValueAsString(
+                    new WebSocketMessage<>(MessageTypeUtils.APPOINTMENT_ORDER, orderService.getOrder(orderNo))
+            ));
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -438,11 +442,6 @@ public class AppUserController {
         List<WarehouseEmployee> warehouseEmployees;
         try {
             warehouseEmployees = warehouseEmployeeService.getParts(jobNo);
-            for (WarehouseEmployee warehouseEmployee : warehouseEmployees) {
-                PartDetail partDetail = partService.getPartDetailByPartId(warehouseEmployee.getPart_detail_id());
-                warehouseEmployee.setName(partDetail.getName());
-                warehouseEmployee.setModle(partDetail.getModel());
-            }
         } catch (Exception e) {
             return new JsonResult<>(e);
         }
@@ -712,6 +711,19 @@ public class AppUserController {
             return new JsonResult<>(e);
         }
         return new JsonResult<>(appUser);
+    }
+
+    //获取订单取消原因
+    @GetMapping("/getOrderCancel")
+    @ApiOperation("获取工程师信息")
+    public JsonResult<?> getOrderCancel(@ApiParam(required = true, name = "orderNo", value = "订单号") @RequestParam(value = "orderNo") Integer orderNo) {
+        OrderCancel orderCancel;
+        try {
+            orderCancel = orderService.getOrderCancel(orderNo);
+        } catch (Exception e) {
+            return new JsonResult<>(e);
+        }
+        return new JsonResult<>(orderCancel);
     }
 
 }
